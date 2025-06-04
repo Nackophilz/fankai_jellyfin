@@ -66,7 +66,7 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 
 1. **Configuration de la bibliothèque**
    - Administration → Bibliothèques.
-   - Sélectionnez la bibliothèque (ex : "Séries TV" ou "Animés").
+   - Sélectionnez la bibliothèque (ex : "Séries TV" ou "Animés" ou encore mieux **"Fankai"**).
    - Cliquez sur les trois points (...) → Gérer la bibliothèque.
    - Dans "Récupérateurs de métadonnées", cochez **Fankai** et placez-le en priorité si souhaité.
 
