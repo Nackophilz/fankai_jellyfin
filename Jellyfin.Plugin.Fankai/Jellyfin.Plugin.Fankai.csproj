@@ -7,7 +7,7 @@
     <AssemblyVersion>1.0.3</AssemblyVersion>
     <FileVersion>1.0.3</FileVersion>
     <Version>1.0.3</Version>
-    <Description>Fournit des métadonnées depuis une API Fankai personnalisée.</Description>
+    <Description>Fournit des métadonnées depuis l'API Fankai.</Description>
     <AssemblyName>Jellyfin.Plugin.Fankai</AssemblyName>
     <PluginName>$(AssemblyName)</PluginName>
     <PluginClassName>Jellyfin.Plugin.Fankai.Plugin</PluginClassName>
