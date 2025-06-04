@@ -102,7 +102,7 @@ Les contributions sont les bienvenues !
 
 ## **Problèmes et Suggestions**
 
-Pour tout bug ou suggestion, ouvrez une **Issue** sur GitLab.
+Pour tout bug ou suggestion, ouvrez une [**Issue**](https://github.com/Nackophilz/fankai_jellyfin/issues/new) sur Github.
 
 ---
 
