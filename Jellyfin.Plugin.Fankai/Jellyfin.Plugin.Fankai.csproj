@@ -12,7 +12,7 @@
     <PluginName>$(AssemblyName)</PluginName>
     <PluginClassName>Jellyfin.Plugin.Fankai.Plugin</PluginClassName>
     <PluginId>4b725b9a-9063-4cb7-9533-ceaf32c6c86d</PluginId>
-    <PluginManifestUrl>https://raw.githubusercontent.com/VOTRE_NOM_UTILISATEUR/VOTRE_REPO/master/manifest.json</PluginManifestUrl>
+    <PluginManifestUrl>https://gitlab.com/ElPouki/fankai_jellyfin/-/raw/main/manifest.json</PluginManifestUrl>
   </PropertyGroup>
 
   <ItemGroup>
