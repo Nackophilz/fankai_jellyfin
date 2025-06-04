@@ -99,7 +99,7 @@ jobs:
             echo "Erreur : Fichier ZIP $ZIP_TO_CHECKSUM non trouvé pour la génération du checksum !"
             exit 1
           fi
-          CHECKSUM=$(sha256sum "$ZIP_TO_CHECKSUM" | awk '{ print $1 }')
+          CHECKSUM=$(md5sum "$ZIP_TO_CHECKSUM" | awk '{ print $1 }')
           echo "ZIP_CHECKSUM=$CHECKSUM" >> $GITHUB_OUTPUT
           echo "Checksum généré : $CHECKSUM pour $ZIP_TO_CHECKSUM"
 
