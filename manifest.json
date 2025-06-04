@@ -8,22 +8,6 @@
     "category": "Métadonnées",
     "versions": [
       {
-        "version": "1.0.0",
-        "changelog": "Version initiale.",
-        "targetAbi": "10.9.0.0",
-        "sourceUrl": "URL_VERS_LE_ZIP_DU_PLUGIN_VERSION_1.0.0",
-        "checksum": "CHECKSUM_SHA256_DU_ZIP",
-        "timestamp": "2025-06-04T12:00:00Z"
-      },
-      {
-        "version": "1.0.1",
-        "changelog": "Amélioration de la normalisation des noms de fichiers pour les épisodes.",
-        "targetAbi": "10.9.0.0",
-        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v1.0.1/Jellyfin.Plugin.Fankai.zip",
-        "checksum": "NOUVEAU_CHECKSUM_SHA256_DU_ZIP",
-        "timestamp": "2025-06-05T10:00:00Z"
-      },
-      {
         "version": "1.0.2",
         "changelog": "Maj\n\nMise en place de la bascule Gitlab vers Github mineur",
         "targetAbi": "10.9.0.0",
