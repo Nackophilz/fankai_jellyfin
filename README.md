@@ -1,93 +1,150 @@
-# Fankai_Jellyfin
+# Plugin Fankai pour Jellyfin
 
+## **À propos du projet**
 
+Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les métadonnées et images de la communauté Fankai directement dans votre médiathèque. Il vise une intégration transparente et qualitative pour les passionnés de la team "Fan-Kai" et les utilisateurs de Jellyfin, en particulier pour les séries animées. Les informations sont récupérées via l’API publique [metadata.fankai.fr](https://metadata.fankai.fr).
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## **Fonctionnalités**
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- **Récupération de métadonnées complètes** : titres, résumés, épisodes, dates de diffusion, etc.
+- **Intégration d’images** : affiches, bannières, fonds d’écran, vignettes d’épisodes.
+- **Informations supplémentaires** : genres, acteurs/personnages, studios, thèmes musicaux (en cours d'implémentation).
+- **Mises à jour automatiques** : selon la configuration du catalogue de plugins Jellyfin.
+- **Spécialisé pour les contenus asiatiques** : optimisé pour les animés et productions suivies par la communauté Fankai.
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## **Installation**
+
+### **Méthode 1 : Via le catalogue de plugins Jellyfin (recommandé)**
+
+1. Depuis Jellyfin, allez dans **Tableau de bord → Plugins**.
+2. Cliquez sur l’onglet **Catalogue**.
+3. Recherchez **Fankai** dans la liste.
+4. *(Si non disponible, ajoutez le dépôt personnalisé : [LIEN_DU_DEPOT_A_AJOUTER_QUAND_DISPONIBLE_SUIS_PAS_TRES_RAPIDE])*
+5. Cliquez sur le plugin Fankai puis sur **Installer**.
+6. Redémarrez Jellyfin si demandé.
+
+> Les mises à jour seront ensuite gérées automatiquement via ce catalogue[1][4][7].
+
+---
+
+### **Méthode 2 : Installation manuelle**
+
+#### **Téléchargement**
+
+- Rendez-vous sur la page **Releases** du projet.
+- Téléchargez la dernière version du fichier `Jellyfin.Plugin.Fankai.zip`.
+
+#### **Extraction et placement**
+
+- Décompressez l’archive.
+- Copiez le dossier extrait dans le dossier `plugins` de votre installation Jellyfin.
+
+  - **Windows** :  
+    `C:\Program Files\Jellyfin\Server\plugins`  
+    ou `%LOCALAPPDATA%\jellyfin\plugins`
+  - **Linux (Docker)** :  
+    Volume monté, ex : `/config/plugins` ou `/data/jellyfin/plugins`
+  - **Linux (natif)** :  
+    `/var/lib/jellyfin/plugins` ou `/usr/lib/jellyfin/plugins`
+
+#### **Redémarrage**
+
+- Arrêtez puis redémarrez Jellyfin pour charger le plugin.
+
+#### **Configuration (si nécessaire)**
+
+- Accédez au **Tableau de bord → Plugins**.
+- Cliquez sur Fankai pour accéder aux options de configuration (ordre des fournisseurs de métadonnées, etc.)[1][4].
+
+---
+
+## **Utilisation**
+
+1. **Configuration de la bibliothèque**
+   - Administration → Bibliothèques.
+   - Sélectionnez la bibliothèque (ex : "Séries TV" ou "Animés").
+   - Cliquez sur les trois points (...) → Gérer la bibliothèque.
+   - Dans "Récupérateurs de métadonnées", cochez **Fankai** et placez-le en priorité si souhaité.
+
+2. **Scan de la bibliothèque**
+   - Lancez un scan des métadonnées pour que Jellyfin utilise le plugin Fankai.
+   - Pour les nouvelles séries, l’import est automatique ; pour les existantes, une actualisation peut être nécessaire.
+
+---
+
+## **Ressources Utiles**
+
+- [Site Officiel Fankai.fr](https://fankai.fr)
+- [Wiki Fandom Fankai](https://discord.gg/team-fankai-414117314418704414)[8]
+- [API Metadata Fankai](https://metadata.fankai.fr)
+- [Discord Team Fankai](https://discord.gg/fankai)
+
+---
+
+## **Contribuer**
+
+Les contributions sont les bienvenues !  
+- Forkez le projet :  
+  `https://gitlab.com/ElPouki/fankai_jellyfin/-/forks/new`
+- Créez une branche :  
+  `git checkout -b feature/AmazingFeature`
+- Commitez vos modifications :  
+  `git commit -m 'Add some AmazingFeature'`
+- Poussez sur votre branche :  
+  `git push origin feature/AmazingFeature`
+- Ouvrez une **Merge Request**
+
+---
+
+## **Problèmes et Suggestions**
+
+Pour tout bug ou suggestion, ouvrez une **Issue** sur GitLab.
+
+---
+
+## **Licence**
+
+Ce projet est distribué sous la licence **MIT**.
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/ElPouki/fankai_jellyfin.git
-git branch -M main
-git push -uf origin main
+MIT License
+
+Copyright (c) 2024 ElPouki
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 ```
 
-## Integrate with your tools
+Cette licence permet aux utilisateurs de :
+- Utiliser le code librement
+- Modifier le code source
+- Contribuer au projet
+- Distribuer le code
 
-- [ ] [Set up project integrations](https://gitlab.com/ElPouki/fankai_jellyfin/-/settings/integrations)
+Tout en exigeant de :
+- Préserver les mentions de copyright
+- Inclure la licence MIT dans toute copie
 
-## Collaborate with your team
+---
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+**Astuce** : Pour plus d’informations sur la gestion des plugins Jellyfin, consultez la [documentation officielle](https://jellyfin.org/docs/general/server/plugins/)[1][4].
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+[1] https://jellyfin.org/docs/
+[2] https://github.com/elmehdou/FanKai-Jellyfin
+[3] https://gitlab.com/ElPouki/fankai_pack
+[4] https://jellyfin.org/docs/general/server/plugins/
+[5] https://github.com/elmehdou/FanKai-Jellyfin/blob/master/jellyfin.cpp
+[6] https://docs.ikaros.run/en/docs/0.8/plugins/plugin-jellyfin/
+[7] https://www.youtube.com/watch?v=F8k_nvatKZE
+[8] https://fan-kai.fandom.com/fr/wiki/Emby

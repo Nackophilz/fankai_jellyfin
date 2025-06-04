@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À Propos du Plugin Fankai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Animation subtile pour les liens */
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- Conteneur principal de la page -->
+    <div id="fankaiPresentationPage" class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+        <!-- Carte de contenu -->
+        <div class="bg-white shadow-2xl rounded-xl w-full max-w-3xl overflow-hidden">
+            <!-- Section du logo -->
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 p-6 sm:p-8 text-center">
+                <img src="https://fankai.fr/img/Logo_Fankai_Complet_1-ligne.svg" alt="Logo Fankai" class="mx-auto h-16 sm:h-20 object-contain">
+            </div>
+
+            <div class="p-6 sm:p-10">
+                <!-- Titre principal -->
+                <h1 class="text-3xl sm:text-4xl font-bold text-center text-green-600 mb-6 sm:mb-8">
+                    Plugin Fankai pour Jellyfin
+                </h1>
+
+                <!-- Paragraphes de présentation -->
+                <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4">
+                    Bienvenue sur la page du plugin Fankai ! Ce plugin a été conçu pour enrichir votre expérience Jellyfin en intégrant les métadonnées et les images de la communauté Fankai directement dans votre médiathèque.
+                </p>
+                <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4">
+                    Grâce à ce plugin, vos séries bénéficieront des informations complètes et à jour fournies par l'API <a href="https://metadata.fankai.fr" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-700 font-semibold underline hover-lift inline-block">metadata.fankai.fr</a>, incluant les résumés, les acteurs, les genres, les images et même les thèmes musicaux.
+                </p>
+                <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-8">
+                    L'objectif est de fournir une intégration transparente pour tous les passionnés de la team "Fan-Kai".
+                </p>
+
+                <!-- Section des liens utiles -->
+                <div class="links-section border-t border-gray-200 pt-8">
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-center text-gray-700 mb-6">
+                        Ressources Utiles
+                    </h2>
+                    <ul class="space-y-3 text-center">
+                        <li>
+                            <a href="https://fankai.fr/" target="_blank" rel="noopener noreferrer" class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover-lift transition-colors duration-200 ease-in-out text-sm sm:text-base">
+                                Site Officiel Fankai.fr
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://fan-kai.fandom.com/fr/wiki/Wiki_Fankai" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover-lift transition-colors duration-200 ease-in-out text-sm sm:text-base">
+                                Wiki Fandom Fankai
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://discord.gg/team-fankai-414117314418704414" target="_blank" rel="noopener noreferrer" class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover-lift transition-colors duration-200 ease-in-out text-sm sm:text-base">
+                                Rejoignez notre Discord
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Note de bas de page -->
+                <p class="text-center text-sm text-gray-500 mt-10">
+                    Ce plugin utilise l'API publique de metadata.fankai.fr.
+                </p>
+            </div>
+        </div>
+        <!-- Pied de page simple -->
+        <footer class="text-center mt-8 text-gray-500 text-xs">
+            Fait avec ❤️ par ElPouki.
+            <div class="mt-2"></div>
+                Ce plugin est destiné uniquement aux possesseurs légitimes des œuvres originales.<br>
+                Il ne fournit ni ne promeut aucun contenu piraté.
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
