@@ -8,6 +8,14 @@
     "category": "Métadonnées",
     "versions": [
       {
+        "version": "1.0.6",
+        "changelog": "Update Jellyfin.Plugin.Fankai.csproj\n\nDo it.. Try it...",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v1.0.6/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "35a663f41510ed52ed61e7a5b9da1866",
+        "timestamp": "2025-06-04T21:49:21Z"
+      },
+      {
         "version": "1.0.5",
         "changelog": "Update Jellyfin.Plugin.Fankai.csproj\n\nTry it",
         "targetAbi": "10.9.0.0",
