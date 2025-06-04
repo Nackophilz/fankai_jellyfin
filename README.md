@@ -23,7 +23,7 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 1. Depuis Jellyfin, allez dans **Tableau de bord → Plugins**.
 2. Cliquez sur l’onglet **Catalogue**.
 3. Recherchez **Fankai** dans la liste.
-4. *(Si non disponible, ajoutez le dépôt personnalisé : [LIEN_DU_DEPOT_A_AJOUTER_QUAND_DISPONIBLE_SUIS_PAS_TRES_RAPIDE])*
+4. Si non disponible, ajoutez le dépôt personnalisé : **https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/refs/heads/main/manifest.json**
 5. Cliquez sur le plugin Fankai puis sur **Installer**.
 6. Redémarrez Jellyfin si demandé.
 
