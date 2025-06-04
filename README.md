@@ -12,7 +12,6 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 - **Intégration d’images** : affiches, bannières, fonds d’écran, vignettes d’épisodes.
 - **Informations supplémentaires** : genres, acteurs/personnages, studios, thèmes musicaux (en cours d'implémentation).
 - **Mises à jour automatiques** : selon la configuration du catalogue de plugins Jellyfin.
-- **Spécialisé pour les contenus asiatiques** : optimisé pour les animés et productions suivies par la communauté Fankai.
 
 ---
 
@@ -23,7 +22,7 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 1. Depuis Jellyfin, allez dans **Tableau de bord → Plugins**.
 2. Cliquez sur l’onglet **Catalogue**.
 3. Recherchez **Fankai** dans la liste.
-4. *(Si non disponible, ajoutez le dépôt personnalisé : [LIEN_DU_DEPOT_A_AJOUTER_QUAND_DISPONIBLE_SUIS_PAS_TRES_RAPIDE])*
+4. Si non disponible, ajoutez le dépôt personnalisé : **https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/refs/heads/main/manifest.json**
 5. Cliquez sur le plugin Fankai puis sur **Installer**.
 6. Redémarrez Jellyfin si demandé.
 
@@ -102,7 +101,7 @@ Les contributions sont les bienvenues !
 
 ## **Problèmes et Suggestions**
 
-Pour tout bug ou suggestion, ouvrez une **Issue** sur GitLab.
+Pour tout bug ou suggestion, ouvrez une [**Issue**](https://github.com/Nackophilz/fankai_jellyfin/issues/new) sur Github.
 
 ---
 
