@@ -12,7 +12,6 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 - **Intégration d’images** : affiches, bannières, fonds d’écran, vignettes d’épisodes.
 - **Informations supplémentaires** : genres, acteurs/personnages, studios, thèmes musicaux (en cours d'implémentation).
 - **Mises à jour automatiques** : selon la configuration du catalogue de plugins Jellyfin.
-- **Spécialisé pour les contenus asiatiques** : optimisé pour les animés et productions suivies par la communauté Fankai.
 
 ---
 
