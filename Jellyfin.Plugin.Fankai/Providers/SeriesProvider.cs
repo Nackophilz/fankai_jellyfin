@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -12,7 +13,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;      
-using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Entities; 
 using Microsoft.Extensions.Logging;
 
 
@@ -25,7 +26,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
     private readonly ILogger<SeriesProvider> _logger;
     private readonly FankaiApiClient _apiClient;
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory _httpClientFactory; 
 
     public const string ProviderIdName = "FankaiSerieId";
 
@@ -38,7 +39,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
     public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Fankai GetMetadata pour Series: Nom='{Name}', Année={Year}", info.Name, info.Year);
+        _logger.LogInformation("Fankai GetMetadata pour Series: Nom='{Name}', Année={Year}, Path='{Path}'", info.Name, info.Year, info.Path);
         var result = new MetadataResult<Series>();
 
         string? fankaiId = null;
@@ -52,7 +53,6 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         {
             _logger.LogDebug("Tentative de trouver l'ID Fankai pour la série: Nom='{Name}' Année={Year}", info.Name, info.Year);
             var searchResults = await GetSearchResults(info, cancellationToken).ConfigureAwait(false);
-            
             var bestMatch = searchResults.FirstOrDefault(r => 
                                 string.Equals(r.Name, info.Name, StringComparison.OrdinalIgnoreCase) &&
                                 (!info.Year.HasValue || r.ProductionYear == info.Year))
@@ -93,7 +93,8 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             PremiereDate = TryParseDate(serieData.Premiered), 
             ProductionYear = serieData.Year, 
             OfficialRating = serieData.Mpaa,
-            Studios = !string.IsNullOrWhiteSpace(serieData.Studio) ? new[] { serieData.Studio } : Array.Empty<string>()
+            Studios = !string.IsNullOrWhiteSpace(serieData.Studio) ? new[] { serieData.Studio } : Array.Empty<string>(),
+            Path = info.Path // Assigner le chemin depuis SeriesInfo à l'item Series en cours de création
         };
         
         result.Item.ProviderIds.TryAdd(ProviderIdName, fankaiId);
@@ -108,6 +109,61 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             result.Item.Genres = serieData.Genres.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
         
+        // **Logique de téléchargement du thème musical**
+        if (!string.IsNullOrWhiteSpace(serieData.ThemeMusicUrl) && !string.IsNullOrWhiteSpace(info.Path))
+        {
+            string themeFileName = "theme.mp3";
+            // Construire le chemin local en utilisant info.Path
+            string localThemePath = Path.Combine(info.Path, themeFileName);
+
+            if (!File.Exists(localThemePath))
+            {
+                _logger.LogInformation("Tentative de téléchargement du thème musical pour '{SeriesName}' depuis {ThemeUrl} vers {LocalPath}", 
+                                       serieData.Title, serieData.ThemeMusicUrl, localThemePath);
+                try
+                {
+                    using var httpClient = _httpClientFactory.CreateClient();
+                    // HttpCompletionOption.ResponseHeadersRead
+                    var response = await httpClient.GetAsync(serieData.ThemeMusicUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode(); // Lève une exception si le statut n'est pas succès
+
+                    // Utiliser un FileStream))
+                    using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+                    using var fileStream = new FileStream(localThemePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                    await stream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
+                    
+                    _logger.LogInformation("Thème musical téléchargé avec succès pour '{SeriesName}' à l'emplacement {LocalPath}", 
+                                           serieData.Title, localThemePath);
+                    result.HasMetadata = true; // Indiquer qu'une mise à jour (locale) a eu lieu
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Erreur HTTP lors du téléchargement du thème musical pour '{SeriesName}' depuis {ThemeUrl}.", 
+                                     serieData.Title, serieData.ThemeMusicUrl);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Erreur lors du téléchargement ou de la sauvegarde du thème musical pour '{SeriesName}' vers {LocalPath}.", 
+                                     serieData.Title, localThemePath);
+                    // Essayer de supprimer un fichier en cas d'erreur.
+                    if (File.Exists(localThemePath))
+                    {
+                        try { File.Delete(localThemePath); } catch (Exception delEx) { _logger.LogWarning(delEx, "Échec de la suppression du fichier de thème partiel : {LocalPath}", localThemePath); }
+                    }
+                }
+            }
+            else
+            {
+                _logger.LogDebug("Le fichier theme.mp3 existe déjà pour '{SeriesName}' à l'emplacement {LocalPath}. Pas de téléchargement.", 
+                                 serieData.Title, localThemePath);
+            }
+        }
+        // Log si l'URL du thème existe mais le chemin de la série n'est pas disponible via info.Path
+        else if (!string.IsNullOrWhiteSpace(serieData.ThemeMusicUrl) && string.IsNullOrWhiteSpace(info.Path))
+        {
+            _logger.LogWarning("Impossible de télécharger le thème musical pour '{SeriesName}' car info.Path (chemin de la série) n'est pas disponible.", serieData.Title);
+        }
+
         var actorsResponse = await _apiClient.GetActorsForSerieAsync(fankaiId, cancellationToken).ConfigureAwait(false);
         if (actorsResponse?.Actors != null)
         {
@@ -119,15 +175,19 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                     {
                         Name = actorData.Name,
                         Role = actorData.Role,
-                        Type = PersonKind.Actor
+                        Type = PersonKind.Actor 
                     };
                     result.AddPerson(person);
                 }
             }
         }
 
-        result.HasMetadata = true;
-        _logger.LogInformation("Métadonnées récupérées avec succès pour l'ID Fankai: {FankaiId}, Série: {Title}", fankaiId, serieData.Title);
+        if (result.Item != null && result.Item.Name == serieData.Title) 
+        {
+             result.HasMetadata = true;
+        }
+       
+        _logger.LogInformation("Métadonnées récupérées et traitées pour l'ID Fankai: {FankaiId}, Série: {Title}", fankaiId, serieData.Title);
         return result;
     }
 
@@ -197,7 +257,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         {
             return date.ToUniversalTime();
         }
-        _logger.LogWarning("Impossible de parser la chaîne de date: {DateString}", dateString);
+        _logger.LogWarning("Impossible de parser la chaîne de date : {DateString}", dateString);
         return null;
     }
 
