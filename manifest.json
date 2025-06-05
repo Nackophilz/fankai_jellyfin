@@ -2,10 +2,11 @@
   {
     "guid": "4b725b9a-9063-4cb7-9533-ceaf32c6c86d",
     "name": "Fankai",
-    "description": "Fournit des métadonnées et des images depuis une API Fankai personnalisée.",
+    "description": "Fournit des métadonnées et des images depuis l'API Fankai pour les productions de la team.",
     "owner": "Fankai Team",
     "overview": "Ce plugin permet à Jellyfin de récupérer des métadonnées et des images pour les films, séries et épisodes depuis l'API Fankai.",
     "category": "Métadonnées",
+    "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
         "version": "1.0.7",
