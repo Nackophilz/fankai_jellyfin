@@ -4,9 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.6</AssemblyVersion>
-    <FileVersion>1.0.6</FileVersion>
-    <Version>1.0.6</Version>
+    <AssemblyVersion>1.0.7</AssemblyVersion>
+    <FileVersion>1.0.7</FileVersion>
+    <Version>1.0.7</Version>
     <Description>Fournit des métadonnées depuis l'API Fankai.</Description>
     <AssemblyName>Jellyfin.Plugin.Fankai</AssemblyName>
     <PluginName>$(AssemblyName)</PluginName>
@@ -22,7 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\configPage.html" />
+    <EmbeddedResource Include="Configuration\configPage.html">
+      <LogicalName>Jellyfin.Plugin.Fankai.Configuration.configPage.html</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
