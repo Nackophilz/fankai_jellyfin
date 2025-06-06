@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,7 +14,8 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;      
-using MediaBrowser.Model.Entities; 
+using MediaBrowser.Model.Entities;
+using MediaBrowser.Controller.MediaEncoding;
 using Microsoft.Extensions.Logging;
 
 
@@ -26,15 +28,18 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
     private readonly ILogger<SeriesProvider> _logger;
     private readonly FankaiApiClient _apiClient;
-    private readonly IHttpClientFactory _httpClientFactory; 
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IMediaEncoder _mediaEncoder;
 
     public const string ProviderIdName = "FankaiSerieId";
 
-    public SeriesProvider(IHttpClientFactory httpClientFactory, ILogger<SeriesProvider> logger, ILoggerFactory loggerFactory)
+
+    public SeriesProvider(IHttpClientFactory httpClientFactory, ILogger<SeriesProvider> logger, ILoggerFactory loggerFactory, IMediaEncoder mediaEncoder)
     {
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _apiClient = new FankaiApiClient(httpClientFactory, loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory)));
+        _mediaEncoder = mediaEncoder ?? throw new ArgumentNullException(nameof(mediaEncoder)); // Injection de IMediaEncoder
     }
 
     public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
@@ -94,7 +99,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             ProductionYear = serieData.Year, 
             OfficialRating = serieData.Mpaa,
             Studios = !string.IsNullOrWhiteSpace(serieData.Studio) ? new[] { serieData.Studio } : Array.Empty<string>(),
-            Path = info.Path // Assigner le chemin depuis SeriesInfo à l'item Series en cours de création
+            Path = info.Path 
         };
         
         result.Item.ProviderIds.TryAdd(ProviderIdName, fankaiId);
@@ -109,59 +114,62 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             result.Item.Genres = serieData.Genres.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
         
-        // **Logique de téléchargement du thème musical**
+        // Téléchargement et réparation du thème musical
         if (!string.IsNullOrWhiteSpace(serieData.ThemeMusicUrl) && !string.IsNullOrWhiteSpace(info.Path))
         {
             string themeFileName = "theme.mp3";
-            // Construire le chemin local en utilisant info.Path
             string localThemePath = Path.Combine(info.Path, themeFileName);
+            string tempThemePath = localThemePath + ".tmp"; // Fichier temporaire
 
             if (!File.Exists(localThemePath))
             {
-                _logger.LogInformation("Tentative de téléchargement du thème musical pour '{SeriesName}' depuis {ThemeUrl} vers {LocalPath}", 
-                                       serieData.Title, serieData.ThemeMusicUrl, localThemePath);
+                _logger.LogInformation("Tentative de téléchargement du thème musical pour '{SeriesName}' depuis {ThemeUrl}", 
+                                       serieData.Title, serieData.ThemeMusicUrl);
                 try
                 {
-                    using var httpClient = _httpClientFactory.CreateClient();
-                    // HttpCompletionOption.ResponseHeadersRead
-                    var response = await httpClient.GetAsync(serieData.ThemeMusicUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    response.EnsureSuccessStatusCode(); // Lève une exception si le statut n'est pas succès
+                    // 1. Télécharger dans un fichier temporaire
+                    using (var httpClient = _httpClientFactory.CreateClient())
+                    {
+                        var response = await httpClient.GetAsync(serieData.ThemeMusicUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                        response.EnsureSuccessStatusCode();
 
-                    // Utiliser un FileStream))
-                    using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-                    using var fileStream = new FileStream(localThemePath, FileMode.Create, FileAccess.Write, FileShare.None);
-                    await stream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
+                        using (var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false))
+                        using (var fileStream = new FileStream(tempThemePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            await stream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
+                        }
+                    }
+                    _logger.LogInformation("Thème musical temporaire téléchargé vers {TempPath}", tempThemePath);
+
+                    // 2. Réparer le fichier avec FFmpeg
+                    await RemuxAudioAsync(tempThemePath, localThemePath, cancellationToken);
                     
-                    _logger.LogInformation("Thème musical téléchargé avec succès pour '{SeriesName}' à l'emplacement {LocalPath}", 
-                                           serieData.Title, localThemePath);
-                    result.HasMetadata = true; // Indiquer qu'une mise à jour (locale) a eu lieu
-                }
-                catch (HttpRequestException ex)
-                {
-                    _logger.LogError(ex, "Erreur HTTP lors du téléchargement du thème musical pour '{SeriesName}' depuis {ThemeUrl}.", 
-                                     serieData.Title, serieData.ThemeMusicUrl);
+                    result.HasMetadata = true; // Indiquer qu'une mise à jour a eu lieu
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Erreur lors du téléchargement ou de la sauvegarde du thème musical pour '{SeriesName}' vers {LocalPath}.", 
-                                     serieData.Title, localThemePath);
-                    // Essayer de supprimer un fichier en cas d'erreur.
-                    if (File.Exists(localThemePath))
+                    _logger.LogError(ex, "Erreur lors du téléchargement ou de la réparation du thème musical pour '{SeriesName}'.", 
+                                     serieData.Title);
+                }
+                finally
+                {
+                    // 3. Nettoyer le fichier temporaire
+                    if (File.Exists(tempThemePath))
                     {
-                        try { File.Delete(localThemePath); } catch (Exception delEx) { _logger.LogWarning(delEx, "Échec de la suppression du fichier de thème partiel : {LocalPath}", localThemePath); }
+                        try { File.Delete(tempThemePath); }
+                        catch (Exception delEx) { _logger.LogWarning(delEx, "Échec de la suppression du fichier de thème temporaire : {TempPath}", tempThemePath); }
                     }
                 }
             }
             else
             {
-                _logger.LogDebug("Le fichier theme.mp3 existe déjà pour '{SeriesName}' à l'emplacement {LocalPath}. Pas de téléchargement.", 
+                _logger.LogDebug("Le fichier theme.mp3 existe déjà pour '{SeriesName}'. Pas de téléchargement.", 
                                  serieData.Title, localThemePath);
             }
         }
-        // Log si l'URL du thème existe mais le chemin de la série n'est pas disponible via info.Path
         else if (!string.IsNullOrWhiteSpace(serieData.ThemeMusicUrl) && string.IsNullOrWhiteSpace(info.Path))
         {
-            _logger.LogWarning("Impossible de télécharger le thème musical pour '{SeriesName}' car info.Path (chemin de la série) n'est pas disponible.", serieData.Title);
+            _logger.LogWarning("Impossible de télécharger le thème musical pour '{SeriesName}' car info.Path n'est pas disponible.", serieData.Title);
         }
 
         var actorsResponse = await _apiClient.GetActorsForSerieAsync(fankaiId, cancellationToken).ConfigureAwait(false);
@@ -189,6 +197,60 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
        
         _logger.LogInformation("Métadonnées récupérées et traitées pour l'ID Fankai: {FankaiId}, Série: {Title}", fankaiId, serieData.Title);
         return result;
+    }
+    
+    private async Task RemuxAudioAsync(string inputPath, string outputPath, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Tentative de réparation du fichier audio '{InputPath}' vers '{OutputPath}' avec FFmpeg.", inputPath, outputPath);
+        
+        string ffmpegPath = _mediaEncoder.EncoderPath;
+        
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = ffmpegPath,
+                Arguments = $"-i \"{inputPath}\" -c:a copy -map_metadata -1 \"{outputPath}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                // Assurer une terminaison propre si l'annulation est demandée
+                WindowStyle = ProcessWindowStyle.Hidden
+            }
+        };
+
+        cancellationToken.Register(() =>
+        {
+            try { if (!process.HasExited) process.Kill(); }
+            catch (Exception ex) { _logger.LogWarning(ex, "Erreur lors de la tentative d'arrêt du processus FFmpeg."); }
+        });
+
+        process.Start();
+
+        // Lire les sorties pour le débogage, mais ne pas bloquer indéfiniment
+        string errorOutput = await process.StandardError.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
+
+        await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+
+        if (process.ExitCode == 0 && File.Exists(outputPath))
+        {
+            _logger.LogInformation("Réparation du thème musical réussie pour '{OutputPath}'.", outputPath);
+        }
+        else
+        {
+            // Tenter de supprimer le fichier de sortie potentiellement corrompu
+            if (File.Exists(outputPath))
+            {
+                try { File.Delete(outputPath); } catch (Exception ex) { _logger.LogWarning(ex, "Échec de la suppression du fichier de sortie FFmpeg partiel : {OutputPath}", outputPath); }
+            }
+            
+            var ffmpegException = new Exception("Sortie d'erreur de FFmpeg : " + errorOutput);
+            _logger.LogError(ffmpegException, "Échec de la réparation FFmpeg pour '{InputPath}'. Code de sortie : {ExitCode}", inputPath, process.ExitCode);
+            
+            // Lancer une exception pour que le bloc catch principal puisse la gérer, en chaînant l'exception ffmpeg
+            throw new Exception($"Échec du processus FFmpeg pour '{inputPath}' avec le code de sortie {process.ExitCode}.", ffmpegException);
+        }
     }
 
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
