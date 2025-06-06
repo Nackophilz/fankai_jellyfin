@@ -10,7 +10,7 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 
 - **Récupération de métadonnées complètes** : titres, résumés, épisodes, dates de diffusion, etc.
 - **Intégration d’images** : affiches, bannières, fonds d’écran, vignettes d’épisodes.
-- **Informations supplémentaires** : genres, acteurs/personnages, studios, thèmes musicaux (en cours d'implémentation).
+- **Informations supplémentaires** : genres, acteurs/personnages, studios, thèmes musicaux.
 - **Mises à jour automatiques** : selon la configuration du catalogue de plugins Jellyfin.
 
 ---
