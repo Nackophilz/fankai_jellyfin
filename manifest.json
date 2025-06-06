@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "1.1.1",
+        "changelog": "Màj Theme\n\nAjout réparation thème musical (header vide)",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v1.1.1/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "79d844aeee4c951a322ee5819f7202ab",
+        "timestamp": "2025-06-06T21:36:32Z"
+      },
+      {
         "version": "1.1.0",
         "changelog": "Ajout thèmes musicaux\n\nModification du SeriesProvider.cs pour prise en charge des thèmes musicaux par série (stockage local)",
         "targetAbi": "10.9.0.0",
