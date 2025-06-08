@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "2.0.1",
+        "changelog": "Màj\n\nCorrection mineure\nAjout correction auto ID / Nom",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.1/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "086a53f9a0d3273b8d596c6fe1c19fd9",
+        "timestamp": "2025-06-08T23:08:01Z"
+      },
+      {
         "version": "2.0.0",
         "changelog": "Màj\n\nAjout d'un provider pour les saisons\nAjout des x_id pour les séries\nAjout des sorttitles pour séries et saisons",
         "targetAbi": "10.9.0.0",
