@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Data.Enums;
@@ -47,16 +48,26 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         _logger.LogInformation("Fankai GetMetadata pour Series: Nom='{Name}', Année={Year}, Path='{Path}'", info.Name, info.Year, info.Path);
         var result = new MetadataResult<Series>();
 
-        string? fankaiId = null;
-        if (info.ProviderIds.TryGetValue(ProviderIdName, out var id))
-        {
-            fankaiId = id;
-            _logger.LogDebug("Fankai ID depuis ProviderIds: {FankaiId}", fankaiId);
-        }
+        string? fankaiId = info.ProviderIds.GetValueOrDefault(ProviderIdName);
 
+        if (!string.IsNullOrWhiteSpace(fankaiId) && !string.IsNullOrWhiteSpace(info.Name))
+        {
+            var initialData = await _apiClient.GetSerieByIdAsync(fankaiId, cancellationToken).ConfigureAwait(false);
+            
+            if (initialData != null && !NormalizeTitle(initialData.Title).Equals(NormalizeTitle(info.Name)))
+            {
+                _logger.LogWarning(
+                    "INCOHÉRENCE DÉTECTÉE ! L'ID Fankai stocké '{FankaiId}' correspond à '{ApiTitle}', mais le nom de la série est '{SeriesName}'. Forçage de la ré-identification.",
+                    fankaiId,
+                    initialData.Title,
+                    info.Name);
+                fankaiId = null;
+            }
+        }
+        
         if (string.IsNullOrWhiteSpace(fankaiId) && !string.IsNullOrWhiteSpace(info.Name))
         {
-            _logger.LogDebug("Tentative de trouver l'ID Fankai pour la série : Nom='{Name}' Année={Year}", info.Name, info.Year);
+            _logger.LogDebug("Aucun ID Fankai valide. Lancement de la recherche pour : Nom='{Name}', Année={Year}", info.Name, info.Year);
             var searchResults = await GetSearchResults(info, cancellationToken).ConfigureAwait(false);
             
             var bestMatch = searchResults.FirstOrDefault();
@@ -64,7 +75,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             if (bestMatch != null && bestMatch.ProviderIds.TryGetValue(ProviderIdName, out var foundId))
             {
                 fankaiId = foundId;
-                _logger.LogInformation("ID Fankai trouvé via recherche : {FankaiId} pour la série {SeriesName}", fankaiId, bestMatch.Name);
+                _logger.LogInformation("ID Fankai trouvé/corrigé via recherche : {FankaiId} pour la série {SeriesName}", fankaiId, bestMatch.Name);
             }
             else
             {
@@ -85,7 +96,6 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             return result;
         }
 
-        // Ajout d'un log de diagnostic pour vérifier les données reçues de l'API
         _logger.LogInformation(
             "Données Fankai reçues pour ID {FankaiId}: ImdbId='{ImdbId}', TmdbId='{TmdbId}', TvdbId='{TvdbId}'",
             fankaiId,
@@ -108,8 +118,6 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             ForcedSortName = serieData.SortTitle
         };
         
-        // CORRECTION : Utilisation de la méthode d'extension SetProviderId, qui est la pratique standardisée.
-        // Cette méthode gère correctement l'ajout ou la mise à jour de la valeur.
         result.Item.SetProviderId(ProviderIdName, fankaiId);
         if (!string.IsNullOrWhiteSpace(serieData.ImdbId)) {
             result.Item.SetProviderId(MetadataProvider.Imdb, serieData.ImdbId);
@@ -261,33 +269,67 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             throw new Exception($"Échec du processus FFmpeg pour '{inputPath}' avec le code de sortie {process.ExitCode}.", ffmpegException);
         }
     }
+    
+    private static string NormalizeTitle(string? title)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            return string.Empty;
+        }
+        
+        string decomposed = title.Normalize(NormalizationForm.FormD);
+        
+        var sb = new StringBuilder();
+        foreach (char c in decomposed)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            {
+                sb.Append(c);
+            }
+        }
+        
+        string almostNormalized = sb.ToString().ToLowerInvariant();
+        sb.Clear();
+        foreach(char c in almostNormalized)
+        {
+            if (char.IsLetterOrDigit(c) || char.IsWhiteSpace(c))
+            {
+                sb.Append(c);
+            }
+        }
+
+        return System.Text.RegularExpressions.Regex.Replace(sb.ToString(), @"\s+", " ").Trim();
+    }
+    
+    private static int LevenshteinDistance(string s, string t)
+    {
+        int n = s.Length;
+        int m = t.Length;
+        int[,] d = new int[n + 1, m + 1];
+
+        if (n == 0) return m;
+        if (m == 0) return n;
+
+        for (int i = 0; i <= n; d[i, 0] = i++);
+        for (int j = 0; j <= m; d[0, j] = j++);
+
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+                d[i, j] = Math.Min(
+                    Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+                    d[i - 1, j - 1] + cost);
+            }
+        }
+        return d[n, m];
+    }
 
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Fankai GetSearchResults pour la série : Nom='{Name}', Année={Year}", searchInfo.Name, searchInfo.Year);
 
-        string? fankaiIdToSearch = null;
-        if (searchInfo.ProviderIds.TryGetValue(ProviderIdName, out var idFromProvider))
-        {
-            fankaiIdToSearch = idFromProvider;
-        }
-
-        if (!string.IsNullOrWhiteSpace(fankaiIdToSearch))
-        {
-            var serie = await _apiClient.GetSerieByIdAsync(fankaiIdToSearch, cancellationToken).ConfigureAwait(false);
-            if (serie != null)
-            {
-                var searchResult = new RemoteSearchResult
-                {
-                    Name = serie.Title,
-                    ProductionYear = serie.Year, 
-                    Overview = serie.Plot,
-                    ImageUrl = serie.PosterImageUrl 
-                };
-                searchResult.ProviderIds.Add(ProviderIdName, serie.Id.ToString(CultureInfo.InvariantCulture));
-                return new[] { searchResult };
-            }
-        }
         
         if (string.IsNullOrWhiteSpace(searchInfo.Name))
         {
@@ -297,47 +339,49 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         var allSeries = await _apiClient.GetAllSeriesAsync(cancellationToken).ConfigureAwait(false);
         if (allSeries == null)
         {
+            _logger.LogWarning("La liste complète des séries n'a pas pu être récupérée depuis l'API Fankai.");
             return Enumerable.Empty<RemoteSearchResult>();
         }
 
         var potentialMatches = new List<(FankaiSerie serie, int score)>();
         var searchName = searchInfo.Name;
+        var normalizedSearchName = NormalizeTitle(searchName);
+
+        _logger.LogDebug("Début de la recherche par similarité pour '{SearchName}' (Normalisé: '{NormalizedSearchName}')", searchName, normalizedSearchName);
 
         foreach (var serie in allSeries)
         {
-            int score = 0;
-            if (string.Equals(serie.Title, searchName, StringComparison.OrdinalIgnoreCase))
-            {
-                score = 10;
-            }
-            else if (string.Equals(serie.TitleForPlex, searchName, StringComparison.OrdinalIgnoreCase))
-            {
-                score = 9;
-            }
-            else if (serie.Title != null && serie.Title.Contains(searchName, StringComparison.OrdinalIgnoreCase))
-            {
-                score = 5;
-            }
-            else if (serie.TitleForPlex != null && serie.TitleForPlex.Contains(searchName, StringComparison.OrdinalIgnoreCase))
-            {
-                score = 4;
-            }
+            int titleDistance = LevenshteinDistance(normalizedSearchName, NormalizeTitle(serie.Title));
+            int plexTitleDistance = LevenshteinDistance(normalizedSearchName, NormalizeTitle(serie.TitleForPlex));
+            int originalTitleDistance = LevenshteinDistance(normalizedSearchName, NormalizeTitle(serie.OriginalTitle));
+            
+            int bestDistance = Math.Min(titleDistance, Math.Min(plexTitleDistance, originalTitleDistance));
 
-            if (score > 0)
+            int score = 100 - (bestDistance * 5); 
+
+            if (score > 50) 
             {
                 if (searchInfo.Year.HasValue && serie.Year.HasValue && searchInfo.Year.Value == serie.Year.Value)
                 {
-                    score++;
+                    score += 20;
                 }
+                _logger.LogDebug("Correspondance potentielle pour '{ApiTitle}' avec une distance de {Distance} et un score de {Score}.", serie.Title, bestDistance, score);
                 potentialMatches.Add((serie, score));
             }
         }
 
-        _logger.LogDebug("Trouvé {Count} correspondances potentielles pour '{Name}'.", potentialMatches.Count, searchName);
+        if (!potentialMatches.Any())
+        {
+            _logger.LogWarning("Aucune correspondance de titre trouvée pour '{SearchName}'.", searchName);
+            return Enumerable.Empty<RemoteSearchResult>();
+        }
 
-        return potentialMatches
-            .OrderByDescending(m => m.score)
-            .Select(m =>
+        var orderedMatches = potentialMatches.OrderByDescending(m => m.score).ToList();
+
+        _logger.LogInformation("Meilleure correspondance pour '{SearchName}' est '{BestMatchTitle}' avec un score de {BestMatchScore}",
+            searchName, orderedMatches.First().serie.Title, orderedMatches.First().score);
+
+        return orderedMatches.Select(m =>
             {
                 var searchResult = new RemoteSearchResult
                 {
