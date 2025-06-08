@@ -26,13 +26,26 @@ public class FankaiSeason
     public string? Plot { get; set; }
 
     [JsonPropertyName("premiered")]
-    public string? Premiered { get; set; } // Date (format YYYY-MM-DD)
+    public string? Premiered { get; set; } // Date (format yyyy-MM-dd)
 
     [JsonPropertyName("poster_image")]
     public string? PosterImageUrl { get; set; }
 
     [JsonPropertyName("fanart_image")]
     public string? FanartImageUrl { get; set; }
+
+
+    [JsonPropertyName("year")]
+    public int? Year { get; set; }
+
+    [JsonPropertyName("imdb_id")]
+    public string? ImdbId { get; set; }
+
+    [JsonPropertyName("tmdb_id")]
+    public string? TmdbId { get; set; }
+
+    [JsonPropertyName("tvdb_id")]
+    public string? TvdbId { get; set; }
 
     // Champs additionnels de l'endpoint /series/{serie_id}/seasons
     [JsonPropertyName("serie_title")]

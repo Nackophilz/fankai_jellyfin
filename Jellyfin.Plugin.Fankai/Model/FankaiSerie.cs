@@ -14,6 +14,10 @@ public class FankaiSerie
     [JsonPropertyName("title")]
     public string? Title { get; set; }
 
+    // Ajout de la propriété SortTitle
+    [JsonPropertyName("sort_title")]
+    public string? SortTitle { get; set; }
+
     [JsonPropertyName("original_title")]
     public string? OriginalTitle { get; set; }
 
@@ -42,7 +46,7 @@ public class FankaiSerie
     public string? Mpaa { get; set; } // Classification
 
     [JsonPropertyName("premiered")]
-    public string? Premiered { get; set; } // Date de première diffusion (format YYYY-MM-DD)
+    public string? Premiered { get; set; } // Date de première diffusion (format yyyy-MM-dd)
 
     [JsonPropertyName("studio")]
     public string? Studio { get; set; }
@@ -53,7 +57,6 @@ public class FankaiSerie
     [JsonPropertyName("genres")]
     public string? Genres { get; set; } // Chaîne de genres séparés par des virgules
 
-    // URLs des images
     [JsonPropertyName("banner_image")]
     public string? BannerImageUrl { get; set; }
 
@@ -68,14 +71,27 @@ public class FankaiSerie
 
     [JsonPropertyName("theme_music")]
     public string? ThemeMusicUrl { get; set; }
+    
+    [JsonPropertyName("status")]
+    public string? Status { get; set; }
 
-    // Champs additionnels de l'endpoint /series/{id}
+    [JsonPropertyName("tagline")]
+    public string? Tagline { get; set; }
+
+    [JsonPropertyName("imdb_id")]
+    public string? ImdbId { get; set; }
+
+    [JsonPropertyName("tmdb_id")]
+    public string? TmdbId { get; set; }
+
+    [JsonPropertyName("tvdb_id")]
+    public string? TvdbId { get; set; }
+
     [JsonPropertyName("statistics")]
     public SerieStatistics? Statistics { get; set; }
 
     [JsonPropertyName("links")]
     public SerieLinks? Links { get; set; }
-
 }
 
 public class SerieStatistics
@@ -96,10 +112,10 @@ public class SerieStatistics
 public class SerieLinks
 {
     [JsonPropertyName("seasons")]
-    public string? SeasonsApiUrl { get; set; } // ex: "/series/1/seasons"
+    public string? SeasonsApiUrl { get; set; }
 
     [JsonPropertyName("actors")]
-    public string? ActorsApiUrl { get; set; } // ex: "/series/1/actors"
+    public string? ActorsApiUrl { get; set; }
 
     [JsonPropertyName("images")]
     public SerieImageLinks? Images { get; set; }
@@ -108,7 +124,7 @@ public class SerieLinks
 public class SerieImageLinks
 {
     [JsonPropertyName("banner")]
-    public string? BannerApiUrl { get; set; } // ex: "/series/1/image/banner"
+    public string? BannerApiUrl { get; set; }
 
     [JsonPropertyName("fanart")]
     public string? FanartApiUrl { get; set; }
