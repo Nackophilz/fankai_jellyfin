@@ -49,26 +49,44 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         var result = new MetadataResult<Series>();
 
         string? fankaiId = info.ProviderIds.GetValueOrDefault(ProviderIdName);
+        var folderName = Path.GetFileName(info.Path);
+        string nameForSearch = info.Name;
 
-        if (!string.IsNullOrWhiteSpace(fankaiId) && !string.IsNullOrWhiteSpace(info.Name))
+        if (!string.IsNullOrWhiteSpace(fankaiId))
         {
             var initialData = await _apiClient.GetSerieByIdAsync(fankaiId, cancellationToken).ConfigureAwait(false);
             
-            if (initialData != null && !NormalizeTitle(initialData.Title).Equals(NormalizeTitle(info.Name)))
+            if (initialData != null)
             {
-                _logger.LogWarning(
-                    "INCOHÉRENCE DÉTECTÉE ! L'ID Fankai stocké '{FankaiId}' correspond à '{ApiTitle}', mais le nom de la série est '{SeriesName}'. Forçage de la ré-identification.",
-                    fankaiId,
-                    initialData.Title,
-                    info.Name);
-                fankaiId = null;
+                var normalizedApiTitle = NormalizeTitle(initialData.Title);
+                var normalizedItemName = NormalizeTitle(info.Name);
+                var normalizedFolderName = NormalizeTitle(folderName);
+
+                if (!normalizedApiTitle.Equals(normalizedItemName) || !normalizedApiTitle.Equals(normalizedFolderName))
+                {
+                     _logger.LogWarning(
+                        "INCOHÉRENCE DÉTECTÉE ! L'ID '{FankaiId}' ('{ApiTitle}') ne correspond pas au nom de l'item ('{ItemName}') OU au nom du dossier ('{FolderName}'). Forçage de la ré-identification en utilisant le nom du dossier.",
+                        fankaiId, initialData.Title, info.Name, folderName);
+                    
+                    fankaiId = null; // On jette le mauvais ID.
+                    nameForSearch = folderName; // On utilise le nom du dossier,pour la nouvelle recherche.
+                }
             }
         }
         
-        if (string.IsNullOrWhiteSpace(fankaiId) && !string.IsNullOrWhiteSpace(info.Name))
+        if (string.IsNullOrWhiteSpace(fankaiId))
         {
-            _logger.LogDebug("Aucun ID Fankai valide. Lancement de la recherche pour : Nom='{Name}', Année={Year}", info.Name, info.Year);
-            var searchResults = await GetSearchResults(info, cancellationToken).ConfigureAwait(false);
+            _logger.LogDebug("Aucun ID Fankai valide ou ré-identification forcée. Lancement de la recherche pour : Nom='{Name}', Année={Year}", nameForSearch, info.Year);
+            
+            // On crée un objet de recherche temporaire avec le nom correct pour la recherche.
+            var correctSearchInfo = new SeriesInfo
+            {
+                Name = nameForSearch,
+                Path = info.Path,
+                Year = info.Year
+            };
+            
+            var searchResults = await GetSearchResults(correctSearchInfo, cancellationToken).ConfigureAwait(false);
             
             var bestMatch = searchResults.FirstOrDefault();
 
@@ -79,7 +97,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             }
             else
             {
-                 _logger.LogWarning("Aucun ID Fankai trouvé via recherche pour la série : {Name}. Les métadonnées pourraient être incomplètes.", info.Name);
+                 _logger.LogWarning("Aucun ID Fankai trouvé via recherche pour la série : {Name}.", nameForSearch);
             }
         }
         
@@ -329,7 +347,6 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Fankai GetSearchResults pour la série : Nom='{Name}', Année={Year}", searchInfo.Name, searchInfo.Year);
-
         
         if (string.IsNullOrWhiteSpace(searchInfo.Name))
         {
@@ -351,21 +368,19 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
         foreach (var serie in allSeries)
         {
-            int titleDistance = LevenshteinDistance(normalizedSearchName, NormalizeTitle(serie.Title));
-            int plexTitleDistance = LevenshteinDistance(normalizedSearchName, NormalizeTitle(serie.TitleForPlex));
-            int originalTitleDistance = LevenshteinDistance(normalizedSearchName, NormalizeTitle(serie.OriginalTitle));
+            var normalizedApiTitle = NormalizeTitle(serie.Title);
             
-            int bestDistance = Math.Min(titleDistance, Math.Min(plexTitleDistance, originalTitleDistance));
+            int distance = LevenshteinDistance(normalizedSearchName, normalizedApiTitle);
+            
+            int score = 100 - (distance * 10);
 
-            int score = 100 - (bestDistance * 5); 
-
-            if (score > 50) 
+            if (score > 75) 
             {
                 if (searchInfo.Year.HasValue && serie.Year.HasValue && searchInfo.Year.Value == serie.Year.Value)
                 {
-                    score += 20;
+                    score += 15;
                 }
-                _logger.LogDebug("Correspondance potentielle pour '{ApiTitle}' avec une distance de {Distance} et un score de {Score}.", serie.Title, bestDistance, score);
+                _logger.LogDebug("Correspondance potentielle pour '{ApiTitle}' avec une distance de {Distance} et un score de {Score}.", serie.Title, distance, score);
                 potentialMatches.Add((serie, score));
             }
         }
