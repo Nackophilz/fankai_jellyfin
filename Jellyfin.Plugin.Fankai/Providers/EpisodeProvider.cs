@@ -42,19 +42,10 @@ public class EpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
         if (string.IsNullOrWhiteSpace(filename)) return string.Empty;
 
         string normalized = filename.ToLowerInvariant();
-        
-        // 1. Supprimer le contenu entre crochets et parenthèses
         normalized = Regex.Replace(normalized, @"(\[.*?\]|\(.*?\))", " "); 
-
-        // 2. Supprimer les tags de qualité, de source, d'audio et de codec
         normalized = Regex.Replace(normalized, @"\b(1080p|720p|480p|multi|x264|x265|h264|h265|hevc|bdrip|dvdrip|webrip|webdl|vostfr|vf|truefrench|aac|dts|ac3|opus|flac|complete|uncut|bluray|hddvd|remux|hdr|sdr)\b", " ", RegexOptions.IgnoreCase);
-
-        // 3. Remplacer espace, point, soulignement, trait d'union, apostrophe par un seul espace
         normalized = Regex.Replace(normalized, @"[\s\.\-_']+", " ");
-
-        // 5. Consolider les espaces multiples en un seul et supprimer les espaces en début et fin
         normalized = Regex.Replace(normalized, @"\s+", " ").Trim();
-
         _logger.LogTrace("Normalisation de '{OriginalFilename}' à '{NormalizedFilename}'", filename, normalized);
         return normalized;
     }
@@ -76,16 +67,7 @@ public class EpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
             return result;
         }
 
-        string? fankaiSeriesId = null;
-        if (info.SeriesProviderIds.TryGetValue(SeriesProvider.ProviderIdName, out var seriesIdFromEpisode))
-        {
-            fankaiSeriesId = seriesIdFromEpisode;
-        }
-        else if (info.ProviderIds.TryGetValue(SeriesProvider.ProviderIdName, out var seriesIdFromSelf))
-        {
-             fankaiSeriesId = seriesIdFromSelf;
-        }
-
+        string? fankaiSeriesId = info.SeriesProviderIds.GetValueOrDefault(SeriesProvider.ProviderIdName);
         if (string.IsNullOrWhiteSpace(fankaiSeriesId))
         {
              _logger.LogWarning("Fankai Series ID n'est pas disponible dans EpisodeInfo pour Path: {Path}. Impossible d'identifier la série parente.", info.Path);
@@ -107,89 +89,76 @@ public class EpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
         string normalizedJellyfinFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(info.Path));
         _logger.LogDebug("Nom de fichier Jellyfin normalisé pour la correspondance : '{NormalizedJellyfinFilename}' (depuis : '{OriginalJellyfinFile}')", normalizedJellyfinFilename, jellyfinMediaFilename);
 
+        // Correspondance par nom de fichier
         foreach (var fankaiSeason in seasonsResponse.Seasons)
         {
-            if (fankaiSeason.Id == 0) continue;
-
-            if (info.ParentIndexNumber.HasValue && info.ParentIndexNumber.Value != fankaiSeason.SeasonNumber)
-            {
-                 _logger.LogTrace("La saison Jellyfin ({JellyfinSeasonNum}) diffère de la saison actuelle de l'API ({ApiSeasonNum}). Poursuite de la recherche, mais cette saison de l'API est moins susceptible de correspondre.", info.ParentIndexNumber.Value, fankaiSeason.SeasonNumber);
-            }
-
             var episodesResponse = await _apiClient.GetEpisodesForSeasonAsync(fankaiSeason.Id.ToString(CultureInfo.InvariantCulture), cancellationToken).ConfigureAwait(false);
-            if (episodesResponse?.Episodes != null)
+            if (episodesResponse?.Episodes == null) continue;
+
+            foreach (var apiEpisode in episodesResponse.Episodes)
             {
-                foreach (var apiEpisode in episodesResponse.Episodes)
+                string normalizedApiOriginalFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(apiEpisode.OriginalFilename));
+                string normalizedApiNfoFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(apiEpisode.NfoFilename));
+
+                if (!string.IsNullOrWhiteSpace(normalizedApiOriginalFilename) && normalizedApiOriginalFilename == normalizedJellyfinFilename
+                    || !string.IsNullOrWhiteSpace(normalizedApiNfoFilename) && normalizedApiNfoFilename == normalizedJellyfinFilename)
                 {
-                    bool isMatch = false;
-                    string? matchedUsing = null;
-                    
-                    string normalizedApiOriginalFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(apiEpisode.OriginalFilename));
-                    string normalizedApiNfoFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(apiEpisode.NfoFilename));
-
-                    _logger.LogTrace("Comparaison de NormJellyfin='{NormJellyfin}' avec API S{ApiS}E{ApiE} (ID:{ApiEpId}): NormApiOrig='{NormApiOrig}', NormApiNfo='{NormApiNfo}'",
-                        normalizedJellyfinFilename,
-                        fankaiSeason.SeasonNumber, apiEpisode.EpisodeNumber, apiEpisode.Id,
-                        normalizedApiOriginalFilename, normalizedApiNfoFilename);
-
-                    if (!string.IsNullOrWhiteSpace(normalizedApiOriginalFilename) && normalizedApiOriginalFilename == normalizedJellyfinFilename)
-                    {
-                        isMatch = true;
-                        matchedUsing = "OriginalFilename normalisé";
-                    }
-
-                    if (!isMatch && !string.IsNullOrWhiteSpace(normalizedApiNfoFilename) && normalizedApiNfoFilename == normalizedJellyfinFilename)
-                    {
-                        isMatch = true;
-                        matchedUsing = "NfoFilename normalisé";
-                    }
-
-                    if (!isMatch &&
-                        info.ParentIndexNumber.HasValue && info.ParentIndexNumber.Value == fankaiSeason.SeasonNumber &&
-                        info.IndexNumber.HasValue && info.IndexNumber.Value == apiEpisode.EpisodeNumber && 
-                        info.IndexNumber.Value < 200) 
-                    {
-                        isMatch = true;
-                        matchedUsing = "Saison/Numéro d'épisode (Match API x Jellyfin)";
-                    }
-
-                    if (isMatch)
-                    {
-                        matchedFankaiEpisode = apiEpisode;
-                        parentFankaiSeason = fankaiSeason; 
-                        _logger.LogInformation("CORRESPONDANCE TROUVEE: Fichier Jellyfin '{JellyfinFile}' avec l'API Fankai en utilisant {MatchedUsingCriteria}. API Episode: S{ApiS}E{ApiE} (ID: {FankaiEpisodeId}). API OriginalFilename: '{ApiOrigFile}', API NfoFilename: '{ApiNfoFile}'", 
-                            jellyfinMediaFilename, matchedUsing,
-                            parentFankaiSeason.SeasonNumber, matchedFankaiEpisode.EpisodeNumber, matchedFankaiEpisode.Id,
-                            apiEpisode.OriginalFilename, apiEpisode.NfoFilename);
-                        break; 
-                    }
+                    matchedFankaiEpisode = apiEpisode;
+                    parentFankaiSeason = fankaiSeason;
+                    _logger.LogInformation("CORRESPONDANCE TROUVEE (NOM DE FICHIER): Fichier Jellyfin '{JellyfinFile}' correspond à l'épisode Fankai ID {FankaiEpisodeId}.", jellyfinMediaFilename, apiEpisode.Id);
+                    goto MatchFound; // Sortir des deux boucles
                 }
             }
-            if (matchedFankaiEpisode != null) break; 
+        }
+        
+        // Correspondance par numéro, si ko
+        if (matchedFankaiEpisode == null && info.IndexNumber.HasValue && info.ParentIndexNumber.HasValue)
+        {
+             _logger.LogDebug("Aucune correspondance par nom de fichier. Tentative de correspondance par numéro S{S}E{E}.", info.ParentIndexNumber, info.IndexNumber);
+             parentFankaiSeason = seasonsResponse.Seasons.FirstOrDefault(s => s.SeasonNumber == info.ParentIndexNumber.Value);
+             if (parentFankaiSeason != null)
+             {
+                 var episodesResponse = await _apiClient.GetEpisodesForSeasonAsync(parentFankaiSeason.Id.ToString(CultureInfo.InvariantCulture), cancellationToken).ConfigureAwait(false);
+                 if (episodesResponse?.Episodes != null)
+                 {
+                     matchedFankaiEpisode = episodesResponse.Episodes.FirstOrDefault(e => e.EpisodeNumber == info.IndexNumber.Value || (int.TryParse(e.DisplayEpisode, out int dispEp) && dispEp == info.IndexNumber.Value));
+                     if (matchedFankaiEpisode != null)
+                     {
+                          _logger.LogInformation("CORRESPONDANCE TROUVEE (NUMERO): Fichier Jellyfin S{S}E{E} correspond à l'épisode Fankai ID {FankaiEpisodeId}.", info.ParentIndexNumber, info.IndexNumber, matchedFankaiEpisode.Id);
+                     }
+                 }
+             }
         }
 
+    MatchFound:
         if (matchedFankaiEpisode == null || parentFankaiSeason == null)
         {
-             _logger.LogWarning("AUCUNE CORRESPONDANCE: Impossible de trouver un épisode Fankai pour le fichier Jellyfin '{JellyfinFile}' (Normalisé : '{NormalizedJellyfinFile}') dans l'ID de série '{FankaiSeriesId}'. {NumSeasons} saisons ont été recherchées dans l'API.", 
-                jellyfinMediaFilename, normalizedJellyfinFilename, fankaiSeriesId, seasonsResponse.Seasons.Count);
+             _logger.LogWarning("AUCUNE CORRESPONDANCE TROUVÉE pour le fichier Jellyfin '{JellyfinFile}' dans la série ID '{FankaiSeriesId}'.", jellyfinMediaFilename, fankaiSeriesId);
             return result;
         }
 
-        _logger.LogDebug("ID de l'épisode Fankai final correspondant : {FankaiEpisodeId} (API S{ApiSeasonNum}E{ApiEpisodeNum}) pour le fichier {JellyfinFile}", 
-            matchedFankaiEpisode.Id, parentFankaiSeason.SeasonNumber, matchedFankaiEpisode.EpisodeNumber, jellyfinMediaFilename);
+        int? finalEpisodeNumber = matchedFankaiEpisode.EpisodeNumber;
+        if (!finalEpisodeNumber.HasValue && int.TryParse(matchedFankaiEpisode.DisplayEpisode, out int displayEpNum))
+        {
+            finalEpisodeNumber = displayEpNum;
+        }
+
+        int? finalSeasonNumber = parentFankaiSeason.SeasonNumber;
+
+        _logger.LogDebug("Application des métadonnées : Titre='{Title}', S={SeasonNum}, E={EpisodeNum}", matchedFankaiEpisode.Title, finalSeasonNumber, finalEpisodeNumber);
 
         result.Item = new Episode
         {
             Name = matchedFankaiEpisode.Title,
             Overview = matchedFankaiEpisode.Plot,
             PremiereDate = TryParseDate(matchedFankaiEpisode.Aired), 
-            IndexNumber = matchedFankaiEpisode.EpisodeNumber, 
-            ParentIndexNumber = parentFankaiSeason.SeasonNumber, 
+            IndexNumber = finalEpisodeNumber, 
+            ParentIndexNumber = finalSeasonNumber, 
             OfficialRating = matchedFankaiEpisode.Mpaa,
             ProductionYear = info.Year 
         };
         
-        result.Item.ProviderIds.TryAdd(ProviderIdName, matchedFankaiEpisode.Id.ToString(CultureInfo.InvariantCulture));
+        result.Item.SetProviderId(ProviderIdName, matchedFankaiEpisode.Id.ToString(CultureInfo.InvariantCulture));
 
         if (!string.IsNullOrWhiteSpace(matchedFankaiEpisode.Studio))
         {
@@ -203,7 +172,7 @@ public class EpisodeProvider : IRemoteMetadataProvider<Episode, EpisodeInfo>
 
     public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(EpisodeInfo searchInfo, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Fankai GetSearchResults pour l'épisode: '{EpisodeName}' - Pas encore implémenté, retour d'une liste vide.", searchInfo.Name);
+        _logger.LogInformation("La recherche d'épisode n'est pas supportée. Retour d'une liste vide.");
         return Task.FromResult(Enumerable.Empty<RemoteSearchResult>());
     }
     

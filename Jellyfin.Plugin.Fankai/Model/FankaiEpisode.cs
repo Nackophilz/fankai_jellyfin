@@ -16,6 +16,12 @@ public class FankaiEpisode
     [JsonPropertyName("episode_number")]
     public int? EpisodeNumber { get; set; }
 
+    [JsonPropertyName("display_episode")]
+    public string? DisplayEpisode { get; set; }
+
+    [JsonPropertyName("display_season")]
+    public string? DisplaySeason { get; set; }
+
     [JsonPropertyName("title")]
     public string? Title { get; set; }
 
@@ -23,7 +29,7 @@ public class FankaiEpisode
     public string? Plot { get; set; }
 
     [JsonPropertyName("aired")]
-    public string? Aired { get; set; } // Date (format YYYY-MM-DD)
+    public string? Aired { get; set; } // Date (format yyyy-MM-dd)
 
     [JsonPropertyName("mpaa")]
     public string? Mpaa { get; set; }
