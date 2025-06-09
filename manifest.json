@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "2.0.2",
+        "changelog": "Update SeriesProvider.cs\n\nCorrection de la correction auto an cas de désynchro api",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.2/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "fe12c81320dfde6875c4f264212bb965",
+        "timestamp": "2025-06-09T10:16:46Z"
+      },
+      {
         "version": "2.0.1",
         "changelog": "Màj\n\nCorrection mineure\nAjout correction auto ID / Nom",
         "targetAbi": "10.9.0.0",
