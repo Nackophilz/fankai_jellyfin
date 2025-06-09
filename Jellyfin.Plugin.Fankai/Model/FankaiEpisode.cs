@@ -16,6 +16,9 @@ public class FankaiEpisode
     [JsonPropertyName("episode_number")]
     public int? EpisodeNumber { get; set; }
 
+    [JsonPropertyName("season_number")]
+    public int? SeasonNumber { get; set; }
+
     [JsonPropertyName("display_episode")]
     public string? DisplayEpisode { get; set; }
 
