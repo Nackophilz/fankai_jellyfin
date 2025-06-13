@@ -13,7 +13,7 @@ namespace Jellyfin.Plugin.Fankai;
 /// <summary>
 /// Plugin principal Fankai.
 /// </summary>
-public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
+public class Plugin : BasePlugin<PluginConfiguration>
 {
     /// <summary>
     /// Obtient l'instance actuelle du plugin.
@@ -49,20 +49,4 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     /// <inheritdoc />
     public override string Description => "Fournit des métadonnées et des images depuis une API Fankai personnalisée.";
 
-    /// <inheritdoc />
-    public IEnumerable<PluginPageInfo> GetPages()
-    {
-        return new[]
-        {
-            new PluginPageInfo
-            {
-                Name = this.Name,
-                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace),
-                DisplayName = "Fankai Configuration",
-                MenuSection = "Plugins",
-                MenuIcon = "theaters",
-                EnableInMainMenu = true
-            }
-        };
-    }
 }
