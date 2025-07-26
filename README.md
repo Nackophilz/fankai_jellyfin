@@ -1,4 +1,4 @@
-# Plugin Fankai pour Jellyfin
+# Plugin Fankai pour Jellyfin (min. 10.9)
 
 ## **À propos du projet**
 
