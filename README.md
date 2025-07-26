@@ -54,10 +54,6 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 
 - Arrêtez puis redémarrez Jellyfin pour charger le plugin.
 
-#### **Configuration (si nécessaire)**
-
-- Accédez au **Tableau de bord → Plugins**.
-- Cliquez sur Fankai pour accéder aux options de configuration (ordre des fournisseurs de métadonnées, etc.)[1][4].
 
 ---
 
