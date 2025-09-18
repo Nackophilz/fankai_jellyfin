@@ -10,6 +10,14 @@
     "versions": [
       {
         "version": "2.0.6",
+        "changelog": "Merge pull request #3 from Super-woof/main\n\nfeat: set serie one piece to absolute",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.6/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "19a4a29cce22ef7976cbbddf61f769ab",
+        "timestamp": "2025-09-18T19:02:16Z"
+      },
+      {
+        "version": "2.0.6",
         "changelog": "Maj config\n\nSuppression de la page de configuration",
         "targetAbi": "10.9.0.0",
         "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.6/Jellyfin.Plugin.Fankai.zip",
