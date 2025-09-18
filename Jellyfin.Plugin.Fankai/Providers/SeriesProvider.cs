@@ -133,7 +133,10 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             Path = info.Path,
             Tagline = serieData.Tagline,
             Status = ParseSeriesStatus(serieData.Status),
-            ForcedSortName = serieData.SortTitle
+            ForcedSortName = serieData.SortTitle,
+            DisplayOrder = serieData.OriginalTitle?.Contains("One piece", StringComparison.OrdinalIgnoreCase) == true 
+                ? "absolute" 
+                : ""
         };
         
         result.Item.SetProviderId(ProviderIdName, fankaiId);
