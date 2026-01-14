@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+#if !__EMBY__
 using Jellyfin.Data.Enums;
+using System.Net.Http;
+#endif
 using Jellyfin.Plugin.Fankai.Api;
 using Jellyfin.Plugin.Fankai.Model;
 using MediaBrowser.Controller.Entities.TV; 
@@ -17,6 +19,10 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;      
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Controller.MediaEncoding;
+#if __EMBY__
+using MediaBrowser.Common.Net;
+using MediaBrowser.Model.Logging;
+#endif
 using Microsoft.Extensions.Logging;
 
 
@@ -27,14 +33,28 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
     public string Name => "Fankai Series Provider";
     public int Order => 3; 
 
+#if __EMBY__
+    private readonly MediaBrowser.Model.Logging.ILogger _logger;
+    private readonly IHttpClient _httpClient;
+    private readonly IFfmpegManager _ffmpegManager;
+#else
     private readonly ILogger<SeriesProvider> _logger;
-    private readonly FankaiApiClient _apiClient;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMediaEncoder _mediaEncoder;
+#endif
+    private readonly FankaiApiClient _apiClient;
 
     public const string ProviderIdName = "FankaiSerieId";
 
-
+#if __EMBY__
+    public SeriesProvider(IHttpClient httpClient, ILogManager logManager, IFfmpegManager ffmpegManager)
+    {
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _logger = logManager.GetLogger(GetType().Name);
+        _ffmpegManager = ffmpegManager ?? throw new ArgumentNullException(nameof(ffmpegManager));
+        _apiClient = new FankaiApiClient(httpClient, _logger);
+    }
+#else
     public SeriesProvider(IHttpClientFactory httpClientFactory, ILogger<SeriesProvider> logger, ILoggerFactory loggerFactory, IMediaEncoder mediaEncoder)
     {
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
@@ -42,10 +62,47 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         _apiClient = new FankaiApiClient(httpClientFactory, loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory)));
         _mediaEncoder = mediaEncoder ?? throw new ArgumentNullException(nameof(mediaEncoder));
     }
+#endif
+
+    private void LogInfo(string message, params object[] args)
+    {
+#if __EMBY__
+        _logger.Info(message, args);
+#else
+        _logger.LogInformation(message, args);
+#endif
+    }
+
+    private void LogWarn(string message, params object[] args)
+    {
+#if __EMBY__
+        _logger.Warn(message, args);
+#else
+        _logger.LogWarning(message, args);
+#endif
+    }
+
+    private void LogDebug(string message, params object[] args)
+    {
+#if __EMBY__
+        _logger.Debug(message, args);
+#else
+        _logger.LogDebug(message, args);
+#endif
+    }
+
+    private void LogError(Exception ex, string message, params object[] args)
+    {
+#if __EMBY__
+        _logger.ErrorException(string.Format(message, args), ex);
+#else
+        _logger.LogError(ex, message, args);
+#endif
+    }
 
     public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Fankai GetMetadata pour Series: Nom='{Name}', Année={Year}, Path='{Path}'", info.Name, info.Year, info.Path);
+        LogInfo("Fankai GetMetadata pour Series: Nom='{0}', Année={1}, Path='{2}'", info.Name, info.Year, info.Path);
         var result = new MetadataResult<Series>();
 
         string? fankaiId = info.ProviderIds.GetValueOrDefault(ProviderIdName);
@@ -64,21 +121,20 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
                 if (!normalizedApiTitle.Equals(normalizedItemName) || !normalizedApiTitle.Equals(normalizedFolderName))
                 {
-                     _logger.LogWarning(
-                        "INCOHÉRENCE DÉTECTÉE ! L'ID '{FankaiId}' ('{ApiTitle}') ne correspond pas au nom de l'item ('{ItemName}') OU au nom du dossier ('{FolderName}'). Forçage de la ré-identification en utilisant le nom du dossier.",
+                     LogWarn(
+                        "INCOHÉRENCE DÉTECTÉE ! L'ID '{0}' ('{1}') ne correspond pas au nom de l'item ('{2}') OU au nom du dossier ('{3}'). Forçage de la ré-identification en utilisant le nom du dossier.",
                         fankaiId, initialData.Title, info.Name, folderName);
                     
-                    fankaiId = null; // On jette le mauvais ID.
-                    nameForSearch = folderName; // On utilise le nom du dossier,pour la nouvelle recherche.
+                    fankaiId = null; 
+                    nameForSearch = folderName; 
                 }
             }
         }
         
         if (string.IsNullOrWhiteSpace(fankaiId))
         {
-            _logger.LogDebug("Aucun ID Fankai valide ou ré-identification forcée. Lancement de la recherche pour : Nom='{Name}', Année={Year}", nameForSearch, info.Year);
+            LogDebug("Aucun ID Fankai valide ou ré-identification forcée. Lancement de la recherche pour : Nom='{0}', Année={1}", nameForSearch, info.Year);
             
-            // On crée un objet de recherche temporaire avec le nom correct pour la recherche.
             var correctSearchInfo = new SeriesInfo
             {
                 Name = nameForSearch,
@@ -93,29 +149,29 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             if (bestMatch != null && bestMatch.ProviderIds.TryGetValue(ProviderIdName, out var foundId))
             {
                 fankaiId = foundId;
-                _logger.LogInformation("ID Fankai trouvé/corrigé via recherche : {FankaiId} pour la série {SeriesName}", fankaiId, bestMatch.Name);
+                LogInfo("ID Fankai trouvé/corrigé via recherche : {0} pour la série {1}", fankaiId, bestMatch.Name);
             }
             else
             {
-                 _logger.LogWarning("Aucun ID Fankai trouvé via recherche pour la série : {Name}.", nameForSearch);
+                 LogWarn("Aucun ID Fankai trouvé via recherche pour la série : {0}.", nameForSearch);
             }
         }
         
         if (string.IsNullOrWhiteSpace(fankaiId))
         {
-            _logger.LogWarning("Aucun ID Fankai disponible pour la série: {Name}. Impossible de récupérer les métadonnées.", info.Name);
+            LogWarn("Aucun ID Fankai disponible pour la série: {0}. Impossible de récupérer les métadonnées.", info.Name);
             return result;
         }
 
         var serieData = await _apiClient.GetSerieByIdAsync(fankaiId, cancellationToken).ConfigureAwait(false);
         if (serieData == null)
         {
-            _logger.LogWarning("Aucune donnée retournée par l'API Fankai pour l'ID: {FankaiId}", fankaiId);
+            LogWarn("Aucune donnée retournée par l'API Fankai pour l'ID: {0}", fankaiId);
             return result;
         }
 
-        _logger.LogInformation(
-            "Données Fankai reçues pour ID {FankaiId}: ImdbId='{ImdbId}', TmdbId='{TmdbId}', TvdbId='{TvdbId}'",
+        LogInfo(
+            "Données Fankai reçues pour ID {0}: ImdbId='{1}', TmdbId='{2}', TvdbId='{3}'",
             fankaiId,
             serieData.ImdbId ?? "null",
             serieData.TmdbId ?? "null",
@@ -133,21 +189,40 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             Path = info.Path,
             Tagline = serieData.Tagline,
             Status = ParseSeriesStatus(serieData.Status),
+#if __EMBY__
+            SortName = serieData.SortTitle,
+            DisplayOrder = serieData.OriginalTitle?.Contains("One piece", StringComparison.OrdinalIgnoreCase) == true 
+                ? MediaBrowser.Model.Entities.SeriesDisplayOrder.Absolute 
+                : MediaBrowser.Model.Entities.SeriesDisplayOrder.Aired,
+#else
             ForcedSortName = serieData.SortTitle,
             DisplayOrder = serieData.OriginalTitle?.Contains("One piece", StringComparison.OrdinalIgnoreCase) == true 
                 ? "absolute" 
-                : ""
+                : "",
+#endif
         };
         
         result.Item.SetProviderId(ProviderIdName, fankaiId);
         if (!string.IsNullOrWhiteSpace(serieData.ImdbId)) {
+#if __EMBY__
+            result.Item.SetProviderId("Imdb", serieData.ImdbId);
+#else
             result.Item.SetProviderId(MetadataProvider.Imdb, serieData.ImdbId);
+#endif
         }
         if (!string.IsNullOrWhiteSpace(serieData.TmdbId)) {
+#if __EMBY__
+            result.Item.SetProviderId("Tmdb", serieData.TmdbId);
+#else
             result.Item.SetProviderId(MetadataProvider.Tmdb, serieData.TmdbId);
+#endif
         }
         if (!string.IsNullOrWhiteSpace(serieData.TvdbId)) {
+#if __EMBY__
+            result.Item.SetProviderId("Tvdb", serieData.TvdbId);
+#else
             result.Item.SetProviderId(MetadataProvider.Tvdb, serieData.TvdbId);
+#endif
         }
 
         if (serieData.RatingValue.HasValue)
@@ -168,10 +243,24 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
             if (!File.Exists(localThemePath))
             {
-                _logger.LogInformation("Tentative de téléchargement du thème musical pour '{SeriesName}' depuis {ThemeUrl}", 
+                LogInfo("Tentative de téléchargement du thème musical pour '{0}' depuis {1}", 
                                        serieData.Title, serieData.ThemeMusicUrl);
                 try
                 {
+#if __EMBY__
+                    var options = new MediaBrowser.Common.Net.HttpRequestOptions
+                    {
+                        Url = serieData.ThemeMusicUrl,
+                        CancellationToken = cancellationToken
+                    };
+                    using (var response = await _httpClient.GetResponse(options).ConfigureAwait(false))
+                    {
+                         using (var fileStream = new FileStream(tempThemePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                         {
+                             await response.Content.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
+                         }
+                    }
+#else
                     using (var httpClient = _httpClientFactory.CreateClient())
                     {
                         var response = await httpClient.GetAsync(serieData.ThemeMusicUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
@@ -183,7 +272,8 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                             await stream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
                         }
                     }
-                    _logger.LogInformation("Thème musical temporaire téléchargé vers {TempPath}", tempThemePath);
+#endif
+                    LogInfo("Thème musical temporaire téléchargé vers {0}", tempThemePath);
 
                     await RemuxAudioAsync(tempThemePath, localThemePath, cancellationToken);
                     
@@ -191,7 +281,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Erreur lors du téléchargement ou de la réparation du thème musical pour '{SeriesName}'.", 
+                    LogError(ex, "Erreur lors du téléchargement ou de la réparation du thème musical pour '{0}'.", 
                                      serieData.Title);
                 }
                 finally
@@ -199,19 +289,19 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                     if (File.Exists(tempThemePath))
                     {
                         try { File.Delete(tempThemePath); }
-                        catch (Exception delEx) { _logger.LogWarning(delEx, "Échec de la suppression du fichier de thème temporaire : {TempPath}", tempThemePath); }
+                        catch (Exception delEx) { LogWarn("Échec de la suppression du fichier de thème temporaire : {0}", tempThemePath); }
                     }
                 }
             }
             else
             {
-                _logger.LogDebug("Le fichier theme.mp3 existe déjà pour '{SeriesName}'. Pas de téléchargement.", 
+                LogDebug("Le fichier theme.mp3 existe déjà pour '{0}'. Pas de téléchargement.", 
                                  serieData.Title);
             }
         }
         else if (!string.IsNullOrWhiteSpace(serieData.ThemeMusicUrl) && string.IsNullOrWhiteSpace(info.Path))
         {
-            _logger.LogWarning("Impossible de télécharger le thème musical pour '{SeriesName}' car info.Path n'est pas disponible.", serieData.Title);
+            LogWarn("Impossible de télécharger le thème musical pour '{0}' car info.Path n'est pas disponible.", serieData.Title);
         }
 
         var actorsResponse = await _apiClient.GetActorsForSerieAsync(fankaiId, cancellationToken).ConfigureAwait(false);
@@ -225,7 +315,11 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                     {
                         Name = actorData.Name,
                         Role = actorData.Role,
+#if __EMBY__
+                        Type = MediaBrowser.Model.Entities.PersonType.Actor
+#else
                         Type = PersonKind.Actor 
+#endif
                     };
                     result.AddPerson(person);
                 }
@@ -237,15 +331,19 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
              result.HasMetadata = true;
         }
        
-        _logger.LogInformation("Métadonnées récupérées et traitées pour l'ID Fankai: {FankaiId}, Série: {Title}", fankaiId, serieData.Title);
+        LogInfo("Métadonnées récupérées et traitées pour l'ID Fankai: {0}, Série: {1}", fankaiId, serieData.Title);
         return result;
     }
     
     private async Task RemuxAudioAsync(string inputPath, string outputPath, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Tentative de réparation du fichier audio '{InputPath}' vers '{OutputPath}' avec FFmpeg.", inputPath, outputPath);
+        LogInfo("Tentative de réparation du fichier audio '{0}' vers '{1}' avec FFmpeg.", inputPath, outputPath);
         
+#if __EMBY__
+        string ffmpegPath = _ffmpegManager.FfmpegConfiguration.EncoderPath;
+#else
         string ffmpegPath = _mediaEncoder.EncoderPath;
+#endif
         
         var process = new Process
         {
@@ -264,7 +362,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         cancellationToken.Register(() =>
         {
             try { if (!process.HasExited) process.Kill(); }
-            catch (Exception ex) { _logger.LogWarning(ex, "Erreur lors de la tentative d'arrêt du processus FFmpeg."); }
+            catch (Exception ex) { LogWarn("Erreur lors de la tentative d'arrêt du processus FFmpeg."); }
         });
 
         process.Start();
@@ -275,17 +373,17 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
         if (process.ExitCode == 0 && File.Exists(outputPath))
         {
-            _logger.LogInformation("Réparation du thème musical réussie pour '{OutputPath}'.", outputPath);
+            LogInfo("Réparation du thème musical réussie pour '{0}'.", outputPath);
         }
         else
         {
             if (File.Exists(outputPath))
             {
-                try { File.Delete(outputPath); } catch (Exception ex) { _logger.LogWarning(ex, "Échec de la suppression du fichier de sortie FFmpeg partiel : {OutputPath}", outputPath); }
+                try { File.Delete(outputPath); } catch (Exception ex) { LogWarn("Échec de la suppression du fichier de sortie FFmpeg partiel : {0}", outputPath); }
             }
             
             var ffmpegException = new Exception("Sortie d'erreur de FFmpeg : " + errorOutput);
-            _logger.LogError(ffmpegException, "Échec de la réparation FFmpeg pour '{InputPath}'. Code de sortie : {ExitCode}", inputPath, process.ExitCode);
+            LogError(ffmpegException, "Échec de la réparation FFmpeg pour '{0}'. Code de sortie : {1}", inputPath, process.ExitCode);
             
             throw new Exception($"Échec du processus FFmpeg pour '{inputPath}' avec le code de sortie {process.ExitCode}.", ffmpegException);
         }
@@ -349,7 +447,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Fankai GetSearchResults pour la série : Nom='{Name}', Année={Year}", searchInfo.Name, searchInfo.Year);
+        LogInfo("Fankai GetSearchResults pour la série : Nom='{0}', Année={1}", searchInfo.Name, searchInfo.Year);
         
         if (string.IsNullOrWhiteSpace(searchInfo.Name))
         {
@@ -359,7 +457,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         var allSeries = await _apiClient.GetAllSeriesAsync(cancellationToken).ConfigureAwait(false);
         if (allSeries == null)
         {
-            _logger.LogWarning("La liste complète des séries n'a pas pu être récupérée depuis l'API Fankai.");
+            LogWarn("La liste complète des séries n'a pas pu être récupérée depuis l'API Fankai.");
             return Enumerable.Empty<RemoteSearchResult>();
         }
 
@@ -367,7 +465,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         var searchName = searchInfo.Name;
         var normalizedSearchName = NormalizeTitle(searchName);
 
-        _logger.LogDebug("Début de la recherche par similarité pour '{SearchName}' (Normalisé: '{NormalizedSearchName}')", searchName, normalizedSearchName);
+        LogDebug("Début de la recherche par similarité pour '{0}' (Normalisé: '{1}')", searchName, normalizedSearchName);
 
         foreach (var serie in allSeries)
         {
@@ -383,20 +481,20 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                 {
                     score += 15;
                 }
-                _logger.LogDebug("Correspondance potentielle pour '{ApiTitle}' avec une distance de {Distance} et un score de {Score}.", serie.Title, distance, score);
+                LogDebug("Correspondance potentielle pour '{0}' avec une distance de {1} et un score de {2}.", serie.Title, distance, score);
                 potentialMatches.Add((serie, score));
             }
         }
 
         if (!potentialMatches.Any())
         {
-            _logger.LogWarning("Aucune correspondance de titre trouvée pour '{SearchName}'.", searchName);
+            LogWarn("Aucune correspondance de titre trouvée pour '{0}'.", searchName);
             return Enumerable.Empty<RemoteSearchResult>();
         }
 
         var orderedMatches = potentialMatches.OrderByDescending(m => m.score).ToList();
 
-        _logger.LogInformation("Meilleure correspondance pour '{SearchName}' est '{BestMatchTitle}' avec un score de {BestMatchScore}",
+        LogInfo("Meilleure correspondance pour '{0}' est '{1}' avec un score de {2}",
             searchName, orderedMatches.First().serie.Title, orderedMatches.First().score);
 
         return orderedMatches.Select(m =>
@@ -420,7 +518,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         {
             return date.ToUniversalTime();
         }
-        _logger.LogWarning("Impossible de parser la chaîne de date : {DateString}", dateString);
+        LogWarn("Impossible de parser la chaîne de date : {0}", dateString);
         return null;
     }
     
@@ -439,9 +537,29 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         };
     }
 
+#if __EMBY__
+    public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+    {
+        var options = new MediaBrowser.Common.Net.HttpRequestOptions
+        {
+             Url = url,
+             CancellationToken = cancellationToken,
+             BufferContent = false 
+        };
+        var response = await _httpClient.GetResponse(options).ConfigureAwait(false);
+        // Emby doesn't always throw on error for GetResponse? 
+        // HttpResponseInfo has StatusCode
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+             throw new Exception($"Failed to get image: {response.StatusCode}");
+        }
+        return response;
+    }
+#else
     public Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var client = _httpClientFactory.CreateClient("FankaiSeriesImageClient");
         return client.GetAsync(new Uri(url), cancellationToken);
     }
+#endif
 }

@@ -1,0 +1,125 @@
+[
+  {
+    "guid": "4b725b9a-9063-4cb7-9533-ceaf32c6c86d",
+    "name": "Fankai",
+    "description": "Fournit des métadonnées et des images depuis l'API Fankai pour les productions de la team. (Compatible Jellyfin & Emby)",
+    "owner": "Fankai Team",
+    "overview": "Ce plugin permet à Jellyfin de récupérer des métadonnées et des images pour les films, séries et épisodes depuis l'API Fankai.",
+    "category": "Métadonnées",
+    "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
+    "versions": [
+      {
+        "version": "2.0.7",
+        "changelog": "Ajout possibilité OP en 'absolute'\n\nMerge pull request #3 from Super-woof/main\\n\\nfeat: set serie one piece to absolute",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.7/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "efa7588a9cdb0987f9d09db951687fe3",
+        "timestamp": "2025-09-18T19:03:57Z"
+      },
+      {
+        "version": "2.0.6",
+        "changelog": "Merge pull request #3 from Super-woof/main\n\nfeat: set serie one piece to absolute",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.6/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "19a4a29cce22ef7976cbbddf61f769ab",
+        "timestamp": "2025-09-18T19:02:16Z"
+      },
+      {
+        "version": "2.0.6",
+        "changelog": "Maj config\n\nSuppression de la page de configuration",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.6/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "398bc9d05784e650db50ccc91d326ab9",
+        "timestamp": "2025-06-13T17:48:32Z"
+      },
+      {
+        "version": "2.0.5",
+        "changelog": "Merge branch 'main' of https://github.com/Nackophilz/fankai_jellyfin",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.5/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "c9beb2091677ede0d4d9491e4f76ee50",
+        "timestamp": "2025-06-13T17:39:46Z"
+      },
+      {
+        "version": "2.0.4",
+        "changelog": "Update configPage.html",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.4/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "82132f6348db8545d086cd3115e4de65",
+        "timestamp": "2025-06-13T17:38:44Z"
+      },
+      {
+        "version": "2.0.4",
+        "changelog": "Update SeriesProvider.cs\n\nAmélioration match numéro épisode (fallback)",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.4/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "747d85b8cfdf7c3a16beff360d9a3813",
+        "timestamp": "2025-06-09T16:54:46Z"
+      },
+      {
+        "version": "2.0.3",
+        "changelog": "Màj Episode\n\nAjout gestion des display season et display episode",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.3/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "a3a1735de1b4cd1aaad25090605404ef",
+        "timestamp": "2025-06-09T10:54:16Z"
+      },
+      {
+        "version": "2.0.2",
+        "changelog": "Update SeriesProvider.cs\n\nCorrection de la correction auto an cas de désynchro api",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.2/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "fe12c81320dfde6875c4f264212bb965",
+        "timestamp": "2025-06-09T10:16:46Z"
+      },
+      {
+        "version": "2.0.1",
+        "changelog": "Màj\n\nCorrection mineure\nAjout correction auto ID / Nom",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.1/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "086a53f9a0d3273b8d596c6fe1c19fd9",
+        "timestamp": "2025-06-08T23:08:01Z"
+      },
+      {
+        "version": "2.0.0",
+        "changelog": "Màj\n\nAjout d'un provider pour les saisons\nAjout des x_id pour les séries\nAjout des sorttitles pour séries et saisons",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v2.0.0/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "37ecde388f601a4ac014a0020621a704",
+        "timestamp": "2025-06-08T22:03:40Z"
+      },
+      {
+        "version": "1.1.1",
+        "changelog": "Màj Theme\n\nAjout réparation thème musical (header vide)",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v1.1.1/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "79d844aeee4c951a322ee5819f7202ab",
+        "timestamp": "2025-06-06T21:36:32Z"
+      },
+      {
+        "version": "1.1.0",
+        "changelog": "Ajout thèmes musicaux\n\nModification du SeriesProvider.cs pour prise en charge des thèmes musicaux par série (stockage local)",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v1.1.0/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "7540b61ccf6e3afc8c8cf2065b169bf8",
+        "timestamp": "2025-06-05T22:25:26Z"
+      },
+      {
+        "version": "1.0.7",
+        "changelog": "Update Jellyfin.Plugin.Fankai.csproj\n\nMàj configPage.html",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v1.0.7/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "75f80cb52845e17102b5cd6365508684",
+        "timestamp": "2025-06-05T16:27:30Z"
+      },
+      {
+        "version": "1.0.6",
+        "changelog": "Update Jellyfin.Plugin.Fankai.csproj\n\nDo it.. Try it...",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v1.0.6/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "35a663f41510ed52ed61e7a5b9da1866",
+        "timestamp": "2025-06-04T21:49:21Z"
+      }
+    ]
+  }
+]
