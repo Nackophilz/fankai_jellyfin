@@ -1,8 +1,12 @@
-# Plugin Fankai pour Jellyfin (min. 10.9)
+Voici votre markdown réécrit, avec l’ajout d’**Emby** et des instructions détaillées pour l’installer et l’utiliser :
+
+---
+
+# Plugin Fankai pour Jellyfin (min. 10.9) et Emby (min. 4.8)
 
 ## **À propos du projet**
 
-Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les métadonnées et images de la communauté Fankai directement dans votre médiathèque. Il vise une intégration transparente et qualitative pour les passionnés de la team "Fan-Kai" et les utilisateurs de Jellyfin, en particulier pour les séries animées. Les informations sont récupérées via l’API publique [metadata.fankai.fr](https://metadata.fankai.fr).
+Le plugin **Fankai** enrichit votre expérience media en intégrant les métadonnées et images de la communauté Fankai directement dans votre médiathèque, que vous utilisiez **Jellyfin** ou **Emby**. Il vise une intégration transparente et qualitative pour les passionnés de la team "Fan-Kai" et les utilisateurs de ces plateformes, en particulier pour les séries animées. Les informations sont récupérées via l’API publique [metadata.fankai.fr](https://metadata.fankai.fr).
 
 ---
 
@@ -11,18 +15,21 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 - **Récupération de métadonnées complètes** : titres, résumés, épisodes, dates de diffusion, etc.
 - **Intégration d’images** : affiches, bannières, fonds d’écran, vignettes d’épisodes.
 - **Informations supplémentaires** : genres, acteurs/personnages, studios, thèmes musicaux.
-- **Mises à jour automatiques** : selon la configuration du catalogue de plugins Jellyfin.
+- **Mises à jour automatiques** : selon la configuration du catalogue de plugins (Jellyfin) ou via mise à jour manuelle (Emby).
 
 ---
 
 ## **Installation**
 
-### **Méthode 1 : Via le catalogue de plugins Jellyfin (recommandé)**
+### **Pour Jellyfin (min. 10.9)**
+
+#### **Méthode 1 : Via le catalogue de plugins Jellyfin (recommandé)**
 
 1. Depuis Jellyfin, allez dans **Tableau de bord → Plugins**.
 2. Cliquez sur l’onglet **Catalogue**.
 3. Recherchez **Fankai** dans la liste.
-4. Si non disponible, ajoutez le dépôt personnalisé : **https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/refs/heads/main/manifest.json**
+4. Si non disponible, ajoutez le dépôt personnalisé :  
+   `https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/refs/heads/main/manifest.json`
 5. Cliquez sur le plugin Fankai puis sur **Installer**.
 6. Redémarrez Jellyfin si demandé.
 
@@ -30,34 +37,71 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 
 ---
 
-### **Méthode 2 : Installation manuelle**
+#### **Méthode 2 : Installation manuelle**
 
-#### **Téléchargement**
+##### **Téléchargement**
 
 - Rendez-vous sur la page **Releases** du projet.
 - Téléchargez la dernière version du fichier `Jellyfin.Plugin.Fankai.zip`.
 
-#### **Extraction et placement**
+##### **Extraction et placement**
 
 - Décompressez l’archive.
 - Copiez le dossier extrait dans le dossier `plugins` de votre installation Jellyfin.
 
-  - **Windows** :  
-    `C:\Program Files\Jellyfin\Server\plugins`  
-    ou `%LOCALAPPDATA%\jellyfin\plugins`
-  - **Linux (Docker)** :  
-    Volume monté, ex : `/config/plugins` ou `/data/jellyfin/plugins`
-  - **Linux (natif)** :  
-    `/var/lib/jellyfin/plugins` ou `/usr/lib/jellyfin/plugins`
+ - **Windows** :  
+   `C:\Program Files\Jellyfin\Server\plugins`  
+   ou `%LOCALAPPDATA%\jellyfin\plugins`
+ - **Linux (Docker)** :  
+   Volume monté, ex : `/config/plugins` ou `/data/jellyfin/plugins`
+ - **Linux (natif)** :  
+   `/var/lib/jellyfin/plugins` ou `/usr/lib/jellyfin/plugins`
 
-#### **Redémarrage**
+##### **Redémarrage**
 
 - Arrêtez puis redémarrez Jellyfin pour charger le plugin.
 
+---
+
+### **Pour Emby (min. 4.8)**
+
+> ⚠️ Le plugin Fankai n’est **pas disponible dans le catalogue officiel Emby**. L’installation se fait **uniquement manuellement**.
+
+#### **Étapes d’installation**
+
+1. **Téléchargez le plugin**  
+   - Allez sur la page [Releases du projet Fankai Jellyfin](https://github.com/Nackophilz/fankai_jellyfin/releases)  
+   - Téléchargez le fichier `Jellyfin.Plugin.Fankai.zip`
+
+2. **Renommez le fichier**  
+   - Renommez le fichier en `Emby.Plugin.Fankai.zip` (Emby attend ce nom pour le reconnaître comme plugin compatible)
+
+3. **Extraction et placement**  
+   - Décompressez l’archive.
+   - Copiez le dossier extrait dans le dossier `plugins` de votre installation Emby.
+
+   - **Windows** :  
+     `C:\ProgramData\Emby-Server\plugins`  
+     ou `%APPDATA%\Emby-Server\plugins`
+   - **Linux (Docker)** :  
+     Volume monté, ex : `/config/plugins` ou `/data/embysrv/plugins`
+   - **Linux (natif)** :  
+     `/var/lib/emby/plugins`
+
+4. **Redémarrage**  
+   - Redémarrez Emby pour charger le plugin.
+
+5. **Activation**  
+   - Allez dans **Dashboard → Plugins** → **Installed Plugins**.
+   - Trouvez **Fankai** et activez-le.
+
+> ✅ **Note** : Emby ne mettra pas à jour ce plugin automatiquement. Vous devrez répéter cette procédure à chaque nouvelle version.
 
 ---
 
 ## **Utilisation**
+
+### **Pour Jellyfin**
 
 1. **Configuration de la bibliothèque**
    - Administration → Bibliothèques.
@@ -68,6 +112,20 @@ Le plugin **Fankai** pour Jellyfin enrichit votre expérience en intégrant les 
 2. **Scan de la bibliothèque**
    - Lancez un scan des métadonnées pour que Jellyfin utilise le plugin Fankai.
    - Pour les nouvelles séries, l’import est automatique ; pour les existantes, une actualisation peut être nécessaire.
+
+---
+
+### **Pour Emby**
+
+1. **Configuration de la bibliothèque**
+   - Allez dans **Dashboard → Libraries**.
+   - Sélectionnez votre bibliothèque (ex : "TV Shows" ou "Anime").
+   - Cliquez sur **Edit** → **Metadata**.
+   - Dans **Metadata Providers**, cochez **Fankai** et placez-le en haut de la liste si vous souhaitez le prioriser.
+
+2. **Scan de la bibliothèque**
+   - Lancez un **Refresh Metadata** pour forcer Emby à utiliser le plugin Fankai.
+   - Pour les séries existantes, vous pouvez aussi cliquer sur **Refresh Metadata** pour chaque série individuellement.
 
 ---
 
@@ -135,11 +193,15 @@ Tout en exigeant de :
 
 **Astuce** : Pour plus d’informations sur la gestion des plugins Jellyfin, consultez la [documentation officielle](https://jellyfin.org/docs/general/server/plugins/)[1][4].
 
-[1] https://jellyfin.org/docs/
-[2] https://github.com/elmehdou/FanKai-Jellyfin
-[3] https://gitlab.com/ElPouki/fankai_pack
-[4] https://jellyfin.org/docs/general/server/plugins/
-[5] https://github.com/elmehdou/FanKai-Jellyfin/blob/master/jellyfin.cpp
-[6] https://docs.ikaros.run/en/docs/0.8/plugins/plugin-jellyfin/
-[7] https://www.youtube.com/watch?v=F8k_nvatKZE
+[1] https://jellyfin.org/docs/  
+[2] https://github.com/elmehdou/FanKai-Jellyfin  
+[3] https://gitlab.com/ElPouki/fankai_pack  
+[4] https://jellyfin.org/docs/general/server/plugins/  
+[5] https://github.com/elmehdou/FanKai-Jellyfin/blob/master/jellyfin.cpp  
+[6] https://docs.ikaros.run/en/docs/0.8/plugins/plugin-jellyfin/  
+[7] https://www.youtube.com/watch?v=F8k_nvatKZE  
 [8] https://fan-kai.fandom.com/fr/wiki/Emby
+
+--- 
+
+✅ Vous pouvez désormais utiliser le plugin Fankai sur **Jellyfin** et **Emby** !
