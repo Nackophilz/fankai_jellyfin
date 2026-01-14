@@ -1,7 +1,3 @@
-Voici votre markdown réécrit, avec l’ajout d’**Emby** et des instructions détaillées pour l’installer et l’utiliser :
-
----
-
 # Plugin Fankai pour Jellyfin (min. 10.9) et Emby (min. 4.8)
 
 ## **À propos du projet**
