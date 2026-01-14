@@ -12,7 +12,11 @@ using Jellyfin.Plugin.Fankai.Model;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers; 
 using MediaBrowser.Model.Providers; 
-using MediaBrowser.Model.Entities;  
+using MediaBrowser.Model.Entities;
+#if __EMBY__
+using MediaBrowser.Common.Net;
+using MediaBrowser.Model.Logging;
+#endif
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.Fankai.Providers
@@ -21,12 +25,25 @@ namespace Jellyfin.Plugin.Fankai.Providers
     {
         public string Name => "Fankai Episode Provider";
 
+#if __EMBY__
+        private readonly MediaBrowser.Model.Logging.ILogger _logger;
+        private readonly IHttpClient _httpClient;
+#else
         private readonly ILogger<EpisodeProvider> _logger;
-        private readonly FankaiApiClient _apiClient;
         private readonly IHttpClientFactory _httpClientFactory; 
+#endif
+        private readonly FankaiApiClient _apiClient;
 
         public const string ProviderIdName = "FankaiEpisodeId";
 
+#if __EMBY__
+        public EpisodeProvider(IHttpClient httpClient, ILogManager logManager)
+        {
+             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+             _logger = logManager.GetLogger(GetType().Name);
+             _apiClient = new FankaiApiClient(httpClient, _logger);
+        }
+#else
         public EpisodeProvider(
             IHttpClientFactory httpClientFactory,
             ILogger<EpisodeProvider> logger,
@@ -36,7 +53,45 @@ namespace Jellyfin.Plugin.Fankai.Providers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _apiClient = new FankaiApiClient(httpClientFactory, loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory)));
         }
+#endif
+
+        private void LogInfo(string message, params object[] args)
+        {
+#if __EMBY__
+            _logger.Info(message, args);
+#else
+            _logger.LogInformation(message, args);
+#endif
+        }
+
+        private void LogWarn(string message, params object[] args)
+        {
+#if __EMBY__
+            _logger.Warn(message, args);
+#else
+            _logger.LogWarning(message, args);
+#endif
+        }
+
+        private void LogDebug(string message, params object[] args)
+        {
+#if __EMBY__
+            _logger.Debug(message, args);
+#else
+            _logger.LogDebug(message, args);
+#endif
+        }
         
+        private void LogTrace(string message, params object[] args)
+        {
+#if __EMBY__
+             // Emby logger usually doesn't expose Trace easily, map to Debug
+            _logger.Debug(message, args);
+#else
+            _logger.LogTrace(message, args);
+#endif
+        }
+
         private string NormalizeFilenameForComparison(string? filename)
         {
             if (string.IsNullOrWhiteSpace(filename)) return string.Empty;
@@ -46,14 +101,14 @@ namespace Jellyfin.Plugin.Fankai.Providers
             normalized = Regex.Replace(normalized, @"\b(1080p|720p|480p|multi|x264|x265|h264|h265|hevc|bdrip|dvdrip|webrip|webdl|vostfr|vf|truefrench|aac|dts|ac3|opus|flac|complete|uncut|bluray|hddvd|remux|hdr|sdr)\b", " ", RegexOptions.IgnoreCase);
             normalized = Regex.Replace(normalized, @"[\s\.\-_']+", " ");
             normalized = Regex.Replace(normalized, @"\s+", " ").Trim();
-            _logger.LogTrace("Normalisation de '{OriginalFilename}' à '{NormalizedFilename}'", filename, normalized);
+            LogTrace("Normalisation de '{0}' à '{1}'", filename, normalized);
             return normalized;
         }
 
         public async Task<MetadataResult<Episode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(
-                "Fankai GetMetadata pour Episode: Nom='{EpisodeName}', Chemin='{Path}', JellyfinSeasonNum={SeasonNum}, JellyfinEpisodeNum={EpisodeNum}", 
+            LogInfo(
+                "Fankai GetMetadata pour Episode: Nom='{0}', Chemin='{1}', JellyfinSeasonNum={2}, JellyfinEpisodeNum={3}", 
                 info.Name, 
                 info.Path,
                 info.ParentIndexNumber, 
@@ -63,23 +118,23 @@ namespace Jellyfin.Plugin.Fankai.Providers
             
             if (string.IsNullOrWhiteSpace(info.Path))
             {
-                _logger.LogWarning("EpisodeInfo.Path est null ou vide. Impossible de faire correspondre l'épisode.");
+                LogWarn("EpisodeInfo.Path est null ou vide. Impossible de faire correspondre l'épisode.");
                 return result;
             }
 
             string? fankaiSeriesId = info.SeriesProviderIds.GetValueOrDefault(SeriesProvider.ProviderIdName);
             if (string.IsNullOrWhiteSpace(fankaiSeriesId))
             {
-                 _logger.LogWarning("Fankai Series ID n'est pas disponible dans EpisodeInfo pour Path: {Path}. Impossible d'identifier la série parente.", info.Path);
+                 LogWarn("Fankai Series ID n'est pas disponible dans EpisodeInfo pour Path: {0}. Impossible d'identifier la série parente.", info.Path);
                 return result;
             }
 
-            _logger.LogDebug("Tentative de correspondance de l'épisode pour Fankai Series ID '{FankaiSeriesId}' en utilisant le chemin de fichier '{FilePath}'", fankaiSeriesId, info.Path);
+            LogDebug("Tentative de correspondance de l'épisode pour Fankai Series ID '{0}' en utilisant le chemin de fichier '{1}'", fankaiSeriesId, info.Path);
 
             var seasonsResponse = await _apiClient.GetSeasonsForSerieAsync(fankaiSeriesId, cancellationToken).ConfigureAwait(false);
             if (seasonsResponse?.Seasons == null || !seasonsResponse.Seasons.Any())
             {
-                _logger.LogWarning("Aucune saison trouvée dans l'API Fankai pour l'ID de série '{FankaiSeriesId}'.", fankaiSeriesId);
+                LogWarn("Aucune saison trouvée dans l'API Fankai pour l'ID de série '{0}'.", fankaiSeriesId);
                 return result;
             }
 
@@ -87,7 +142,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
             FankaiSeason? parentFankaiSeason = null;
             string jellyfinMediaFilename = Path.GetFileName(info.Path); 
             string normalizedJellyfinFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(info.Path));
-            _logger.LogDebug("Nom de fichier Jellyfin normalisé pour la correspondance : '{NormalizedJellyfinFilename}' (depuis : '{OriginalJellyfinFile}')", normalizedJellyfinFilename, jellyfinMediaFilename);
+            LogDebug("Nom de fichier Jellyfin normalisé pour la correspondance : '{0}' (depuis : '{1}')", normalizedJellyfinFilename, jellyfinMediaFilename);
 
             var potentialMatches = new List<(FankaiEpisode episode, FankaiSeason season)>();
 
@@ -124,13 +179,13 @@ namespace Jellyfin.Plugin.Fankai.Providers
                 
                 matchedFankaiEpisode = bestMatch.episode;
                 parentFankaiSeason = bestMatch.season;
-                _logger.LogInformation("CORRESPONDANCE TROUVEE (NOM DE FICHIER): Fichier Jellyfin '{JellyfinFile}' correspond à l'épisode Fankai ID {FankaiEpisodeId}.", jellyfinMediaFilename, matchedFankaiEpisode.Id);
+                LogInfo("CORRESPONDANCE TROUVEE (NOM DE FICHIER): Fichier Jellyfin '{0}' correspond à l'épisode Fankai ID {1}.", jellyfinMediaFilename, matchedFankaiEpisode.Id);
             }
             
             // Correspondance par numéro, si la première a échoué
             if (matchedFankaiEpisode == null && info.IndexNumber.HasValue && info.ParentIndexNumber.HasValue)
             {
-                 _logger.LogDebug("Aucune correspondance par nom de fichier. Tentative de correspondance par numéro S{S}E{E}.", info.ParentIndexNumber, info.IndexNumber);
+                 LogDebug("Aucune correspondance par nom de fichier. Tentative de correspondance par numéro S{0}E{1}.", info.ParentIndexNumber, info.IndexNumber);
                  var seasonByNumber = seasonsResponse.Seasons.FirstOrDefault(s => s.SeasonNumber == info.ParentIndexNumber.Value);
                  if (seasonByNumber != null)
                  {
@@ -146,7 +201,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
                          if (matchedFankaiEpisode != null)
                          {
                               parentFankaiSeason = seasonByNumber;
-                              _logger.LogInformation("CORRESPONDANCE TROUVEE (NUMERO): Fichier Jellyfin S{S}E{E} correspond à l'épisode Fankai ID {FankaiEpisodeId}.", info.ParentIndexNumber, info.IndexNumber, matchedFankaiEpisode.Id);
+                              LogInfo("CORRESPONDANCE TROUVEE (NUMERO): Fichier Jellyfin S{0}E{1} correspond à l'épisode Fankai ID {2}.", info.ParentIndexNumber, info.IndexNumber, matchedFankaiEpisode.Id);
                          }
                      }
                  }
@@ -155,7 +210,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
             // Vérifier si une correspondance a été trouvée
             if (matchedFankaiEpisode == null || parentFankaiSeason == null)
             {
-                 _logger.LogWarning("AUCUNE CORRESPONDANCE TROUVÉE pour le fichier Jellyfin '{JellyfinFile}' dans la série ID '{FankaiSeriesId}'.", jellyfinMediaFilename, fankaiSeriesId);
+                 LogWarn("AUCUNE CORRESPONDANCE TROUVÉE pour le fichier Jellyfin '{0}' dans la série ID '{1}'.", jellyfinMediaFilename, fankaiSeriesId);
                 return result;
             }
 
@@ -179,7 +234,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
                 }
             }
 
-            _logger.LogDebug("Application des métadonnées : Titre='{Title}', S={SeasonNum}, E={EpisodeNum}", matchedFankaiEpisode.Title, finalSeasonNumber, finalEpisodeNumber);
+            LogDebug("Application des métadonnées : Titre='{0}', S={1}, E={2}", matchedFankaiEpisode.Title, finalSeasonNumber, finalEpisodeNumber);
 
             result.Item = new Episode
             {
@@ -200,13 +255,13 @@ namespace Jellyfin.Plugin.Fankai.Providers
             }
             
             result.HasMetadata = true;
-            _logger.LogInformation("Récupération OK des métadonnées pour l'épisode Fankai ID: {FankaiEpisodeId}, Titre: {Title}", matchedFankaiEpisode.Id, matchedFankaiEpisode.Title);
+            LogInfo("Récupération OK des métadonnées pour l'épisode Fankai ID: {0}, Titre: {1}", matchedFankaiEpisode.Id, matchedFankaiEpisode.Title);
             return result;
         }
 
         public Task<IEnumerable<RemoteSearchResult>> GetSearchResults(EpisodeInfo searchInfo, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("La recherche d'épisode n'est pas supportée. Retour d'une liste vide.");
+            LogInfo("La recherche d'épisode n'est pas supportée. Retour d'une liste vide.");
             return Task.FromResult(Enumerable.Empty<RemoteSearchResult>());
         }
         
@@ -217,14 +272,32 @@ namespace Jellyfin.Plugin.Fankai.Providers
             {
                 return date.ToUniversalTime();
             }
-            _logger.LogWarning("Impossible de parser la chaîne de date : {DateString}", dateString);
+            LogWarn("Impossible de parser la chaîne de date : {0}", dateString);
             return null;
         }
 
+#if __EMBY__
+        public async Task<HttpResponseInfo> GetImageResponse(string url, CancellationToken cancellationToken)
+        {
+            var options = new MediaBrowser.Common.Net.HttpRequestOptions
+            {
+                 Url = url,
+                 CancellationToken = cancellationToken,
+                 BufferContent = false 
+            };
+            var response = await _httpClient.GetResponse(options).ConfigureAwait(false);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                 throw new Exception($"Failed to get image: {response.StatusCode}");
+            }
+            return response;
+        }
+#else
         public Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             var client = _httpClientFactory.CreateClient("FankaiEpisodeImageClient");
             return client.GetAsync(new Uri(url), cancellationToken);
         }
+#endif
     }
 }

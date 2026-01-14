@@ -1,11 +1,11 @@
-name: AIO Plugin Fankai Jellyfin
+name: "AIO Plugin Fankai (Jellyfin & Emby)"
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'Jellyfin.Plugin.Fankai/**' # Déclencheur sur les modifications dans le projet du plugin
+      - 'Jellyfin.Plugin.Fankai/**'
       - '!Jellyfin.Plugin.Fankai/**/*.md'
 
 jobs:
@@ -25,177 +25,196 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Extraction de la version du plugin depuis .csproj
+      - name: Extraction de la version du plugin
         id: get_version
         run: |
           CSPROJ_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
           if [ ! -f "$CSPROJ_PATH" ]; then
-            echo "Erreur : $CSPROJ_PATH non trouvé. Impossible d'extraire la version."
+            echo "Erreur : $CSPROJ_PATH non trouvé."
             exit 1
           fi
-          # Extrait la version et supprime les espaces blancs potentiels
           VERSION=$(grep '<Version>' "$CSPROJ_PATH" | sed -e 's/.*<Version>\(.*\)<\/Version>.*/\1/' | tr -d '[:space:]')
-          if [ -z "$VERSION" ]; then
-            echo "Erreur : Impossible d'extraire la version depuis $CSPROJ_PATH. Vérifiez la présence de la balise <Version>."
-            exit 1
-          fi
           echo "PLUGIN_VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "Version extraite : $VERSION"
-          
-      - name: Compilation et publication du plugin
-        id: dotnet_publish
+          echo "Version détectée : $VERSION"
+
+      # --- BLOC JELLYFIN ---
+
+      - name: "[Jellyfin] Compilation"
+        id: build_jellyfin
         run: |
           PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
-          PUBLISH_OUTPUT_DIR="./plugin_publish_output" # Dossier de sortie temporaire
-          mkdir -p "$PUBLISH_OUTPUT_DIR" 
+          OUT_DIR="./publish_jellyfin"
+          mkdir -p "$OUT_DIR"
           
-          echo "Compilation et publication du projet : $PROJECT_PATH"
-          dotnet publish "$PROJECT_PATH" --configuration Release --output "$PUBLISH_OUTPUT_DIR"
-          
-          echo "PUBLISH_DIR=$PUBLISH_OUTPUT_DIR" >> $GITHUB_OUTPUT
-          echo "Plugin publié dans $PUBLISH_OUTPUT_DIR. Contenu :"
-          ls -R "$PUBLISH_OUTPUT_DIR"
+          # Configuration Release standard pour Jellyfin
+          dotnet publish "$PROJECT_PATH" --configuration Release --output "$OUT_DIR"
+          echo "PUBLISH_DIR=$OUT_DIR" >> $GITHUB_OUTPUT
 
-      - name: Création du fichier ZIP du plugin
-        id: create_zip
+      - name: "[Jellyfin] Création du ZIP"
+        id: zip_jellyfin
         run: |
-          ZIP_FILENAME="Jellyfin.Plugin.Fankai.zip"
-          PUBLISH_DIR="${{ steps.dotnet_publish.outputs.PUBLISH_DIR }}"
-                
-          PROJECT_FILE_PATH_IN_WORKFLOW="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj" 
-          PROJECT_BASENAME=$(basename "$PROJECT_FILE_PATH_IN_WORKFLOW")
-          DLL_NAME="${PROJECT_BASENAME%.*}.dll" 
-
-          DLL_FULL_PATH_IN_PUBLISH_DIR="$PUBLISH_DIR/$DLL_NAME"
-
-          echo "Vérification de la présence de la DLL principale : $DLL_FULL_PATH_IN_PUBLISH_DIR"
-          if [ ! -f "$DLL_FULL_PATH_IN_PUBLISH_DIR" ]; then
-            echo "Erreur : Le fichier DLL principal '$DLL_FULL_PATH_IN_PUBLISH_DIR' n'a pas été trouvé dans le répertoire de publication."
-            echo "Contenu du répertoire de publication ($PUBLISH_DIR) :"
-            ls -R "$PUBLISH_DIR"
+          ZIP_NAME="Jellyfin.Plugin.Fankai.zip"
+          PUB_DIR="${{ steps.build_jellyfin.outputs.PUBLISH_DIR }}"
+          DLL_NAME="Jellyfin.Plugin.Fankai.dll"
+          
+          if [ ! -f "$PUB_DIR/$DLL_NAME" ]; then
+            echo "::error::DLL Jellyfin introuvable !"
             exit 1
           fi
           
-          echo "Création de $ZIP_FILENAME contenant $DLL_NAME depuis $PUBLISH_DIR..."
-          (cd "$PUBLISH_DIR" && zip -j9 "../$ZIP_FILENAME" "$DLL_NAME")
+          (cd "$PUB_DIR" && zip -j9 "../$ZIP_NAME" "$DLL_NAME")
           
-          if [ ! -f "$ZIP_FILENAME" ]; then
-            echo "Erreur : Échec de la création de $ZIP_FILENAME."
+          echo "ZIP_PATH=./$ZIP_NAME" >> $GITHUB_OUTPUT
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_OUTPUT
+
+      # --- BLOC EMBY ---
+
+      - name: "[Emby] Compilation"
+        id: build_emby
+        run: |
+          PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
+          OUT_DIR="./publish_emby"
+          mkdir -p "$OUT_DIR"
+          
+          # Configuration 'Emby' définie dans le .csproj
+          dotnet publish "$PROJECT_PATH" --configuration Emby --output "$OUT_DIR"
+          echo "PUBLISH_DIR=$OUT_DIR" >> $GITHUB_OUTPUT
+
+      - name: "[Emby] Création du ZIP"
+        id: zip_emby
+        run: |
+          # Nom spécifique pour le ZIP Emby
+          ZIP_NAME="Jellyfin.Plugin.Fankai.Emby.zip"
+          PUB_DIR="${{ steps.build_emby.outputs.PUBLISH_DIR }}"
+          DLL_NAME="Jellyfin.Plugin.Fankai.dll"
+          
+          if [ ! -f "$PUB_DIR/$DLL_NAME" ]; then
+            echo "::error::DLL Emby introuvable !"
             exit 1
           fi
           
-          echo "ZIP_PATH=./$ZIP_FILENAME" >> $GITHUB_OUTPUT # Chemin relatif au workspace
-          echo "$ZIP_FILENAME créé avec succès."
-          echo "Taille du ZIP :"
-          ls -l "$ZIP_FILENAME"
-          echo "Contenu du ZIP (vérification) :"
-          unzip -l "$ZIP_FILENAME"
+          (cd "$PUB_DIR" && zip -j9 "../$ZIP_NAME" "$DLL_NAME")
+          
+          echo "ZIP_PATH=./$ZIP_NAME" >> $GITHUB_OUTPUT
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_OUTPUT
 
-      - name: Génération du checksum pour le ZIP
-        id: checksum
-        run: |
-          ZIP_TO_CHECKSUM="${{ steps.create_zip.outputs.ZIP_PATH }}"
-          if [ ! -f "$ZIP_TO_CHECKSUM" ]; then
-            echo "Erreur : Fichier ZIP $ZIP_TO_CHECKSUM non trouvé pour la génération du checksum !"
-            exit 1
-          fi
-          CHECKSUM=$(md5sum "$ZIP_TO_CHECKSUM" | awk '{ print $1 }')
-          echo "ZIP_CHECKSUM=$CHECKSUM" >> $GITHUB_OUTPUT
-          echo "Checksum généré : $CHECKSUM pour $ZIP_TO_CHECKSUM"
+      # --- COMMUN ---
 
-      - name: Récupération du message de commit pour le changelog
-        id: commit_details
+      - name: Calcul des Checksums et Métadonnées
+        id: meta
         run: |
-          # Récupère le message complet du dernier commit
-          CHANGELOG_MESSAGE=$(git log -1 --pretty=%B)
+          # Checksums
+          ZIP_JF="${{ steps.zip_jellyfin.outputs.ZIP_PATH }}"
+          ZIP_EMBY="${{ steps.zip_emby.outputs.ZIP_PATH }}"
+          
+          SUM_JF=$(md5sum "$ZIP_JF" | awk '{ print $1 }')
+          SUM_EMBY=$(md5sum "$ZIP_EMBY" | awk '{ print $1 }')
+          
+          echo "JF_CHECKSUM=$SUM_JF" >> $GITHUB_OUTPUT
+          echo "EMBY_CHECKSUM=$SUM_EMBY" >> $GITHUB_OUTPUT
+          
+          # Changelog
+          MSG=$(git log -1 --pretty=%B)
           echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG_MESSAGE" >> $GITHUB_OUTPUT
+          echo "$MSG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          echo "Changelog du commit : $CHANGELOG_MESSAGE"
+          
+          # Date ISO
+          DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          echo "ISO_TIMESTAMP=$DATE" >> $GITHUB_OUTPUT
 
-      - name: Génération de l'horodatage
-        id: timestamp
-        run: |
-          ISO_TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-          echo "ISO_TIMESTAMP=$ISO_TIMESTAMP" >> $GITHUB_OUTPUT
-          echo "Horodatage généré : $ISO_TIMESTAMP"
-
-      - name: Création de la Release GitHub
-        id: create_release
+      - name: Création Release GitHub
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.get_version.outputs.PLUGIN_VERSION }}
-          name: Release v${{ steps.get_version.outputs.PLUGIN_VERSION }}
+          tag_name: "v${{ steps.get_version.outputs.PLUGIN_VERSION }}"
+          name: "Release v${{ steps.get_version.outputs.PLUGIN_VERSION }}"
           body: |
-            ${{ steps.commit_details.outputs.CHANGELOG }}
+            ${{ steps.meta.outputs.CHANGELOG }}
             ---
-            Checksum SHA256 de `${{ steps.create_zip.outputs.ZIP_PATH }}`: `${{ steps.checksum.outputs.ZIP_CHECKSUM }}`
-          files: ${{ steps.create_zip.outputs.ZIP_PATH }}
+            ### Checksums (MD5)
+            - **Jellyfin**: `${{ steps.meta.outputs.JF_CHECKSUM }}`
+            - **Emby**: `${{ steps.meta.outputs.EMBY_CHECKSUM }}`
+          files: |
+            ${{ steps.zip_jellyfin.outputs.ZIP_PATH }}
+            ${{ steps.zip_emby.outputs.ZIP_PATH }}
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Mise à jour de manifest.json
-        id: update_manifest
+      # --- MISE A JOUR DES MANIFESTES ---
+
+      - name: Mise à jour des Manifests (JSON)
         run: |
-          PLUGIN_VERSION="${{ steps.get_version.outputs.PLUGIN_VERSION }}"
-          ZIP_CHECKSUM="${{ steps.checksum.outputs.ZIP_CHECKSUM }}"
-          CHANGELOG_MESSAGE_RAW="${{ steps.commit_details.outputs.CHANGELOG }}"
-          ISO_TIMESTAMP="${{ steps.timestamp.outputs.ISO_TIMESTAMP }}"
-          TARGET_ABI="10.9.0.0"
+          VERSION="${{ steps.get_version.outputs.PLUGIN_VERSION }}"
+          LOG="${{ steps.meta.outputs.CHANGELOG }}"
+          TIME="${{ steps.meta.outputs.ISO_TIMESTAMP }}"
+          REPO="${{ github.repository }}"
           
-          REPO_OWNER="${{ github.repository_owner }}"
-          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-          ASSET_NAME=$(basename "${{ steps.create_zip.outputs.ZIP_PATH }}") 
-          SOURCE_URL="https://github.com/$REPO_OWNER/$REPO_NAME/releases/download/v$PLUGIN_VERSION/$ASSET_NAME"
-
-          echo "Mise à jour du manifest avec :"
-          echo "  Version: $PLUGIN_VERSION"
-          echo "  Checksum: $ZIP_CHECKSUM"
-          echo "  Horodatage: $ISO_TIMESTAMP"
-          echo "  URL Source: $SOURCE_URL"
-
-          if [ ! -f manifest.json ]; then
-            echo "Erreur : manifest.json non trouvé à la racine du dépôt !"
-            exit 1
+          # --- JELLYFIN ---
+          ABI_JF="10.9.0.0"
+          ZIP_JF_NAME="${{ steps.zip_jellyfin.outputs.ZIP_NAME }}"
+          SUM_JF="${{ steps.meta.outputs.JF_CHECKSUM }}"
+          URL_JF="https://github.com/$REPO/releases/download/v$VERSION/$ZIP_JF_NAME"
+          
+          if [ -f manifest.json ]; then
+            NEW_JF=$(jq -n \
+              --arg v "$VERSION" \
+              --arg c "$LOG" \
+              --arg t "$ABI_JF" \
+              --arg u "$URL_JF" \
+              --arg s "$SUM_JF" \
+              --arg d "$TIME" \
+              '{version: $v, changelog: $c, targetAbi: $t, sourceUrl: $u, checksum: $s, timestamp: $d}')
+            
+            TEMP_JF=$(jq --argjson new "$NEW_JF" '.[0].versions = [$new] + .[0].versions' manifest.json)
+            echo "$TEMP_JF" > manifest.json
+            echo "✅ manifest.json (Jellyfin) mis à jour."
+          else
+            echo "⚠️ manifest.json introuvable !"
           fi
 
-          # Création de la nouvelle entrée de version en JSON
-          NEW_VERSION_ENTRY=$(jq -n \
-            --arg version "$PLUGIN_VERSION" \
-            --arg changelog "$CHANGELOG_MESSAGE_RAW" \
-            --arg targetAbi "$TARGET_ABI" \
-            --arg sourceUrl "$SOURCE_URL" \
-            --arg checksum "$ZIP_CHECKSUM" \
-            --arg timestamp "$ISO_TIMESTAMP" \
-            '{version: $version, changelog: $changelog, targetAbi: $targetAbi, sourceUrl: $sourceUrl, checksum: $checksum, timestamp: $timestamp}')
-
-          # Crée un nouveau tableau en mettant la nouvelle entrée en premier, suivie des anciennes.
-          TEMP_MANIFEST=$(jq --argjson new_entry "$NEW_VERSION_ENTRY" '.[0].versions = [$new_entry] + .[0].versions' manifest.json)
+          # --- EMBY ---
+          ABI_EMBY="4.8.0.0"
+          ZIP_EMBY_NAME="${{ steps.zip_emby.outputs.ZIP_NAME }}"
+          SUM_EMBY="${{ steps.meta.outputs.EMBY_CHECKSUM }}"
+          URL_EMBY="https://github.com/$REPO/releases/download/v$VERSION/$ZIP_EMBY_NAME"
           
-          echo "$TEMP_MANIFEST" > manifest.json
-          echo "manifest.json mis à jour avec succès (nouvelle version en premier)."
-          echo "--- Contenu de manifest.json ---"
-          cat manifest.json
-          echo "--- Fin du contenu de manifest.json ---"
+          # Création si inexistant
+          if [ ! -f emby_manifest.json ] && [ -f manifest.json ]; then
+             echo "emby_manifest.json introuvable, copie depuis manifest.json..."
+             cp manifest.json emby_manifest.json
+             # Reset des versions pour repartir propre
+             jq '.[0].versions = []' emby_manifest.json > emby_manifest.tmp && mv emby_manifest.tmp emby_manifest.json
+          fi
 
-      - name: Commit et push de manifest.json
+          if [ -f emby_manifest.json ]; then
+            NEW_EMBY=$(jq -n \
+              --arg v "$VERSION" \
+              --arg c "$LOG" \
+              --arg t "$ABI_EMBY" \
+              --arg u "$URL_EMBY" \
+              --arg s "$SUM_EMBY" \
+              --arg d "$TIME" \
+              '{version: $v, changelog: $c, targetAbi: $t, sourceUrl: $u, checksum: $s, timestamp: $d}')
+            
+            TEMP_EMBY=$(jq --argjson new "$NEW_EMBY" '.[0].versions = [$new] + .[0].versions' emby_manifest.json)
+            echo "$TEMP_EMBY" > emby_manifest.json
+            echo "✅ emby_manifest.json mis à jour."
+          else
+            echo "⚠️ Erreur fatale : emby_manifest.json manquant."
+          fi
+
+      - name: Commit et Push des changements
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add manifest.json
           
-          # Vérifie s'il y a des modifications à commiter
+          git add manifest.json emby_manifest.json
+          
           if git diff --staged --quiet; then
-            echo "Aucune modification à commiter pour manifest.json."
+            echo "Rien à commiter."
           else
-            git commit -m "Mise à jour de manifest.json pour v${{ steps.get_version.outputs.PLUGIN_VERSION }} [skip ci]"
-            echo "Commit des modifications de manifest.json..."
-            for i in 1 2 3; do
-              git push && break 
-              echo "Tentative de push $i échouée. Nouvelle tentative dans 5 secondes..."
-              sleep 5
-            done || (echo "Échec du push de manifest.json après plusieurs tentatives." && exit 1)
-            echo "manifest.json commité et pushé."
+            git commit -m "Mise à jour manifests v${{ steps.get_version.outputs.PLUGIN_VERSION }} [skip ci]"
+            git push
           fi
