@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "3.0.0",
+        "changelog": "Merge pull request #4 from Nackophilz/hybrid_dev\n\nHybrid dev",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v3.0.0/Jellyfin.Plugin.Fankai.Emby.zip",
+        "checksum": "55a1f5037e4cdeb4096be8ca0e22091f",
+        "timestamp": "2026-01-14T00:24:14Z"
+      },
+      {
         "version": "2.0.7",
         "changelog": "Ajout possibilité OP en 'absolute'\n\nMerge pull request #3 from Super-woof/main\\n\\nfeat: set serie one piece to absolute",
         "targetAbi": "4.8.0.0",
