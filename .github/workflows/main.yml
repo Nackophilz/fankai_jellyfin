@@ -1,4 +1,4 @@
-name: AIO Plugin Fankai (Jellyfin & Emby)
+name: "AIO Plugin Fankai (Jellyfin & Emby)"
 
 on:
   push:
@@ -39,30 +39,29 @@ jobs:
 
       # --- BLOC JELLYFIN ---
 
-      - name: [Jellyfin] Compilation
+      - name: "[Jellyfin] Compilation"
         id: build_jellyfin
         run: |
           PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
           OUT_DIR="./publish_jellyfin"
           mkdir -p "$OUT_DIR"
           
+          # Configuration Release standard pour Jellyfin
           dotnet publish "$PROJECT_PATH" --configuration Release --output "$OUT_DIR"
           echo "PUBLISH_DIR=$OUT_DIR" >> $GITHUB_OUTPUT
 
-      - name: [Jellyfin] Création du ZIP
+      - name: "[Jellyfin] Création du ZIP"
         id: zip_jellyfin
         run: |
           ZIP_NAME="Jellyfin.Plugin.Fankai.zip"
           PUB_DIR="${{ steps.build_jellyfin.outputs.PUBLISH_DIR }}"
           DLL_NAME="Jellyfin.Plugin.Fankai.dll"
           
-          # Vérif
           if [ ! -f "$PUB_DIR/$DLL_NAME" ]; then
             echo "::error::DLL Jellyfin introuvable !"
             exit 1
           fi
           
-          # Zip (j9 = compression max, j = junk paths/flat structure)
           (cd "$PUB_DIR" && zip -j9 "../$ZIP_NAME" "$DLL_NAME")
           
           echo "ZIP_PATH=./$ZIP_NAME" >> $GITHUB_OUTPUT
@@ -70,21 +69,21 @@ jobs:
 
       # --- BLOC EMBY ---
 
-      - name: [Emby] Compilation
+      - name: "[Emby] Compilation"
         id: build_emby
         run: |
           PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
           OUT_DIR="./publish_emby"
           mkdir -p "$OUT_DIR"
           
-          # Note l'argument --configuration Emby
+          # Configuration 'Emby' définie dans le .csproj
           dotnet publish "$PROJECT_PATH" --configuration Emby --output "$OUT_DIR"
           echo "PUBLISH_DIR=$OUT_DIR" >> $GITHUB_OUTPUT
 
-      - name: [Emby] Création du ZIP
+      - name: "[Emby] Création du ZIP"
         id: zip_emby
         run: |
-          # Nom différent pour ne pas écraser celui de Jellyfin
+          # Nom spécifique pour le ZIP Emby
           ZIP_NAME="Jellyfin.Plugin.Fankai.Emby.zip"
           PUB_DIR="${{ steps.build_emby.outputs.PUBLISH_DIR }}"
           DLL_NAME="Jellyfin.Plugin.Fankai.dll"
@@ -101,9 +100,10 @@ jobs:
 
       # --- COMMUN ---
 
-      - name: Calcul des Checksums
-        id: checksums
+      - name: Calcul des Checksums et Métadonnées
+        id: meta
         run: |
+          # Checksums
           ZIP_JF="${{ steps.zip_jellyfin.outputs.ZIP_PATH }}"
           ZIP_EMBY="${{ steps.zip_emby.outputs.ZIP_PATH }}"
           
@@ -113,31 +113,27 @@ jobs:
           echo "JF_CHECKSUM=$SUM_JF" >> $GITHUB_OUTPUT
           echo "EMBY_CHECKSUM=$SUM_EMBY" >> $GITHUB_OUTPUT
           
-          echo "Checksum Jellyfin : $SUM_JF"
-          echo "Checksum Emby : $SUM_EMBY"
-
-      - name: Récupération info commit & date
-        id: meta
-        run: |
+          # Changelog
           MSG=$(git log -1 --pretty=%B)
           echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
           echo "$MSG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           
+          # Date ISO
           DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
           echo "ISO_TIMESTAMP=$DATE" >> $GITHUB_OUTPUT
 
       - name: Création Release GitHub
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.get_version.outputs.PLUGIN_VERSION }}
-          name: Release v${{ steps.get_version.outputs.PLUGIN_VERSION }}
+          tag_name: "v${{ steps.get_version.outputs.PLUGIN_VERSION }}"
+          name: "Release v${{ steps.get_version.outputs.PLUGIN_VERSION }}"
           body: |
             ${{ steps.meta.outputs.CHANGELOG }}
             ---
             ### Checksums (MD5)
-            - **Jellyfin**: `${{ steps.checksums.outputs.JF_CHECKSUM }}`
-            - **Emby**: `${{ steps.checksums.outputs.EMBY_CHECKSUM }}`
+            - **Jellyfin**: `${{ steps.meta.outputs.JF_CHECKSUM }}`
+            - **Emby**: `${{ steps.meta.outputs.EMBY_CHECKSUM }}`
           files: |
             ${{ steps.zip_jellyfin.outputs.ZIP_PATH }}
             ${{ steps.zip_emby.outputs.ZIP_PATH }}
@@ -156,13 +152,11 @@ jobs:
           REPO="${{ github.repository }}"
           
           # --- JELLYFIN ---
-          # Cible ABI Jellyfin 10.9
           ABI_JF="10.9.0.0"
           ZIP_JF_NAME="${{ steps.zip_jellyfin.outputs.ZIP_NAME }}"
-          SUM_JF="${{ steps.checksums.outputs.JF_CHECKSUM }}"
+          SUM_JF="${{ steps.meta.outputs.JF_CHECKSUM }}"
           URL_JF="https://github.com/$REPO/releases/download/v$VERSION/$ZIP_JF_NAME"
           
-          # Mise à jour manifest.json
           if [ -f manifest.json ]; then
             NEW_JF=$(jq -n \
               --arg v "$VERSION" \
@@ -181,18 +175,16 @@ jobs:
           fi
 
           # --- EMBY ---
-          # Cible ABI Emby 4.8
           ABI_EMBY="4.8.0.0"
           ZIP_EMBY_NAME="${{ steps.zip_emby.outputs.ZIP_NAME }}"
-          SUM_EMBY="${{ steps.checksums.outputs.EMBY_CHECKSUM }}"
+          SUM_EMBY="${{ steps.meta.outputs.EMBY_CHECKSUM }}"
           URL_EMBY="https://github.com/$REPO/releases/download/v$VERSION/$ZIP_EMBY_NAME"
           
-          # Mise à jour emby_manifest.json
-          # On vérifie s'il existe, sinon on copie la structure de base du manifest Jellyfin
+          # Création si inexistant
           if [ ! -f emby_manifest.json ] && [ -f manifest.json ]; then
-             echo "emby_manifest.json introuvable, création à partir de manifest.json..."
+             echo "emby_manifest.json introuvable, copie depuis manifest.json..."
              cp manifest.json emby_manifest.json
-             # On vide les versions pour recommencer propre si création
+             # Reset des versions pour repartir propre
              jq '.[0].versions = []' emby_manifest.json > emby_manifest.tmp && mv emby_manifest.tmp emby_manifest.json
           fi
 
@@ -210,7 +202,7 @@ jobs:
             echo "$TEMP_EMBY" > emby_manifest.json
             echo "✅ emby_manifest.json mis à jour."
           else
-            echo "⚠️ Impossible de créer ou trouver emby_manifest.json"
+            echo "⚠️ Erreur fatale : emby_manifest.json manquant."
           fi
 
       - name: Commit et Push des changements
