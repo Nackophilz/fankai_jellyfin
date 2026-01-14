@@ -67,14 +67,11 @@ Le plugin **Fankai** enrichit votre expérience media en intégrant les métadon
 
 1. **Téléchargez le plugin**  
    - Allez sur la page [Releases du projet Fankai Jellyfin](https://github.com/Nackophilz/fankai_jellyfin/releases)  
-   - Téléchargez le fichier `Jellyfin.Plugin.Fankai.zip`
+   - Téléchargez le fichier `Jellyfin.Plugin.Fankai.Emby.zip`
 
-2. **Renommez le fichier**  
-   - Renommez le fichier en `Emby.Plugin.Fankai.zip` (Emby attend ce nom pour le reconnaître comme plugin compatible)
-
-3. **Extraction et placement**  
+2. **Extraction et placement**  
    - Décompressez l’archive.
-   - Copiez le dossier extrait dans le dossier `plugins` de votre installation Emby.
+   - Copiez la dll extraite dans le dossier `plugins` de votre installation Emby.
 
    - **Windows** :  
      `C:\ProgramData\Emby-Server\plugins`  
@@ -90,6 +87,9 @@ Le plugin **Fankai** enrichit votre expérience media en intégrant les métadon
 5. **Activation**  
    - Allez dans **Dashboard → Plugins** → **Installed Plugins**.
    - Trouvez **Fankai** et activez-le.
+  
+6. **Utilisation**
+   - Allez sur votre médiathèque et activez tout les providers pour Fankai
 
 > ✅ **Note** : Emby ne mettra pas à jour ce plugin automatiquement. Vous devrez répéter cette procédure à chaque nouvelle version.
 
