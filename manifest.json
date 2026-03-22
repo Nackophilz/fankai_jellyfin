@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "3.0.3",
+        "changelog": "fix(providers): use length-based percentage for Levenshtein search score to prevent false positives",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v3.0.3/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "659c758c841e67fe2dd618ea3121e170",
+        "timestamp": "2026-03-22T22:11:13Z"
+      },
+      {
         "version": "3.0.2",
         "changelog": "fix(providers): fetch images from Links.Images properties for Series, Seasons and Episodes",
         "targetAbi": "10.9.0.0",
