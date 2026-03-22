@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "3.0.2",
+        "changelog": "fix(providers): fetch images from Links.Images properties for Series, Seasons and Episodes",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v3.0.2/Jellyfin.Plugin.Fankai.Emby.zip",
+        "checksum": "775ee33cd24248ab9d20c685ee6c6a31",
+        "timestamp": "2026-03-22T21:42:13Z"
+      },
+      {
         "version": "3.0.1",
         "changelog": "Maj Episode\n\nMise à jour de la méthode de match des épisodes.",
         "targetAbi": "4.8.0.0",
