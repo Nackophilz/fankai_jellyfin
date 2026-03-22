@@ -156,9 +156,11 @@ namespace Jellyfin.Plugin.Fankai.Providers
                 {
                     string normalizedApiOriginalFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(apiEpisode.OriginalFilename));
                     string normalizedApiNfoFilename = NormalizeFilenameForComparison(Path.GetFileNameWithoutExtension(apiEpisode.NfoFilename));
+                    string normalizedApiFormattedName = NormalizeFilenameForComparison(apiEpisode.FormattedName);
 
                     if ((!string.IsNullOrWhiteSpace(normalizedApiOriginalFilename) && normalizedApiOriginalFilename == normalizedJellyfinFilename)
-                        || (!string.IsNullOrWhiteSpace(normalizedApiNfoFilename) && normalizedApiNfoFilename == normalizedJellyfinFilename))
+                        || (!string.IsNullOrWhiteSpace(normalizedApiNfoFilename) && normalizedApiNfoFilename == normalizedJellyfinFilename)
+                        || (!string.IsNullOrWhiteSpace(normalizedApiFormattedName) && normalizedApiFormattedName == normalizedJellyfinFilename))
                     {
                         potentialMatches.Add((apiEpisode, fankaiSeason));
                     }
