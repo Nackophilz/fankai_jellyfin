@@ -92,6 +92,9 @@ public class FankaiSerie
 
     [JsonPropertyName("links")]
     public SerieLinks? Links { get; set; }
+
+    [JsonPropertyName("images")]
+    public SerieImageLinks? Images { get; set; }
 }
 
 public class SerieStatistics
@@ -116,9 +119,6 @@ public class SerieLinks
 
     [JsonPropertyName("actors")]
     public string? ActorsApiUrl { get; set; }
-
-    [JsonPropertyName("images")]
-    public SerieImageLinks? Images { get; set; }
 }
 
 public class SerieImageLinks

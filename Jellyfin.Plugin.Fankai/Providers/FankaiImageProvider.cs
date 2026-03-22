@@ -147,11 +147,11 @@ public class FankaiImageProvider : IRemoteImageProvider
                 var serieData = await _apiClient.GetSerieByIdAsync(currentFankaiSeriesId, cancellationToken).ConfigureAwait(false);
                 if (serieData != null)
                 {
-                    AddImageIfUrlValid(images, serieData.Links?.Images?.PosterApiUrl ?? serieData.PosterImageUrl, MediaBrowser.Model.Entities.ImageType.Primary);
-                    AddImageIfUrlValid(images, serieData.Links?.Images?.FanartApiUrl ?? serieData.FanartImageUrl, MediaBrowser.Model.Entities.ImageType.Backdrop);
-                    AddImageIfUrlValid(images, serieData.Links?.Images?.BannerApiUrl ?? serieData.BannerImageUrl, MediaBrowser.Model.Entities.ImageType.Banner);
-                    AddImageIfUrlValid(images, serieData.Links?.Images?.LogoApiUrl ?? serieData.LogoImageUrl, MediaBrowser.Model.Entities.ImageType.Logo);
-                    AddImageIfUrlValid(images, serieData.Links?.Images?.PosterApiUrl ?? serieData.PosterImageUrl, MediaBrowser.Model.Entities.ImageType.Thumb);
+                    AddImageIfUrlValid(images, serieData.Images?.PosterApiUrl ?? serieData.PosterImageUrl, MediaBrowser.Model.Entities.ImageType.Primary);
+                    AddImageIfUrlValid(images, serieData.Images?.FanartApiUrl ?? serieData.FanartImageUrl, MediaBrowser.Model.Entities.ImageType.Backdrop);
+                    AddImageIfUrlValid(images, serieData.Images?.BannerApiUrl ?? serieData.BannerImageUrl, MediaBrowser.Model.Entities.ImageType.Banner);
+                    AddImageIfUrlValid(images, serieData.Images?.LogoApiUrl ?? serieData.LogoImageUrl, MediaBrowser.Model.Entities.ImageType.Logo);
+                    AddImageIfUrlValid(images, serieData.Images?.PosterApiUrl ?? serieData.PosterImageUrl, MediaBrowser.Model.Entities.ImageType.Thumb);
                 }
             }
         }
@@ -182,8 +182,8 @@ public class FankaiImageProvider : IRemoteImageProvider
                      season.SetProviderId(FankaiSeasonIdProviderKey, seasonData.Id.ToString(CultureInfo.InvariantCulture));
                      LogDebug("Stockage de FankaiSeasonIdProviderKey {0} pour la Saison {1}", seasonData.Id, season.Name);
                 }
-                AddImageIfUrlValid(images, seasonData.Links?.Images?.PosterApiUrl ?? seasonData.PosterImageUrl, MediaBrowser.Model.Entities.ImageType.Primary);
-                AddImageIfUrlValid(images, seasonData.Links?.Images?.FanartApiUrl ?? seasonData.FanartImageUrl, MediaBrowser.Model.Entities.ImageType.Backdrop);
+                AddImageIfUrlValid(images, seasonData.Images?.PosterApiUrl ?? seasonData.PosterImageUrl, MediaBrowser.Model.Entities.ImageType.Primary);
+                AddImageIfUrlValid(images, seasonData.Images?.FanartApiUrl ?? seasonData.FanartImageUrl, MediaBrowser.Model.Entities.ImageType.Backdrop);
             }
             else
             {

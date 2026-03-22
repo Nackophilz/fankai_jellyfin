@@ -56,6 +56,9 @@ public class FankaiSeason
 
     [JsonPropertyName("links")]
     public SeasonLinks? Links { get; set; }
+
+    [JsonPropertyName("images")]
+    public SeasonImageLinks? Images { get; set; }
 }
 
 public class SeasonStatistics
@@ -80,9 +83,6 @@ public class SeasonLinks
 
     [JsonPropertyName("serie")]
     public string? SerieApiUrl { get; set; } // ex: "/series/1"
-
-    [JsonPropertyName("images")]
-    public SeasonImageLinks? Images { get; set; }
 }
 
 public class SeasonImageLinks

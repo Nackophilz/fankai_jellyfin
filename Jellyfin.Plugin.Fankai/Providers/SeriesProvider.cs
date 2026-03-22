@@ -472,8 +472,8 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             var normalizedApiTitle = NormalizeTitle(serie.Title);
             
             int distance = LevenshteinDistance(normalizedSearchName, normalizedApiTitle);
-            
-            int score = 100 - (distance * 10);
+            int maxLength = Math.Max(normalizedSearchName.Length, normalizedApiTitle.Length);
+            int score = maxLength == 0 ? 0 : 100 - (distance * 100 / maxLength);
 
             if (score > 75) 
             {
