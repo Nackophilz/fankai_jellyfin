@@ -59,7 +59,7 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
     }
 #endif
 
-    private void LogInfo(string message, params object[] args)
+    private void LogInfo(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Info(message, args);
@@ -68,7 +68,7 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
 #endif
     }
 
-    private void LogWarn(string message, params object[] args)
+    private void LogWarn(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Warn(message, args);
@@ -88,17 +88,27 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
         string? fankaiSeriesId = info.SeriesProviderIds.GetValueOrDefault(SeriesProvider.ProviderIdName);
         if (string.IsNullOrWhiteSpace(fankaiSeriesId))
         {
-            // Fallback : tenter de résoudre l'ID de série depuis le nom de la série parente.
+            // Fallback : tenter de résoudre l'ID de série depuis le nom du dossier parent (= nom de la série).
             // Cela arrive lors d'un scan initial où SeriesProvider n'a pas encore persisté son ID.
-            if (!string.IsNullOrWhiteSpace(info.SeriesName))
+            // SeasonInfo ne possède pas de propriété SeriesName, on déduit depuis info.Path.
+            string? seriesNameFromPath = null;
+            if (!string.IsNullOrWhiteSpace(info.Path))
             {
-                LogInfo("ID de série Fankai absent pour la saison '{0}'. Tentative de résolution via le nom de série '{1}'.", info.Name, info.SeriesName);
-                fankaiSeriesId = await ResolveSeriesIdByNameAsync(info.SeriesName, cancellationToken).ConfigureAwait(false);
+                // Le chemin d'une saison est typiquement : /media/Nom Série/Saison X
+                // Le dossier parent est donc le nom de la série.
+                seriesNameFromPath = Path.GetFileName(
+                    Path.GetDirectoryName(info.Path.TrimEnd(Path.DirectorySeparatorChar, '/')));
+            }
+
+            if (!string.IsNullOrWhiteSpace(seriesNameFromPath))
+            {
+                LogInfo("ID de série Fankai absent pour la saison '{0}'. Tentative de résolution via le dossier parent '{1}'.", info.Name, seriesNameFromPath);
+                fankaiSeriesId = await ResolveSeriesIdByNameAsync(seriesNameFromPath, cancellationToken).ConfigureAwait(false);
             }
 
             if (string.IsNullOrWhiteSpace(fankaiSeriesId))
             {
-                LogWarn("Impossible de trouver l'ID de série Fankai pour la saison '{0}' (SeriesName='{1}'). Aucune correspondance trouvée.", info.Name, info.SeriesName);
+                LogWarn("Impossible de trouver l'ID de série Fankai pour la saison '{0}' (dossier parent='{1}'). Aucune correspondance trouvée.", info.Name, seriesNameFromPath);
                 return result;
             }
         }
@@ -283,7 +293,7 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
         return d[n, m];
     }
 
-    private void LogDebug(string message, params object[] args)
+    private void LogDebug(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Debug(message, args);

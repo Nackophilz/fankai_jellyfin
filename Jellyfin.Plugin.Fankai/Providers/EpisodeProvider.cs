@@ -55,7 +55,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
         }
 #endif
 
-        private void LogInfo(string message, params object[] args)
+        private void LogInfo(string message, params object?[] args)
         {
 #if __EMBY__
             _logger.Info(message, args);
@@ -64,7 +64,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
 #endif
         }
 
-        private void LogWarn(string message, params object[] args)
+        private void LogWarn(string message, params object?[] args)
         {
 #if __EMBY__
             _logger.Warn(message, args);
@@ -73,7 +73,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
 #endif
         }
 
-        private void LogDebug(string message, params object[] args)
+        private void LogDebug(string message, params object?[] args)
         {
 #if __EMBY__
             _logger.Debug(message, args);
@@ -82,7 +82,7 @@ namespace Jellyfin.Plugin.Fankai.Providers
 #endif
         }
         
-        private void LogTrace(string message, params object[] args)
+        private void LogTrace(string message, params object?[] args)
         {
 #if __EMBY__
              // Emby logger usually doesn't expose Trace easily, map to Debug

@@ -64,7 +64,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
     }
 #endif
 
-    private void LogInfo(string message, params object[] args)
+    private void LogInfo(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Info(message, args);
@@ -73,7 +73,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 #endif
     }
 
-    private void LogWarn(string message, params object[] args)
+    private void LogWarn(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Warn(message, args);
@@ -82,7 +82,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 #endif
     }
 
-    private void LogDebug(string message, params object[] args)
+    private void LogDebug(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Debug(message, args);
@@ -91,7 +91,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
 #endif
     }
 
-    private void LogError(Exception ex, string message, params object[] args)
+    private void LogError(Exception ex, string message, params object?[] args)
     {
 #if __EMBY__
         _logger.ErrorException(string.Format(message, args), ex);
@@ -289,7 +289,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                     if (File.Exists(tempThemePath))
                     {
                         try { File.Delete(tempThemePath); }
-                        catch (Exception delEx) { LogWarn("Échec de la suppression du fichier de thème temporaire : {0}", tempThemePath); }
+                        catch { LogWarn("Échec de la suppression du fichier de thème temporaire : {0}", tempThemePath); }
                     }
                 }
             }
@@ -362,7 +362,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         cancellationToken.Register(() =>
         {
             try { if (!process.HasExited) process.Kill(); }
-            catch (Exception ex) { LogWarn("Erreur lors de la tentative d'arrêt du processus FFmpeg."); }
+            catch { LogWarn("Erreur lors de la tentative d'arrêt du processus FFmpeg."); }
         });
 
         process.Start();
@@ -379,7 +379,7 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         {
             if (File.Exists(outputPath))
             {
-                try { File.Delete(outputPath); } catch (Exception ex) { LogWarn("Échec de la suppression du fichier de sortie FFmpeg partiel : {0}", outputPath); }
+                try { File.Delete(outputPath); } catch { LogWarn("Échec de la suppression du fichier de sortie FFmpeg partiel : {0}", outputPath); }
             }
             
             var ffmpegException = new Exception("Sortie d'erreur de FFmpeg : " + errorOutput);

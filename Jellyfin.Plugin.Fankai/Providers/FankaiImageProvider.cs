@@ -51,7 +51,7 @@ public class FankaiImageProvider : IRemoteImageProvider
     }
 #endif
 
-    private void LogInfo(string message, params object[] args)
+    private void LogInfo(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Info(message, args);
@@ -60,7 +60,7 @@ public class FankaiImageProvider : IRemoteImageProvider
 #endif
     }
 
-    private void LogWarn(string message, params object[] args)
+    private void LogWarn(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Warn(message, args);
@@ -69,7 +69,7 @@ public class FankaiImageProvider : IRemoteImageProvider
 #endif
     }
 
-    private void LogDebug(string message, params object[] args)
+    private void LogDebug(string message, params object?[] args)
     {
 #if __EMBY__
         _logger.Debug(message, args);
