@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.Fankai.Api;
@@ -87,8 +88,19 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
         string? fankaiSeriesId = info.SeriesProviderIds.GetValueOrDefault(SeriesProvider.ProviderIdName);
         if (string.IsNullOrWhiteSpace(fankaiSeriesId))
         {
-            LogWarn("Impossible de trouver l'ID de série Fankai pour la saison '{0}'. Le SeriesProvider doit s'exécuter en premier.", info.Name);
-            return result;
+            // Fallback : tenter de résoudre l'ID de série depuis le nom de la série parente.
+            // Cela arrive lors d'un scan initial où SeriesProvider n'a pas encore persisté son ID.
+            if (!string.IsNullOrWhiteSpace(info.SeriesName))
+            {
+                LogInfo("ID de série Fankai absent pour la saison '{0}'. Tentative de résolution via le nom de série '{1}'.", info.Name, info.SeriesName);
+                fankaiSeriesId = await ResolveSeriesIdByNameAsync(info.SeriesName, cancellationToken).ConfigureAwait(false);
+            }
+
+            if (string.IsNullOrWhiteSpace(fankaiSeriesId))
+            {
+                LogWarn("Impossible de trouver l'ID de série Fankai pour la saison '{0}' (SeriesName='{1}'). Aucune correspondance trouvée.", info.Name, info.SeriesName);
+                return result;
+            }
         }
 
         // 2. Récupérer toutes les saisons pour cette série depuis l'API.
@@ -182,7 +194,104 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
         LogInfo("La recherche de saison n'est pas supportée et n'est généralement pas nécessaire. Elle est identifiée via la série parente.");
         return Task.FromResult(Enumerable.Empty<RemoteSearchResult>());
     }
-    
+
+    /// <summary>
+    /// Tente de résoudre l'ID Fankai d'une série à partir de son nom, en utilisant la liste complète des séries.
+    /// Utilisé comme fallback quand SeriesProvider n'a pas encore persisté son ID.
+    /// </summary>
+    private async Task<string?> ResolveSeriesIdByNameAsync(string seriesName, CancellationToken cancellationToken)
+    {
+        var allSeries = await _apiClient.GetAllSeriesAsync(cancellationToken).ConfigureAwait(false);
+        if (allSeries == null || !allSeries.Any())
+        {
+            LogWarn("ResolveSeriesIdByName: Impossible de récupérer la liste des séries depuis l'API.");
+            return null;
+        }
+
+        var normalizedSearch = NormalizeTitle(seriesName);
+        FankaiSerie? bestMatch = null;
+        int bestScore = 0;
+
+        foreach (var serie in allSeries)
+        {
+            var normalizedApi = NormalizeTitle(serie.Title);
+            if (string.IsNullOrWhiteSpace(normalizedApi)) continue;
+
+            // Correspondance exacte en priorité
+            if (normalizedApi == normalizedSearch)
+            {
+                LogDebug("ResolveSeriesIdByName: Correspondance exacte trouvée pour '{0}' -> ID {1}", seriesName, serie.Id);
+                return serie.Id.ToString(CultureInfo.InvariantCulture);
+            }
+
+            // Score de similarité simple
+            int maxLen = Math.Max(normalizedSearch.Length, normalizedApi.Length);
+            int dist = LevenshteinDistance(normalizedSearch, normalizedApi);
+            int score = maxLen == 0 ? 0 : 100 - (dist * 100 / maxLen);
+            if (score > 80 && score > bestScore)
+            {
+                bestScore = score;
+                bestMatch = serie;
+            }
+        }
+
+        if (bestMatch != null)
+        {
+            LogInfo("ResolveSeriesIdByName: Meilleure correspondance pour '{0}' -> '{1}' (score={2}, ID={3})",
+                seriesName, bestMatch.Title, bestScore, bestMatch.Id);
+            return bestMatch.Id.ToString(CultureInfo.InvariantCulture);
+        }
+
+        LogWarn("ResolveSeriesIdByName: Aucune correspondance trouvée pour '{0}'.", seriesName);
+        return null;
+    }
+
+    private static string NormalizeTitle(string? title)
+    {
+        if (string.IsNullOrWhiteSpace(title)) return string.Empty;
+        string decomposed = title.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder();
+        foreach (char c in decomposed)
+        {
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        }
+        string almostNormalized = sb.ToString().ToLowerInvariant();
+        sb.Clear();
+        foreach (char c in almostNormalized)
+        {
+            if (char.IsLetterOrDigit(c) || char.IsWhiteSpace(c))
+                sb.Append(c);
+        }
+        return System.Text.RegularExpressions.Regex.Replace(sb.ToString(), @"\s+", " ").Trim();
+    }
+
+    private static int LevenshteinDistance(string s, string t)
+    {
+        int n = s.Length, m = t.Length;
+        int[,] d = new int[n + 1, m + 1];
+        if (n == 0) return m;
+        if (m == 0) return n;
+        for (int i = 0; i <= n; d[i, 0] = i++) { }
+        for (int j = 0; j <= m; d[0, j] = j++) { }
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= m; j++)
+            {
+                int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+                d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
+            }
+        return d[n, m];
+    }
+
+    private void LogDebug(string message, params object[] args)
+    {
+#if __EMBY__
+        _logger.Debug(message, args);
+#else
+        _logger.LogDebug(message, args);
+#endif
+    }
+
     private DateTime? TryParseDate(string? dateString)
     {
         if (string.IsNullOrWhiteSpace(dateString)) return null;

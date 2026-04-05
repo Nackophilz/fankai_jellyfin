@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.Fankai.Api;
@@ -157,7 +158,21 @@ public class FankaiImageProvider : IRemoteImageProvider
         }
         else if (item is Season season)
         {
+            // Chercher l'ID de la série parente dans son objet Series
             var parentSeriesFankaiId = season.Series?.GetProviderId(SeriesProvider.ProviderIdName);
+
+            // Fallback : si la série parente n'a pas encore son ID persisté (premier scan),
+            // tenter de le résoudre via le nom.
+            if (string.IsNullOrWhiteSpace(parentSeriesFankaiId))
+            {
+                var seriesName = season.Series?.Name;
+                if (!string.IsNullOrWhiteSpace(seriesName))
+                {
+                    LogInfo("FankaiImageProvider: ID série absent pour la saison '{0}'. Tentative de résolution via le nom de série '{1}'.", season.Name, seriesName);
+                    parentSeriesFankaiId = await ResolveSeriesIdByNameAsync(seriesName, cancellationToken).ConfigureAwait(false);
+                }
+            }
+
             if (string.IsNullOrWhiteSpace(parentSeriesFankaiId))
             {
                 LogWarn("Impossible de trouver l'ID Fankai de la série parente pour la saison {0} (ID: {1})", season.Name, season.Id);
@@ -257,6 +272,76 @@ public class FankaiImageProvider : IRemoteImageProvider
                 Type = type,
             });
         }
+    }
+
+    /// <summary>
+    /// Tente de résoudre l'ID Fankai d'une série à partir de son nom.
+    /// Fallback utilisé quand SeriesProvider n'a pas encore persisté son ID.
+    /// </summary>
+    private async Task<string?> ResolveSeriesIdByNameAsync(string seriesName, CancellationToken cancellationToken)
+    {
+        var allSeries = await _apiClient.GetAllSeriesAsync(cancellationToken).ConfigureAwait(false);
+        if (allSeries == null || !allSeries.Any()) return null;
+
+        var normalizedSearch = NormalizeTitle(seriesName);
+        string? bestId = null;
+        int bestScore = 0;
+
+        foreach (var serie in allSeries)
+        {
+            var normalizedApi = NormalizeTitle(serie.Title);
+            if (string.IsNullOrWhiteSpace(normalizedApi)) continue;
+
+            if (normalizedApi == normalizedSearch)
+                return serie.Id.ToString(CultureInfo.InvariantCulture);
+
+            int maxLen = Math.Max(normalizedSearch.Length, normalizedApi.Length);
+            int dist = LevenshteinDistance(normalizedSearch, normalizedApi);
+            int score = maxLen == 0 ? 0 : 100 - (dist * 100 / maxLen);
+            if (score > 80 && score > bestScore)
+            {
+                bestScore = score;
+                bestId = serie.Id.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+        return bestId;
+    }
+
+    private static string NormalizeTitle(string? title)
+    {
+        if (string.IsNullOrWhiteSpace(title)) return string.Empty;
+        string decomposed = title.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder();
+        foreach (char c in decomposed)
+        {
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        }
+        string lower = sb.ToString().ToLowerInvariant();
+        sb.Clear();
+        foreach (char c in lower)
+        {
+            if (char.IsLetterOrDigit(c) || char.IsWhiteSpace(c))
+                sb.Append(c);
+        }
+        return System.Text.RegularExpressions.Regex.Replace(sb.ToString(), @"\s+", " ").Trim();
+    }
+
+    private static int LevenshteinDistance(string s, string t)
+    {
+        int n = s.Length, m = t.Length;
+        int[,] d = new int[n + 1, m + 1];
+        if (n == 0) return m;
+        if (m == 0) return n;
+        for (int i = 0; i <= n; d[i, 0] = i++) { }
+        for (int j = 0; j <= m; d[0, j] = j++) { }
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= m; j++)
+            {
+                int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+                d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
+            }
+        return d[n, m];
     }
     
 #if __EMBY__

@@ -137,7 +137,15 @@ public class FankaiApiClient
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                _logger.LogError("Fankai API Erreur: Status={StatusCode}, Uri={RequestUri}, Response={ErrorContent}", response.StatusCode, requestUri, errorContent);
+                // 404 = ressource introuvable (ex: saison obsolète après migration BDD) : Warning seulement
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    _logger.LogWarning("Fankai API: Ressource introuvable (404): Uri={RequestUri}, Response={ErrorContent}", requestUri, errorContent);
+                }
+                else
+                {
+                    _logger.LogError("Fankai API Erreur: Status={StatusCode}, Uri={RequestUri}, Response={ErrorContent}", response.StatusCode, requestUri, errorContent);
+                }
                 return null;
             }
 

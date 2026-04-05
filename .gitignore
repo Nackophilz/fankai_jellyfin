@@ -3,3 +3,4 @@ Directory.Build.props
 Jellyfin.Plugin.Fankai.sln
 /Jellyfin.Plugin.Fankai/bin
 /Jellyfin.Plugin.Fankai/obj
+/TEMPLATE
