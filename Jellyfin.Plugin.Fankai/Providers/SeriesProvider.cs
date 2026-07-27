@@ -106,7 +106,9 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         var result = new MetadataResult<Series>();
 
         string? fankaiId = info.ProviderIds.GetValueOrDefault(ProviderIdName);
-        var folderName = Path.GetFileName(info.Path);
+        var folderName = string.IsNullOrWhiteSpace(info.Path)
+            ? string.Empty
+            : Path.GetFileName(info.Path.TrimEnd(Path.DirectorySeparatorChar, '/'));
         string nameForSearch = info.Name;
 
         if (!string.IsNullOrWhiteSpace(fankaiId))
@@ -134,29 +136,26 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         if (string.IsNullOrWhiteSpace(fankaiId))
         {
             LogDebug("Aucun ID Fankai valide ou ré-identification forcée. Lancement de la recherche pour : Nom='{0}', Année={1}", nameForSearch, info.Year);
-            
-            var correctSearchInfo = new SeriesInfo
-            {
-                Name = nameForSearch,
-                Path = info.Path,
-                Year = info.Year
-            };
-            
-            var searchResults = await GetSearchResults(correctSearchInfo, cancellationToken).ConfigureAwait(false);
-            
-            var bestMatch = searchResults.FirstOrDefault();
 
-            if (bestMatch != null && bestMatch.ProviderIds.TryGetValue(ProviderIdName, out var foundId))
+            fankaiId = await SearchSerieIdAsync(nameForSearch, info, cancellationToken).ConfigureAwait(false);
+
+            // Jellyfin tronque parfois le nom de l'item lors du scan (ex: le dossier "Mob Psycho 100 Henshū"
+            // donne l'item "Mob Psycho"), ce qui fait chuter le score de similarité sous le seuil.
+            // Le nom du dossier, lui, reste intact.
+            if (string.IsNullOrWhiteSpace(fankaiId)
+                && !string.IsNullOrWhiteSpace(folderName)
+                && !NormalizeTitle(folderName).Equals(NormalizeTitle(nameForSearch), StringComparison.Ordinal))
             {
-                fankaiId = foundId;
-                LogInfo("ID Fankai trouvé/corrigé via recherche : {0} pour la série {1}", fankaiId, bestMatch.Name);
+                LogInfo("Recherche infructueuse pour '{0}'. Nouvelle tentative avec le nom du dossier '{1}'.", nameForSearch, folderName);
+                fankaiId = await SearchSerieIdAsync(folderName, info, cancellationToken).ConfigureAwait(false);
             }
-            else
+
+            if (string.IsNullOrWhiteSpace(fankaiId))
             {
-                 LogWarn("Aucun ID Fankai trouvé via recherche pour la série : {0}.", nameForSearch);
+                LogWarn("Aucun ID Fankai trouvé via recherche pour la série : {0}.", nameForSearch);
             }
         }
-        
+
         if (string.IsNullOrWhiteSpace(fankaiId))
         {
             LogWarn("Aucun ID Fankai disponible pour la série: {0}. Impossible de récupérer les métadonnées.", info.Name);
@@ -334,7 +333,31 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
         LogInfo("Métadonnées récupérées et traitées pour l'ID Fankai: {0}, Série: {1}", fankaiId, serieData.Title);
         return result;
     }
-    
+
+    /// <summary>
+    /// Lance une recherche par titre et retourne l'ID Fankai de la meilleure correspondance, ou null.
+    /// </summary>
+    private async Task<string?> SearchSerieIdAsync(string name, SeriesInfo info, CancellationToken cancellationToken)
+    {
+        var searchInfo = new SeriesInfo
+        {
+            Name = name,
+            Path = info.Path,
+            Year = info.Year
+        };
+
+        var searchResults = await GetSearchResults(searchInfo, cancellationToken).ConfigureAwait(false);
+        var bestMatch = searchResults.FirstOrDefault();
+
+        if (bestMatch != null && bestMatch.ProviderIds.TryGetValue(ProviderIdName, out var foundId))
+        {
+            LogInfo("ID Fankai trouvé/corrigé via recherche : {0} pour la série {1}", foundId, bestMatch.Name);
+            return foundId;
+        }
+
+        return null;
+    }
+
     private async Task RemuxAudioAsync(string inputPath, string outputPath, CancellationToken cancellationToken)
     {
         LogInfo("Tentative de réparation du fichier audio '{0}' vers '{1}' avec FFmpeg.", inputPath, outputPath);
