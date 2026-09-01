@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "3.0.6",
+        "changelog": "fix(v3.0.6): ré-identification des séries dont l'ID Fankai a disparu, et résolution épisode saison",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v3.0.6/Jellyfin.Plugin.Fankai.Emby.zip",
+        "checksum": "5739b646f36ac2af7e13ed39604a7ff4",
+        "timestamp": "2026-09-01T19:59:27Z"
+      },
+      {
         "version": "3.0.5",
         "changelog": "fix(v3.0.5): fallback identification série via le nom du dossier\n\nQuand Jellyfin tronque le nom de la série au scan, le score de\nsimilarité chute sous le seuil et aucune identification n'est possible\ntant qu'aucun ID Fankai n'est stocké. La recherche retente désormais\navec le nom du dossier, resté intact, lorsque la recherche sur le nom de\nl'item échoue.",
         "targetAbi": "4.8.0.0",
