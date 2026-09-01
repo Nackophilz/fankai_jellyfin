@@ -251,6 +251,8 @@ namespace Jellyfin.Plugin.Fankai.Providers
             
             result.Item.SetProviderId(ProviderIdName, matchedFankaiEpisode.Id.ToString(CultureInfo.InvariantCulture));
 
+            result.Item.SetProviderId(SeasonProvider.ProviderIdName, parentFankaiSeason.Id.ToString(CultureInfo.InvariantCulture));
+
             if (!string.IsNullOrWhiteSpace(matchedFankaiEpisode.Studio))
             {
                 result.Item.Studios = new[] { matchedFankaiEpisode.Studio };

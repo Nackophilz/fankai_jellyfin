@@ -128,6 +128,13 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
         if (info.ProviderIds.TryGetValue(ProviderIdName, out var seasonId))
         {
             matchedSeason = seasonsResponse.Seasons.FirstOrDefault(s => s.Id.ToString(CultureInfo.InvariantCulture) == seasonId);
+
+            if (matchedSeason != null && info.IndexNumber.HasValue && matchedSeason.SeasonNumber != info.IndexNumber.Value)
+            {
+                LogWarn("L'ID Fankai {0} stocké sur la saison {1} désigne la saison {2} ('{3}'). ID ignoré, ré-identification par le numéro.",
+                    seasonId, info.IndexNumber, matchedSeason.SeasonNumber, matchedSeason.Title);
+                matchedSeason = null;
+            }
         }
 
         // Priorité 2 (Fallback) : Chercher par le numéro de saison si aucun ID n'est trouvé.

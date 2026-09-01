@@ -111,13 +111,24 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             : Path.GetFileName(info.Path.TrimEnd(Path.DirectorySeparatorChar, '/'));
         string nameForSearch = info.Name;
 
+        FankaiSerie? serieData = null;
+
         if (!string.IsNullOrWhiteSpace(fankaiId))
         {
-            var initialData = await _apiClient.GetSerieByIdAsync(fankaiId, cancellationToken).ConfigureAwait(false);
-            
-            if (initialData != null)
+            serieData = await _apiClient.GetSerieByIdAsync(fankaiId, cancellationToken).ConfigureAwait(false);
+
+            if (serieData == null)
             {
-                var normalizedApiTitle = NormalizeTitle(initialData.Title);
+                LogWarn(
+                    "L'ID Fankai '{0}' stocké sur la série '{1}' ne renvoie plus rien. Ré-identification en utilisant le nom du dossier ('{2}').",
+                    fankaiId, info.Name, folderName);
+
+                fankaiId = null;
+                nameForSearch = string.IsNullOrWhiteSpace(folderName) ? info.Name : folderName;
+            }
+            else
+            {
+                var normalizedApiTitle = NormalizeTitle(serieData.Title);
                 var normalizedItemName = NormalizeTitle(info.Name);
                 var normalizedFolderName = NormalizeTitle(folderName);
 
@@ -125,14 +136,15 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
                 {
                      LogWarn(
                         "INCOHÉRENCE DÉTECTÉE ! L'ID '{0}' ('{1}') ne correspond pas au nom de l'item ('{2}') OU au nom du dossier ('{3}'). Forçage de la ré-identification en utilisant le nom du dossier.",
-                        fankaiId, initialData.Title, info.Name, folderName);
-                    
-                    fankaiId = null; 
-                    nameForSearch = folderName; 
+                        fankaiId, serieData.Title, info.Name, folderName);
+
+                    fankaiId = null;
+                    serieData = null;
+                    nameForSearch = folderName;
                 }
             }
         }
-        
+
         if (string.IsNullOrWhiteSpace(fankaiId))
         {
             LogDebug("Aucun ID Fankai valide ou ré-identification forcée. Lancement de la recherche pour : Nom='{0}', Année={1}", nameForSearch, info.Year);
@@ -162,7 +174,8 @@ public class SeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasO
             return result;
         }
 
-        var serieData = await _apiClient.GetSerieByIdAsync(fankaiId, cancellationToken).ConfigureAwait(false);
+        // Non nul seulement si l'ID stocké a été conservé : on évite alors un second appel identique.
+        serieData ??= await _apiClient.GetSerieByIdAsync(fankaiId, cancellationToken).ConfigureAwait(false);
         if (serieData == null)
         {
             LogWarn("Aucune donnée retournée par l'API Fankai pour l'ID: {0}", fankaiId);

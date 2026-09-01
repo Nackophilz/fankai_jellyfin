@@ -184,19 +184,22 @@ public class FankaiImageProvider : IRemoteImageProvider
             if (!string.IsNullOrWhiteSpace(fankaiSpecificId))
             {
                  seasonData = seasonsResponse?.Seasons?.FirstOrDefault(s => s.Id.ToString(CultureInfo.InvariantCulture) == fankaiSpecificId);
+
+                 if (seasonData != null && season.IndexNumber.HasValue && seasonData.SeasonNumber != season.IndexNumber.Value)
+                 {
+                     LogWarn("L'ID Fankai {0} stocké sur la saison {1} désigne la saison {2} ('{3}'). ID ignoré.",
+                         fankaiSpecificId, season.IndexNumber, seasonData.SeasonNumber, seasonData.Title);
+                     seasonData = null;
+                 }
             }
             if (seasonData == null && season.IndexNumber.HasValue)
             {
                 seasonData = seasonsResponse?.Seasons?.FirstOrDefault(s => s.SeasonNumber == season.IndexNumber.Value);
             }
-            
+
             if (seasonData != null)
             {
-                if (string.IsNullOrWhiteSpace(season.GetProviderId(FankaiSeasonIdProviderKey)))
-                {
-                     season.SetProviderId(FankaiSeasonIdProviderKey, seasonData.Id.ToString(CultureInfo.InvariantCulture));
-                     LogDebug("Stockage de FankaiSeasonIdProviderKey {0} pour la Saison {1}", seasonData.Id, season.Name);
-                }
+                StoreProviderId(season, FankaiSeasonIdProviderKey, seasonData.Id.ToString(CultureInfo.InvariantCulture));
                 AddImageIfUrlValid(images, seasonData.Images?.PosterApiUrl ?? seasonData.PosterImageUrl, MediaBrowser.Model.Entities.ImageType.Primary);
                 AddImageIfUrlValid(images, seasonData.Images?.FanartApiUrl ?? seasonData.FanartImageUrl, MediaBrowser.Model.Entities.ImageType.Backdrop);
             }
@@ -207,54 +210,25 @@ public class FankaiImageProvider : IRemoteImageProvider
         }
         else if (item is Episode episode)
         {
-            string? seasonFankaiIdToUse = episode.Season?.GetProviderId(FankaiSeasonIdProviderKey);
+            var (episodeData, resolvedSeasonId) = await ResolveEpisodeAsync(episode, fankaiSpecificId, cancellationToken).ConfigureAwait(false);
 
-            if (string.IsNullOrWhiteSpace(seasonFankaiIdToUse))
+            if (episodeData == null || resolvedSeasonId == null)
             {
-                var parentSeriesFankaiId = episode.Series?.GetProviderId(SeriesProvider.ProviderIdName);
-                if (!string.IsNullOrWhiteSpace(parentSeriesFankaiId) && episode.ParentIndexNumber.HasValue)
-                {
-                    var seasonsResponse = await _apiClient.GetSeasonsForSerieAsync(parentSeriesFankaiId, cancellationToken).ConfigureAwait(false);
-                    var foundSeason = seasonsResponse?.Seasons?.FirstOrDefault(s => s.SeasonNumber == episode.ParentIndexNumber.Value);
-                    if (foundSeason != null)
-                    {
-                        seasonFankaiIdToUse = foundSeason.Id.ToString(CultureInfo.InvariantCulture);
-                        episode.Season?.SetProviderId(FankaiSeasonIdProviderKey, seasonFankaiIdToUse);
-                        LogDebug("ID de saison Fankai déduit et stocké {0} pour la saison parente de l'épisode {1}", seasonFankaiIdToUse, episode.Name);
-                    }
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(seasonFankaiIdToUse))
-            {
-                LogWarn("Impossible de déterminer l'ID Fankai de la saison parente pour l'épisode {0} (ID: {1})", episode.Name, episode.Id);
+                LogWarn("Impossible de trouver les données de l'épisode correspondant pour l'épisode {0} ('{1}') dans la série {2}",
+                    episode.IndexNumber, episode.Name, episode.Series?.GetProviderId(SeriesProvider.ProviderIdName));
                 return images;
             }
-            
-            var episodesResponse = await _apiClient.GetEpisodesForSeasonAsync(seasonFankaiIdToUse, cancellationToken).ConfigureAwait(false);
-            Model.FankaiEpisode? episodeData = null;
-            if(!string.IsNullOrWhiteSpace(fankaiSpecificId))
+
+            StoreProviderId(episode, EpisodeProvider.ProviderIdName, episodeData.Id.ToString(CultureInfo.InvariantCulture));
+            StoreProviderId(episode, FankaiSeasonIdProviderKey, resolvedSeasonId);
+
+            // Back-fill du premier scan uniquement : c'est SeasonProvider qui corrige un ID de saison erroné.
+            if (episode.Season != null && string.IsNullOrWhiteSpace(episode.Season.GetProviderId(FankaiSeasonIdProviderKey)))
             {
-                episodeData = episodesResponse?.Episodes?.FirstOrDefault(e => e.Id.ToString(CultureInfo.InvariantCulture) == fankaiSpecificId);
-            }
-            if (episodeData == null && episode.IndexNumber.HasValue)
-            {
-                 episodeData = episodesResponse?.Episodes?.FirstOrDefault(e => e.EpisodeNumber == episode.IndexNumber.Value);
+                StoreProviderId(episode.Season, FankaiSeasonIdProviderKey, resolvedSeasonId);
             }
 
-            if (episodeData != null)
-            {
-                 if (string.IsNullOrWhiteSpace(episode.GetProviderId(EpisodeProvider.ProviderIdName)))
-                {
-                     episode.SetProviderId(EpisodeProvider.ProviderIdName, episodeData.Id.ToString(CultureInfo.InvariantCulture));
-                     LogDebug("ID de l'épisode Fankai stocké {0} pour l'épisode {1}", episodeData.Id, episode.Name);
-                }
-                AddImageIfUrlValid(images, episodeData.Links?.ThumbnailApiUrl ?? episodeData.ThumbImageUrl, MediaBrowser.Model.Entities.ImageType.Primary);
-            }
-            else
-            {
-                 LogWarn("Impossible de trouver les données de l'épisode correspondant pour l'épisode {0} dans l'ID de saison {1}", episode.IndexNumber, seasonFankaiIdToUse);
-            }
+            AddImageIfUrlValid(images, episodeData.Links?.ThumbnailApiUrl ?? episodeData.ThumbImageUrl, MediaBrowser.Model.Entities.ImageType.Primary);
         }
 
         LogInfo("Trouvé {0} images distantes pour l'objet {1}", images.Count, item.Name);
@@ -272,6 +246,92 @@ public class FankaiImageProvider : IRemoteImageProvider
                 Type = type,
             });
         }
+    }
+
+    /// <summary>
+    /// Pose un ID Fankai sur un objet, en écrasant une valeur différente déjà présente :
+    /// sans cela un ID erroné ne serait jamais corrigé.
+    /// </summary>
+    private void StoreProviderId(MediaBrowser.Controller.Entities.BaseItem item, string key, string value)
+    {
+        if (string.Equals(item.GetProviderId(key), value, StringComparison.Ordinal)) return;
+
+        item.SetProviderId(key, value);
+        LogDebug("Stockage de {0}={1} sur '{2}'", key, value, item.Name);
+    }
+
+    /// <summary>
+    /// Localise un épisode dans l'API, en essayant d'abord les saisons connues de l'objet puis, en dernier
+    /// recours, toutes les saisons de la série. Les IDs de saison de l'API ne suivant pas l'ordre des saisons,
+    /// un ID obsolète stocké sur la saison parente désigne une autre saison de la même série au lieu d'échouer.
+    /// </summary>
+    private async Task<(Model.FankaiEpisode? Episode, string? SeasonId)> ResolveEpisodeAsync(
+        Episode episode,
+        string? fankaiEpisodeId,
+        CancellationToken cancellationToken)
+    {
+        var triedSeasonIds = new HashSet<string>(StringComparer.Ordinal);
+
+        async Task<Model.FankaiEpisode?> SearchSeasonAsync(string? seasonId, bool allowNumberMatch)
+        {
+            if (string.IsNullOrWhiteSpace(seasonId) || !triedSeasonIds.Add(seasonId)) return null;
+
+            var episodesResponse = await _apiClient.GetEpisodesForSeasonAsync(seasonId, cancellationToken).ConfigureAwait(false);
+            if (episodesResponse?.Episodes == null) return null;
+
+            if (!string.IsNullOrWhiteSpace(fankaiEpisodeId))
+            {
+                var byId = episodesResponse.Episodes.FirstOrDefault(e => e.Id.ToString(CultureInfo.InvariantCulture) == fankaiEpisodeId);
+                if (byId != null) return byId;
+            }
+
+            if (!allowNumberMatch || !episode.IndexNumber.HasValue) return null;
+
+            return episodesResponse.Episodes.FirstOrDefault(e => e.EpisodeNumber == episode.IndexNumber.Value)
+                ?? episodesResponse.Episodes.FirstOrDefault(e => int.TryParse(e.DisplayEpisode, out int displayEpNum) && displayEpNum == episode.IndexNumber.Value);
+        }
+
+        // L'ID posé par EpisodeProvider sur l'épisode lui-même, puis celui de l'objet Saison parent.
+        foreach (var seasonId in new[] { episode.GetProviderId(FankaiSeasonIdProviderKey), episode.Season?.GetProviderId(FankaiSeasonIdProviderKey) })
+        {
+            var found = await SearchSeasonAsync(seasonId, true).ConfigureAwait(false);
+            if (found != null) return (found, seasonId);
+        }
+
+        var parentSeriesFankaiId = episode.Series?.GetProviderId(SeriesProvider.ProviderIdName);
+        if (string.IsNullOrWhiteSpace(parentSeriesFankaiId)) return (null, null);
+
+        var seasonsResponse = await _apiClient.GetSeasonsForSerieAsync(parentSeriesFankaiId, cancellationToken).ConfigureAwait(false);
+        if (seasonsResponse?.Seasons == null) return (null, null);
+
+        if (episode.ParentIndexNumber.HasValue)
+        {
+            var seasonIdByNumber = seasonsResponse.Seasons
+                .FirstOrDefault(s => s.SeasonNumber == episode.ParentIndexNumber.Value)?
+                .Id.ToString(CultureInfo.InvariantCulture);
+
+            var found = await SearchSeasonAsync(seasonIdByNumber, true).ConfigureAwait(false);
+            if (found != null) return (found, seasonIdByNumber);
+        }
+
+        // Balayage des saisons restantes sur le seul ID d'épisode : une série dont la numérotation repart à 1
+        // à chaque saison donnerait une fausse correspondance dans n'importe quelle saison balayée.
+        if (!string.IsNullOrWhiteSpace(fankaiEpisodeId))
+        {
+            foreach (var season in seasonsResponse.Seasons)
+            {
+                var seasonId = season.Id.ToString(CultureInfo.InvariantCulture);
+                var found = await SearchSeasonAsync(seasonId, false).ConfigureAwait(false);
+                if (found != null)
+                {
+                    LogWarn("L'épisode Fankai {0} ('{1}') n'était pas dans la saison attendue, retrouvé dans la saison {2} ('{3}').",
+                        fankaiEpisodeId, episode.Name, seasonId, season.Title);
+                    return (found, seasonId);
+                }
+            }
+        }
+
+        return (null, null);
     }
 
     /// <summary>
