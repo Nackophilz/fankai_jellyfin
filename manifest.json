@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "3.0.7",
+        "changelog": "fix(v3.0.7): numéro de saison dérivé du dossier en fallback",
+        "targetAbi": "10.9.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v3.0.7/Jellyfin.Plugin.Fankai.zip",
+        "checksum": "c451c0eda4107ed3945368f5c8d2f4fb",
+        "timestamp": "2026-09-02T19:47:23Z"
+      },
+      {
         "version": "3.0.6",
         "changelog": "fix(v3.0.6): ré-identification des séries dont l'ID Fankai a disparu, et résolution épisode saison",
         "targetAbi": "10.9.0.0",
