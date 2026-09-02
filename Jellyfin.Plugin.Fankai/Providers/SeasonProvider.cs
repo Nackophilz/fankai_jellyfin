@@ -123,30 +123,39 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
 
         // 3. Trouver la saison correspondante dans la liste retournée par l'API.
         FankaiSeason? matchedSeason = null;
-        
+
+        int? seasonNumber = info.IndexNumber;
+        var seasonNumberFromPath = ParseSeasonNumberFromPath(info.Path);
+        if (seasonNumberFromPath.HasValue && seasonNumberFromPath != info.IndexNumber)
+        {
+            LogWarn("Le dossier '{0}' désigne la saison {1} alors que l'item porte le numéro {2}. Le dossier fait foi.",
+                info.Path, seasonNumberFromPath, info.IndexNumber);
+            seasonNumber = seasonNumberFromPath;
+        }
+
         // Priorité 1 : Chercher avec un ID de saison Fankai déjà stocké.
         if (info.ProviderIds.TryGetValue(ProviderIdName, out var seasonId))
         {
             matchedSeason = seasonsResponse.Seasons.FirstOrDefault(s => s.Id.ToString(CultureInfo.InvariantCulture) == seasonId);
 
-            if (matchedSeason != null && info.IndexNumber.HasValue && matchedSeason.SeasonNumber != info.IndexNumber.Value)
+            if (matchedSeason != null && seasonNumber.HasValue && matchedSeason.SeasonNumber != seasonNumber.Value)
             {
                 LogWarn("L'ID Fankai {0} stocké sur la saison {1} désigne la saison {2} ('{3}'). ID ignoré, ré-identification par le numéro.",
-                    seasonId, info.IndexNumber, matchedSeason.SeasonNumber, matchedSeason.Title);
+                    seasonId, seasonNumber, matchedSeason.SeasonNumber, matchedSeason.Title);
                 matchedSeason = null;
             }
         }
 
         // Priorité 2 (Fallback) : Chercher par le numéro de saison si aucun ID n'est trouvé.
-        if (matchedSeason == null && info.IndexNumber.HasValue)
+        if (matchedSeason == null && seasonNumber.HasValue)
         {
-            matchedSeason = seasonsResponse.Seasons.FirstOrDefault(s => s.SeasonNumber == info.IndexNumber.Value);
+            matchedSeason = seasonsResponse.Seasons.FirstOrDefault(s => s.SeasonNumber == seasonNumber.Value);
         }
 
         if (matchedSeason == null)
         {
-            LogWarn("Impossible de faire correspondre la saison (Numéro: {0}) avec les données de l'API Fankai pour la série ID {1}", 
-                info.IndexNumber, fankaiSeriesId);
+            LogWarn("Impossible de faire correspondre la saison (Numéro: {0}) avec les données de l'API Fankai pour la série ID {1}",
+                seasonNumber, fankaiSeriesId);
             return result;
         }
         
@@ -261,6 +270,24 @@ public class SeasonProvider : IRemoteMetadataProvider<Season, SeasonInfo>, IHasO
 
         LogWarn("ResolveSeriesIdByName: Aucune correspondance trouvée pour '{0}'.", seriesName);
         return null;
+    }
+
+    private static int? ParseSeasonNumberFromPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return null;
+
+        var folderName = Path.GetFileName(path.TrimEnd(Path.DirectorySeparatorChar, '/'));
+        if (string.IsNullOrWhiteSpace(folderName)) return null;
+
+        var match = System.Text.RegularExpressions.Regex.Match(
+            folderName,
+            @"^(?:saisons?|seasons?|s)\s*[._-]?\s*(\d{1,3})$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        return match.Success
+            && int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number)
+            ? number
+            : null;
     }
 
     private static string NormalizeTitle(string? title)
