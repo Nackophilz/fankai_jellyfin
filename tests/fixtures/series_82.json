@@ -1,0 +1,51 @@
+{
+ "banner_image": null,
+ "country": "Japon",
+ "date_added": "1999-10-16 01:07:00",
+ "fanart_image": "https://metadata.fankai.fr/series/82/image/fanart?t=1773926455",
+ "genres": "Kaï,Science-Fiction,Action,Animation,Comédie,Drame",
+ "id": 82,
+ "ids": {
+  "imdb": null,
+  "tmdb": null,
+  "tvdb": null
+ },
+ "images": {
+  "banner": null,
+  "fanart": "https://metadata.fankai.fr/series/82/image/fanart?t=1773926455",
+  "logo": "https://metadata.fankai.fr/series/82/image/logo?t=1773926455",
+  "poster": "https://metadata.fankai.fr/series/82/image/poster?t=1773926455"
+ },
+ "last_update": 1773926455.2260718,
+ "links": {
+  "actors": "/series/82/actors",
+  "seasons": "/series/82/seasons"
+ },
+ "logo_image": "https://metadata.fankai.fr/series/82/image/logo?t=1773926455",
+ "original_title": "ハンター×ハンター",
+ "plot": "Gon Freecss est un jeune garçon âgé de 12 ans, rêvant de devenir hunter. Les hunters sont des citoyens d'élite autorisés à faire quasiment tout ce qu'ils souhaitent sur simple présentation de leur licence. Son père, Ging Freecss, qu'il ne connaît pas directement, est considéré comme un des plus grands hunters de son temps. C'est aussi pour le retrouver que Gon veut devenir hunter.",
+ "poster_image": "https://metadata.fankai.fr/series/82/image/poster?t=1773926455",
+ "premiered": "1999-10-16",
+ "rating": {
+  "name": "themoviedb",
+  "user": 0.0,
+  "value": 8.3,
+  "votes": 101
+ },
+ "rating_name": "themoviedb",
+ "rating_value": 8.3,
+ "rating_votes": 101,
+ "show_title": "Hunter x Hunter Kaï (1999)",
+ "statistics": {
+  "episodes_count": 2,
+  "first_aired": "2024-01-10",
+  "last_aired": "2025-07-13",
+  "seasons_count": 1
+ },
+ "status": "Continuing",
+ "studio": "Fan-Kai",
+ "theme_music": "https://metadata.fankai.fr/series/82/theme?t=1773926455",
+ "title": "Hunter x Hunter Kaï (1999)",
+ "title_for_plex": "Hunter x Hunter Kaï 1999",
+ "year": 1999
+}

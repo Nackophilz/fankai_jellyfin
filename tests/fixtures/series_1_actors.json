@@ -1,0 +1,60 @@
+{
+ "actors": [
+  {
+   "id": 1,
+   "name": "Khyinn",
+   "role": "Kaïeur",
+   "thumb_url": "https://static.wikia.nocookie.net/fan-kai/images/e/e6/Site-logo.png/revision/latest?cb=20230203203440&path-prefix=fr",
+   "total_appearances": 1
+  },
+  {
+   "id": 5,
+   "name": "Daisuke Namikawa",
+   "profile_url": "https://www.themoviedb.org/person/110665",
+   "role": "Rock",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/iw0X8oDutxaBAri3Ifga8nhdUJK.jpg",
+   "total_appearances": 1
+  },
+  {
+   "id": 2,
+   "name": "Hiroaki Hirata",
+   "profile_url": "https://www.themoviedb.org/person/84505",
+   "role": "Benny",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/mMWEdlssJm3TVuXW4Wb7pQeX20Z.jpg",
+   "total_appearances": 1
+  },
+  {
+   "id": 7,
+   "name": "Jun Karasawa",
+   "profile_url": "https://www.themoviedb.org/person/1243955",
+   "role": "Eda",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/tCEnBJ2nfK3ZtrMrYcd5x8sh3TW.jpg",
+   "total_appearances": 1
+  },
+  {
+   "id": 6,
+   "name": "Mami Koyama",
+   "profile_url": "https://www.themoviedb.org/person/1680",
+   "role": "Balalaika",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/4KjDxYsa7mMh8gbqSKCV2DixDAx.jpg",
+   "total_appearances": 1
+  },
+  {
+   "id": 4,
+   "name": "Megumi Toyoguchi",
+   "profile_url": "https://www.themoviedb.org/person/9710",
+   "role": "Revy",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/jH4KZp7VQuOPu79pYRKPIrEi8Us.jpg",
+   "total_appearances": 1
+  },
+  {
+   "id": 3,
+   "name": "Tsutomu Isobe",
+   "profile_url": "https://www.themoviedb.org/person/20661",
+   "role": "Dutch",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/qP5vQMIbLNvSsSFkEMLZRVt4ZW5.jpg",
+   "total_appearances": 1
+  }
+ ],
+ "actors_count": 7
+}

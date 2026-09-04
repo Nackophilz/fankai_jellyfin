@@ -1,0 +1,13 @@
+[project]
+name = "fankai-kodi"
+version = "0.0.0"
+description = "Scraper Kodi de séries TV pour l'API Fankai (metadata.fankai.fr)"
+requires-python = ">=3.8"
+
+[tool.pytest.ini_options]
+pythonpath = ["tests/stubs", "metadata.tvshows.fankai"]
+testpaths = ["tests"]
+markers = [
+    "live: tests qui interrogent la vraie API (désactivés par défaut)",
+]
+addopts = "-m 'not live'"

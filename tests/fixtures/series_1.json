@@ -1,0 +1,51 @@
+{
+ "banner_image": "https://metadata.fankai.fr/series/1/image/banner?t=1774045805",
+ "country": "Japon",
+ "date_added": "2006-09-04 14:40:00",
+ "fanart_image": "https://metadata.fankai.fr/series/1/image/fanart?t=1774045805",
+ "genres": "Henshū,Action,Aventure,Animation,Anime,Crime,Drame,Thriller",
+ "id": 1,
+ "ids": {
+  "imdb": null,
+  "tmdb": null,
+  "tvdb": null
+ },
+ "images": {
+  "banner": "https://metadata.fankai.fr/series/1/image/banner?t=1774045805",
+  "fanart": "https://metadata.fankai.fr/series/1/image/fanart?t=1774045805",
+  "logo": "https://metadata.fankai.fr/series/1/image/logo?t=1774045805",
+  "poster": "https://metadata.fankai.fr/series/1/image/poster?t=1774045805"
+ },
+ "last_update": 1774045805.4383416,
+ "links": {
+  "actors": "/series/1/actors",
+  "seasons": "/series/1/seasons"
+ },
+ "logo_image": "https://metadata.fankai.fr/series/1/image/logo?t=1774045805",
+ "original_title": "BLACK LAGOON",
+ "plot": "Okajima Rokuro est un jeune diplômé qui mène une vie morose depuis qu'il a intégré une grande firme japonaise. Sa triste existence va brusquement être bouleversée lorsqu'il va être pris en otage par une bande de pirates des mers venus lui dérober un disque au contenu douteux. D'abord malmené par Levi, la tête brulée du groupe, puis trahi par ses employeurs, Rokuro va se montrer plus casse-cou qu'il en a l'air et prendre goût à cette vie de mercenaires rythmée par les montées d'adrénaline. C'est ainsi que sous le surnom Rock, notre héros va rejoindre Dutch, Levi et Benny trois pirates des temps modernes.",
+ "poster_image": "https://metadata.fankai.fr/series/1/image/poster?t=1774045805",
+ "premiered": "2006-04-09",
+ "rating": {
+  "name": "themoviedb",
+  "user": 0.0,
+  "value": 8.0,
+  "votes": 313
+ },
+ "rating_name": "themoviedb",
+ "rating_value": 8.0,
+ "rating_votes": 313,
+ "show_title": "Black Lagoon Henshū",
+ "statistics": {
+  "episodes_count": 8,
+  "first_aired": "2019-04-08",
+  "last_aired": "2020-02-21",
+  "seasons_count": 3
+ },
+ "status": "Unknown",
+ "studio": "Fan-Kai",
+ "theme_music": "https://metadata.fankai.fr/series/1/theme?t=1774045805",
+ "title": "Black Lagoon Henshū",
+ "title_for_plex": "Black Lagoon Henshū",
+ "year": 2006
+}

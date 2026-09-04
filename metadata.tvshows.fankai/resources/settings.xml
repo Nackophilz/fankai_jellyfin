@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings version="1">
+  <section id="metadata.tvshows.fankai">
+    <category id="general" label="32000" help="">
+      <group id="1" label="32020">
+        <setting id="use_original_title" type="boolean" label="32001" help="32101">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="api_season_names" type="boolean" label="32002" help="32102">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="edit_type_as_tag" type="boolean" label="32003" help="32103">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="enable_trailer" type="boolean" label="32004" help="32104">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+    </category>
+    <category id="advanced" label="32010" help="">
+      <group id="1">
+        <setting id="verbose_log" type="boolean" label="32011" help="32111">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="base_url" type="string" label="32012" help="32112">
+          <level>3</level>
+          <default>https://metadata.fankai.fr</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>32012</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

@@ -1,0 +1,93 @@
+{
+ "seasons": [
+  {
+   "id": 3,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": null,
+    "poster": "https://metadata.fankai.fr/seasons/3/image/poster?t=1772808003"
+   },
+   "last_update": 1772808003.3822455,
+   "links": {
+    "episodes": "/seasons/3/episodes",
+    "serie": "/series/1"
+   },
+   "plot": "Okajima Rokuro est un jeune diplômé qui mène une vie morose depuis qu'il a intégré une grande firme japonaise. Sa triste existence va brusquement être bouleversée lorsqu'il va être pris en otage par une bande de pirates des mers venus lui dérober un disque au contenu douteux. D'abord malmené par Levi, la tête brulée du groupe, puis trahi par ses employeurs, Rokuro va se montrer plus casse-cou qu'il en a l'air et prendre goût à cette vie de mercenaires rythmée par les montées d'adrénaline. C'est ainsi que sous le surnom Rock, notre héros va rejoindre Dutch, Levi et Benny trois pirates des temps modernes.",
+   "premiered": "2019-04-08",
+   "season_number": 1,
+   "serie_id": 1,
+   "sort_title": "Saison 001",
+   "statistics": {
+    "episode_count": 4,
+    "episodes_with_thumbnails": 4,
+    "first_aired": "2019-04-08",
+    "last_aired": "2019-05-05"
+   },
+   "title": "Black Lagoon"
+  },
+  {
+   "id": 2,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": null,
+    "poster": "https://metadata.fankai.fr/seasons/2/image/poster?t=1772808003"
+   },
+   "last_update": 1772808003.3822455,
+   "links": {
+    "episodes": "/seasons/2/episodes",
+    "serie": "/series/1"
+   },
+   "plot": "Notre ancien homme d'affaires, Rock, maintenant employé à part entière de la compagnie Lagoon, continue son travail avec Revy, Dutch et Benny, et c'est la routine : trafics, guerre de gangs, livraisons en tout genre... Ce quotidien est perturbé par une vague de meurtres étranges semblant viser les membres des différentes familles mafieuses. Balalaïka décide de convoquer les différents chefs afin de démasquer le responsable.",
+   "premiered": "2019-05-23",
+   "season_number": 2,
+   "serie_id": 1,
+   "sort_title": "Saison 002",
+   "statistics": {
+    "episode_count": 3,
+    "episodes_with_thumbnails": 3,
+    "first_aired": "2019-05-23",
+    "last_aired": "2020-02-21"
+   },
+   "title": "Black Lagoon : Second Barrage"
+  },
+  {
+   "id": 1,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": null,
+    "poster": "https://metadata.fankai.fr/seasons/1/image/poster?t=1772808003"
+   },
+   "last_update": 1772808003.3822455,
+   "links": {
+    "episodes": "/seasons/1/episodes",
+    "serie": "/series/1"
+   },
+   "plot": "Le bienfaiteur de Roberta, le patriarche du clan Lovelace, est assassiné lors d’un rassemblement politique. La piste de l’assassin mène à Roanapur, Roberta est en quête de vengeance ! Cependant, derrière elle se trouve le nouveau patriarche, Garcia, ainsi que l’apprentie (et maid) de Roberta, Fabiola Iglesias. Le nombre de meurtres commis par Roberta augmente alors...",
+   "premiered": "2020-02-21",
+   "season_number": 3,
+   "serie_id": 1,
+   "sort_title": "Saison 003",
+   "statistics": {
+    "episode_count": 1,
+    "episodes_with_thumbnails": 1,
+    "first_aired": "2020-02-21",
+    "last_aired": "2020-02-21"
+   },
+   "title": "Black Lagoon : Roberta's Blood Trail"
+  }
+ ],
+ "seasons_count": 3,
+ "serie_title": "Black Lagoon Henshū"
+}

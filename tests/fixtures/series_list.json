@@ -1,0 +1,471 @@
+[
+ {
+  "banner_image": "https://metadata.fankai.fr/series/1/image/banner?t=1774045805",
+  "country": "Japon",
+  "date_added": "2006-09-04 14:40:00",
+  "fanart_image": "https://metadata.fankai.fr/series/1/image/fanart?t=1774045805",
+  "genres": "Henshū,Action,Aventure,Animation,Anime,Crime,Drame,Thriller",
+  "id": 1,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/1/image/banner?t=1774045805",
+   "fanart": "https://metadata.fankai.fr/series/1/image/fanart?t=1774045805",
+   "logo": "https://metadata.fankai.fr/series/1/image/logo?t=1774045805",
+   "poster": "https://metadata.fankai.fr/series/1/image/poster?t=1774045805"
+  },
+  "last_update": 1774045805.4383416,
+  "logo_image": "https://metadata.fankai.fr/series/1/image/logo?t=1774045805",
+  "original_title": "BLACK LAGOON",
+  "plot": "Okajima Rokuro est un jeune diplômé qui mène une vie morose depuis qu'il a intégré une grande firme japonaise. Sa triste existence va brusquement être bouleversée lorsqu'il va être pris en otage par une bande de pirates des mers venus lui dérober un disque au contenu douteux. D'abord malmené par Levi, la tête brulée du groupe, puis trahi par ses employeurs, Rokuro va se montrer plus casse-cou qu'il en a l'air et prendre goût à cette vie de mercenaires rythmée par les montées d'adrénaline. C'est ainsi que sous le surnom Rock, notre héros va rejoindre Dutch, Levi et Benny trois pirates des temps modernes.",
+  "poster_image": "https://metadata.fankai.fr/series/1/image/poster?t=1774045805",
+  "premiered": "2006-04-09",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.0,
+   "votes": 313
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.0,
+  "rating_votes": 313,
+  "show_title": "Black Lagoon Henshū",
+  "status": "Unknown",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/1/theme?t=1774045805",
+  "title": "Black Lagoon Henshū",
+  "title_for_plex": "Black Lagoon Henshū",
+  "year": 2006
+ },
+ {
+  "banner_image": null,
+  "country": "Japon",
+  "date_added": "2009-05-04 16:13:00",
+  "fanart_image": "https://metadata.fankai.fr/series/11/image/fanart?t=1774798802",
+  "genres": "Action,Aventure,Animation,Anime,Comédie,Fantastique,Science-Fiction",
+  "id": 11,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": null,
+   "fanart": "https://metadata.fankai.fr/series/11/image/fanart?t=1774798802",
+   "logo": null,
+   "poster": "https://metadata.fankai.fr/series/11/image/poster?t=1774798802"
+  },
+  "last_update": 1774798802.903227,
+  "logo_image": null,
+  "original_title": "ドラゴンボールゼット",
+  "plot": "Projet proposé par la team Kienzan et Mirolo, affiches créées par suirenrose.\r\n\r\nDragon Ball Z reprend cinq ans après le mariage de Son Goku. Radditz, un mystérieux guerrier de l'espace, arrive sur Terre pour retrouver Goku, qui apprend alors qu'il vient d'une planète de guerriers dont il ne reste plus que quatre survivants. La trame de l'histoire repose sur une succession d'adversaires à combattre, de plus en plus forts, mais il y a aussi fréquemment un contexte de quête ou de voyage qui donne un intérêt autre que les simples duels.",
+  "poster_image": "https://metadata.fankai.fr/series/11/image/poster?t=1774798802",
+  "premiered": "1989-04-26",
+  "show_title": "Dragon Ball Z Recut",
+  "sort_title": "Dragon Ball 2",
+  "status": "Ended",
+  "theme_music": "https://metadata.fankai.fr/series/11/theme?t=1774798802",
+  "title": "Dragon Ball Z Recut",
+  "title_for_plex": "Dragon Ball Z Recut",
+  "year": 1989
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/29/image/banner?t=1774045805",
+  "country": "Japon",
+  "date_added": "2009-05-04 16:13:00",
+  "fanart_image": "https://metadata.fankai.fr/series/29/image/fanart?t=1774045805",
+  "genres": "Yabai,Action,Aventure,Animation,Anime,Comédie,Fantastique,Science-Fiction",
+  "id": 29,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/29/image/banner?t=1774045805",
+   "fanart": "https://metadata.fankai.fr/series/29/image/fanart?t=1774045805",
+   "logo": "https://metadata.fankai.fr/series/29/image/logo?t=1774045805",
+   "poster": "https://metadata.fankai.fr/series/29/image/poster?t=1774045805"
+  },
+  "last_update": 1774045805.486346,
+  "logo_image": "https://metadata.fankai.fr/series/29/image/logo?t=1774045805",
+  "original_title": "ドラゴンボールゼット",
+  "plot": "Dragon Ball Z reprend cinq ans après le mariage de Son Goku. Radditz, un mystérieux guerrier de l'espace, arrive sur Terre pour retrouver Goku, qui apprend alors qu'il vient d'une planète de guerriers dont il ne reste plus que quatre survivants. La trame de l'histoire repose sur une succession d'adversaires à combattre, de plus en plus forts, mais il y a aussi fréquemment un contexte de quête ou de voyage qui donne un intérêt autre que les simples duels.",
+  "poster_image": "https://metadata.fankai.fr/series/29/image/poster?t=1774045805",
+  "premiered": "1989-04-26",
+  "show_title": "Dragon Ball Z Yabai",
+  "sort_title": "Dragon Ball 2",
+  "status": "Ended",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/29/theme?t=1774045805",
+  "title": "Dragon Ball Z Yabai",
+  "title_for_plex": "Dragon Ball Z Yabai",
+  "year": 1989
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/35/image/banner?t=1773926455",
+  "country": "Japon",
+  "date_added": "2004-06-04 00:27:00",
+  "fanart_image": "https://metadata.fankai.fr/series/35/image/fanart?t=1773926455",
+  "genres": "Kaï,Animation,Anime,Crime,Drame,Horreur,Mystère,Thriller",
+  "id": 35,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/35/image/banner?t=1773926455",
+   "fanart": "https://metadata.fankai.fr/series/35/image/fanart?t=1773926455",
+   "logo": "https://metadata.fankai.fr/series/35/image/logo?t=1773926455",
+   "poster": "https://metadata.fankai.fr/series/35/image/poster?t=1773926455"
+  },
+  "last_update": 1773926455.5981052,
+  "logo_image": "https://metadata.fankai.fr/series/35/image/logo?t=1773926455",
+  "original_title": "MONSTER",
+  "plot": "L'histoire se déroule en Allemagne, en 1986, à Düsseldorf. Kenzo Tenma, le personnage principal, est un jeune neurochirurgien très talentueux, destiné à une brillante carrière et fiancé à la fille du directeur de l'hôpital, Eva Heinman. Mais un jour il refuse de soigner le maire et préfère soigner un garçon blessé d'une balle dans la tête. Sa sœur jumelle est aussi internée dans l'hôpital car elle est très choquée. Leurs parents (adoptifs) ont été assassinés sauvagement. Le garçon s'en sort, mais le maire meurt, faute de soins. Tenma est alors rétrogradé par le directeur de l'hôpital et Eva le quitte. Peu de temps après, le garçon et sa sœur disparaissent. Neuf ans plus tard alors que Tenma est sur le point de devenir le directeur d'hôpital, il est accusé de meurtre qui ont en fait été commis par Johann, ce garçon de 11 ans qu'il avait sauvé. Dès lors l'inspecteur Rünge, un homme de caractère et de confiance prend en charge l'enquête. Il poursuit Tenma sans relâche tandis que ce-dernier poursuit Johann ; car Tenma, qui se demande s'il n'a pas sauvé un \"Monstre\", sait que les meurtres sont \"l'œuvre\" de son ancien patient.",
+  "poster_image": "https://metadata.fankai.fr/series/35/image/poster?t=1773926455",
+  "premiered": "2004-04-07",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.6,
+   "votes": 377
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.6,
+  "rating_votes": 377,
+  "show_title": "Monster Kaï",
+  "status": "En suspens",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/35/theme?t=1773926455",
+  "title": "Monster Kaï",
+  "title_for_plex": "Monster Kaï",
+  "year": 2004
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/42/image/banner?t=1774045805",
+  "country": "Japon",
+  "date_added": "2012-07-08 22:46:00",
+  "fanart_image": "https://metadata.fankai.fr/series/42/image/fanart?t=1774045805",
+  "genres": "Kaï,Action,Aventure,Animation,Anime,Fantastique,Romance,Science-Fiction,Thriller",
+  "id": 42,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/42/image/banner?t=1774045805",
+   "fanart": "https://metadata.fankai.fr/series/42/image/fanart?t=1774045805",
+   "logo": "https://metadata.fankai.fr/series/42/image/logo?t=1774045805",
+   "poster": "https://metadata.fankai.fr/series/42/image/poster?t=1774045805"
+  },
+  "last_update": 1774045805.678363,
+  "logo_image": "https://metadata.fankai.fr/series/42/image/logo?t=1774045805",
+  "original_title": "ソードアート・オンライン",
+  "plot": "En 2022, l'humanité a réussi à créer une réalité virtuelle. Grâce à un casque, les humains peuvent se plonger entièrement dans le monde virtuel en étant comme déconnectés de la réalité, et Sword Art Online est le premier MMORPG a utiliser ce système. Mais voila que le premier jour de jeu, 10 000 personnes se retrouvent piégées dans cette réalité virtuelle par son créateur : Akihiko Kayaba. Le seul moyen d'en sortir est de finir le jeu. Mais ce ne sera pas facile de sortir de ce monde virtuel puisque si un joueur perd la partie, il meurt également dans la vraie vie. Kirito décide alors de partir à la conquête du jeu en solo, avec pour avantage le fait de faire partie des 1 000 ex-bêta-testeurs, mais arrivera-t-il à terminer les 99 donjons et leurs boss ?",
+  "poster_image": "https://metadata.fankai.fr/series/42/image/poster?t=1774045805",
+  "premiered": "2012-07-08",
+  "show_title": "Sword Art Online Kaï",
+  "status": "Ended",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/42/theme?t=1774045805",
+  "title": "Sword Art Online Kaï",
+  "title_for_plex": "Sword Art Online Kaï",
+  "year": 2012
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/48/image/banner?t=1774045805",
+  "country": "Japon",
+  "date_added": "2024-06-17 13:18:00",
+  "fanart_image": "https://metadata.fankai.fr/series/48/image/fanart?t=1774045805",
+  "genres": "Henshū,Animation,Drame,Crime,Mystère",
+  "id": 48,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/48/image/banner?t=1774045805",
+   "fanart": "https://metadata.fankai.fr/series/48/image/fanart?t=1774045805",
+   "logo": "https://metadata.fankai.fr/series/48/image/logo?t=1774045805",
+   "poster": "https://metadata.fankai.fr/series/48/image/poster?t=1774045805"
+  },
+  "last_update": 1774045805.5903554,
+  "logo_image": "https://metadata.fankai.fr/series/48/image/logo?t=1774045805",
+  "original_title": "MONSTER",
+  "plot": "L'histoire se déroule en Allemagne, en 1986, à Düsseldorf. Kenzo Tenma, le personnage principal, est un jeune neurochirurgien très talentueux, destiné à une brillante carrière et fiancé à la fille du directeur de l'hôpital, Eva Heinman. Mais un jour il refuse de soigner le maire et préfère soigner un garçon blessé d'une balle dans la tête. Sa sœur jumelle est aussi internée dans l'hôpital car elle est très choquée. Leurs parents (adoptifs) ont été assassinés sauvagement. Le garçon s'en sort, mais le maire meurt, faute de soins. Tenma est alors rétrogradé par le directeur de l'hôpital et Eva le quitte. Peu de temps après, le garçon et sa sœur disparaissent. Neuf ans plus tard alors que Tenma est sur le point de devenir le directeur d'hôpital, il est accusé de meurtre qui ont en fait été commis par Johann, ce garçon de 11 ans qu'il avait sauvé. Dès lors l'inspecteur Rünge, un homme de caractère et de confiance prend en charge l'enquête. Il poursuit Tenma sans relâche tandis que ce-dernier poursuit Johann ; car Tenma, qui se demande s'il n'a pas sauvé un \"Monstre\", sait que les meurtres sont \"l'œuvre\" de son ancien patient.",
+  "poster_image": "https://metadata.fankai.fr/series/48/image/poster?t=1774045805",
+  "premiered": "2004-04-06",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.5,
+   "votes": 528
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.5,
+  "rating_votes": 528,
+  "show_title": "Monster Henshū",
+  "status": "Ended",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/48/theme?t=1774045805",
+  "title": "Monster Henshū",
+  "title_for_plex": "Monster Henshū",
+  "trailer_url": "plugin://plugin.video.youtube/play/?video_id=HlKFS84WFzY",
+  "year": 2004
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/53/image/banner?t=1774045805",
+  "country": "Japon",
+  "date_added": "1999-10-20 15:51:00",
+  "fanart_image": "https://metadata.fankai.fr/series/53/image/fanart?t=1774045805",
+  "genres": "Kaï,Action,Aventure,Animation,Anime,Comédie,Drame,Fantastique",
+  "id": 53,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/53/image/banner?t=1774045805",
+   "fanart": "https://metadata.fankai.fr/series/53/image/fanart?t=1774045805",
+   "logo": "https://metadata.fankai.fr/series/53/image/logo?t=1774045805",
+   "poster": "https://metadata.fankai.fr/series/53/image/poster?t=1774045805"
+  },
+  "last_update": 1774045805.622358,
+  "logo_image": "https://metadata.fankai.fr/series/53/image/logo?t=1774045805",
+  "original_title": "ワンピース",
+  "plot": "Monkey D. Luffy rêve de retrouver ce trésor légendaire et de devenir le nouveau \"Roi des Pirates\". Après avoir mangé un fruit du démon, il possède un pouvoir lui permettant de réaliser son rêve. Il lui faut maintenant trouver un équipage pour partir à l'aventure !",
+  "poster_image": "https://metadata.fankai.fr/series/53/image/poster?t=1774045805",
+  "premiered": "1999-10-20",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.7,
+   "votes": 3633
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.7,
+  "rating_votes": 3633,
+  "show_title": "One Piece Kaï",
+  "status": "Continuing",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/53/theme?t=1774045805",
+  "title": "One Piece Kaï",
+  "title_for_plex": "One Piece Kaï",
+  "year": 1999
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/67/image/banner?t=1774045805",
+  "country": "Japon",
+  "date_added": "1999-10-20 15:51:00",
+  "fanart_image": "https://metadata.fankai.fr/series/67/image/fanart?t=1774045805",
+  "genres": "Yabai,Action,Aventure,Animation,Anime,Comédie,Drame,Fantastique",
+  "id": 67,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/67/image/banner?t=1774045805",
+   "fanart": "https://metadata.fankai.fr/series/67/image/fanart?t=1774045805",
+   "logo": "https://metadata.fankai.fr/series/67/image/logo?t=1774045805",
+   "poster": "https://metadata.fankai.fr/series/67/image/poster?t=1774045805"
+  },
+  "last_update": 1774045805.630359,
+  "logo_image": "https://metadata.fankai.fr/series/67/image/logo?t=1774045805",
+  "original_title": "ワンピース",
+  "plot": "Monkey D. Luffy rêve de retrouver ce trésor légendaire et de devenir le nouveau \"Roi des Pirates\". Après avoir mangé un fruit du démon, il possède un pouvoir lui permettant de réaliser son rêve. Il lui faut maintenant trouver un équipage pour partir à l'aventure !",
+  "poster_image": "https://metadata.fankai.fr/series/67/image/poster?t=1774045805",
+  "premiered": "1999-10-20",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.7,
+   "votes": 3633
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.7,
+  "rating_votes": 3633,
+  "show_title": "One Piece Yabai",
+  "status": "Continuing",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/67/theme?t=1774045805",
+  "title": "One Piece Yabai",
+  "title_for_plex": "One Piece Yabai",
+  "year": 1999
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/71/image/banner?t=1774045805",
+  "country": "Japon",
+  "date_added": "2011-10-02 00:20:00",
+  "fanart_image": "https://metadata.fankai.fr/series/71/image/fanart?t=1774045805",
+  "genres": "Kaï,Action,Aventure,Animation,Anime,Comédie,Drame,Fantastique",
+  "id": 71,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/71/image/banner?t=1774045805",
+   "fanart": "https://metadata.fankai.fr/series/71/image/fanart?t=1774045805",
+   "logo": "https://metadata.fankai.fr/series/71/image/logo?t=1774045805",
+   "poster": "https://metadata.fankai.fr/series/71/image/poster?t=1774045805"
+  },
+  "last_update": 1774045805.5463514,
+  "logo_image": "https://metadata.fankai.fr/series/71/image/logo?t=1774045805",
+  "original_title": "ハンターｘハンター",
+  "plot": "Le jeune Gon vit sur une petite île avec sa tante. Abandonné par son père qui est un Hunter, à la fois un aventurier et un chasseur de primes, Gon décide à l'âge de 12 ans de partir pour devenir un Hunter. Cela ne sera pas chose aisée, il devra passer une suite de tests et examens en compagnie de milliers d'autres prétendants au titre de Hunter. Il sera aidé par de nouvelles connaissances qui aspirent au même but que lui tel que Kurapika, Leorio et Killua.",
+  "poster_image": "https://metadata.fankai.fr/series/71/image/poster?t=1774045805",
+  "premiered": "2011-10-02",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.7,
+   "votes": 1338
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.7,
+  "rating_votes": 1338,
+  "show_title": "Hunter x Hunter Kaï (2011)",
+  "status": "Ended",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/71/theme?t=1774045805",
+  "title": "Hunter x Hunter Kaï (2011)",
+  "title_for_plex": "Hunter x Hunter Kaï 2011",
+  "year": 2011
+ },
+ {
+  "banner_image": null,
+  "country": "Japon",
+  "date_added": "1999-10-16 01:07:00",
+  "fanart_image": "https://metadata.fankai.fr/series/82/image/fanart?t=1773926455",
+  "genres": "Kaï,Science-Fiction,Action,Animation,Comédie,Drame",
+  "id": 82,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": null,
+   "fanart": "https://metadata.fankai.fr/series/82/image/fanart?t=1773926455",
+   "logo": "https://metadata.fankai.fr/series/82/image/logo?t=1773926455",
+   "poster": "https://metadata.fankai.fr/series/82/image/poster?t=1773926455"
+  },
+  "last_update": 1773926455.2260718,
+  "logo_image": "https://metadata.fankai.fr/series/82/image/logo?t=1773926455",
+  "original_title": "ハンター×ハンター",
+  "plot": "Gon Freecss est un jeune garçon âgé de 12 ans, rêvant de devenir hunter. Les hunters sont des citoyens d'élite autorisés à faire quasiment tout ce qu'ils souhaitent sur simple présentation de leur licence. Son père, Ging Freecss, qu'il ne connaît pas directement, est considéré comme un des plus grands hunters de son temps. C'est aussi pour le retrouver que Gon veut devenir hunter.",
+  "poster_image": "https://metadata.fankai.fr/series/82/image/poster?t=1773926455",
+  "premiered": "1999-10-16",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.3,
+   "votes": 101
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.3,
+  "rating_votes": 101,
+  "show_title": "Hunter x Hunter Kaï (1999)",
+  "status": "Continuing",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/82/theme?t=1773926455",
+  "title": "Hunter x Hunter Kaï (1999)",
+  "title_for_plex": "Hunter x Hunter Kaï 1999",
+  "year": 1999
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/85/image/banner?t=1775416805",
+  "country": "Japon",
+  "date_added": "2016-07-12 17:45:00",
+  "fanart_image": "https://metadata.fankai.fr/series/85/image/fanart?t=1775416805",
+  "genres": "Henshū,Animation,Anime,Action,Comédie,Fantastique",
+  "id": 85,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/85/image/banner?t=1775416805",
+   "fanart": "https://metadata.fankai.fr/series/85/image/fanart?t=1775416805",
+   "logo": "https://metadata.fankai.fr/series/85/image/logo?t=1775416805",
+   "poster": "https://metadata.fankai.fr/series/85/image/poster?t=1775416805"
+  },
+  "last_update": 1775416805.8044355,
+  "logo_image": "https://metadata.fankai.fr/series/85/image/logo?t=1775416805",
+  "original_title": "モブサイコ100",
+  "plot": "Shigeo Kageyama est un collégien de 14 ans qui est appelé \"Mob\" à cause de son manque de présence. Pourtant, il est en réalité un puissant Médium. Au fur et à mesure qu'il grandit, Mob réalise que son pouvoir psychique est dangereux. Pour éviter de perdre le contrôle de sa puissance, il se renferme sur lui-même et s'isole. Cependant, à cause de ces émotions refoulées grandissant de plus en plus en lui, son pouvoir menace d'atteindre ses limites.",
+  "poster_image": "https://metadata.fankai.fr/series/85/image/poster?t=1775416805",
+  "premiered": "2016-07-12",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.6,
+   "votes": 949
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.6,
+  "rating_votes": 949,
+  "show_title": "Mob Psycho 100 Henshū",
+  "status": "Ended",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/85/theme?t=1775416805",
+  "title": "Mob Psycho 100 Henshū",
+  "title_for_plex": "Mob Psycho 100 Henshū",
+  "year": 2016
+ },
+ {
+  "banner_image": "https://metadata.fankai.fr/series/114/image/banner?t=1786641605",
+  "country": "Japon",
+  "date_added": "2026-08-13 18:54:00",
+  "fanart_image": "https://metadata.fankai.fr/series/114/image/fanart?t=1786641605",
+  "genres": "Henshū,Animation,Anime,Drame,Romance,Suspens",
+  "id": 114,
+  "ids": {
+   "imdb": null,
+   "tmdb": null,
+   "tvdb": null
+  },
+  "images": {
+   "banner": "https://metadata.fankai.fr/series/114/image/banner?t=1786641605",
+   "fanart": "https://metadata.fankai.fr/series/114/image/fanart?t=1786641605",
+   "logo": "https://metadata.fankai.fr/series/114/image/logo?t=1786641605",
+   "poster": "https://metadata.fankai.fr/series/114/image/poster?t=1786641605"
+  },
+  "last_update": 1786641605.1835117,
+  "logo_image": "https://metadata.fankai.fr/series/114/image/logo?t=1786641605",
+  "mpaa": "FR:12",
+  "original_title": "ようこそ実力至上主義の教室へ",
+  "plot": "Kiyotaka Ayanokôji intègre le prestigieux lycée de haut niveau de Tokyo où, une fois le diplôme en poche, quasiment 100 % des élèves trouvent un travail ou sont reçus à l’université. Pas de chance, il se retrouve dans la 2de D où finissent tous les élèves à problèmes ! Mais au bout d’un mois, Kiyotaka et ses camarades de classe découvrent l’envers du décor et le terrible système sur lequel repose le fonctionnement de cette école…",
+  "poster_image": "https://metadata.fankai.fr/series/114/image/poster?t=1786641605",
+  "premiered": "2017-07-12",
+  "rating": {
+   "name": "themoviedb",
+   "user": 0.0,
+   "value": 8.4,
+   "votes": 848
+  },
+  "rating_name": "themoviedb",
+  "rating_value": 8.4,
+  "rating_votes": 848,
+  "show_title": "Classroom of the Elite",
+  "status": "Continuing",
+  "studio": "Fan-Kai",
+  "theme_music": "https://metadata.fankai.fr/series/114/theme?t=1786641605",
+  "title": "Classroom of the Elite",
+  "title_for_plex": "Classroom of the Elite",
+  "trailer_url": "plugin://plugin.video.youtube/play/?video_id=RTvdxGyWV6c",
+  "year": 2017
+ }
+]
