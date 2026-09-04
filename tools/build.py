@@ -89,14 +89,23 @@ def write_index(directory: Path, title: str, body: str) -> None:
         PAGE.format(title=html.escape(title), body=body), encoding='utf-8')
 
 
-def listing(directory: Path) -> str:
-    entries = sorted(p for p in directory.iterdir() if p.name != 'index.html')
+def listing(directory: Path, notes=None) -> str:
+    """Liste le dossier, un lien par entrée.
+
+    Kodi affiche une entrée par `<a href>` : un même fichier lié deux fois
+    apparaît en double dans le navigateur de fichiers.
+    """
+    notes = notes or {}
     items = []
-    for p in entries:
-        size = '' if p.is_dir() else ' <span style="color:#9a9aa4">({} ko)</span>'.format(
-            p.stat().st_size // 1024)
+    for p in sorted(directory.iterdir()):
+        if p.name == 'index.html' or p.name.startswith('.'):
+            continue
         name = p.name + ('/' if p.is_dir() else '')
-        items.append('<li><a href="{0}">{0}</a>{1}</li>'.format(html.escape(name), size))
+        detail = notes.get(p.name)
+        if detail is None and not p.is_dir():
+            detail = '{} ko'.format(p.stat().st_size // 1024)
+        suffix = ' <span style="color:#9a9aa4">— {}</span>'.format(detail) if detail else ''
+        items.append('<li><a href="{0}">{0}</a>{1}</li>'.format(html.escape(name), suffix))
     return '<ul class="files">\n{}\n</ul>'.format('\n'.join(items))
 
 
@@ -119,18 +128,15 @@ def write_site(addon_version: str, repo_version: str) -> None:
 <p>Le dépôt installé, les mises à jour de l'add-on se font ensuite toutes seules.
 Si Kodi refuse le zip, activer <em>Paramètres → Système → Modules complémentaires → Sources inconnues</em>.</p>
 
-<h2>Téléchargements</h2>
-<ul class="files">
-<li><a href="{repo_zip}">{repo_zip}</a> — le dépôt (à installer en premier)</li>
-<li><a href="{addon_id}/{addon_id}-{addon_version}.zip">{addon_id}-{addon_version}.zip</a> — le scraper seul (mises à jour manuelles)</li>
-</ul>
-
 <h2>Fichiers</h2>
 {files}
 
 <p style="margin-top:2rem"><a href="https://github.com/Nackophilz/fankai_kodi">Code source</a></p>""".format(
-        url=SITE_URL, repo_zip=repo_zip, addon_id=ADDON_ID,
-        addon_version=addon_version, files=listing(OUT_DIR))
+        url=SITE_URL, repo_zip=repo_zip,
+        files=listing(OUT_DIR, {
+            repo_zip: 'le dépôt, à installer en premier',
+            ADDON_ID: 'le scraper seul (mises à jour manuelles)',
+        }))
     write_index(OUT_DIR, 'Dépôt Kodi Fankai', body)
 
     for addon_id in (ADDON_ID, REPO_ID):
