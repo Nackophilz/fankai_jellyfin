@@ -6,8 +6,8 @@
 
 _Les métadonnées ultimes pour la communauté Kaï._
 
-[![.NET Version](https://img.shields.io/badge/.NET-8.0-512BD4.svg?logo=dotnet)](https://dotnet.microsoft.com/)
-[![Jellyfin](https://img.shields.io/badge/Jellyfin-10.9%2B-00A4DC?logo=jellyfin)](https://jellyfin.org/)
+[![.NET Version](https://img.shields.io/badge/.NET-10.0%20%7C%208.0-512BD4.svg?logo=dotnet)](https://dotnet.microsoft.com/)
+[![Jellyfin](https://img.shields.io/badge/Jellyfin-12.0%2B-00A4DC?logo=jellyfin)](https://jellyfin.org/)
 [![Emby](https://img.shields.io/badge/Emby-4.8%2B-52B54B?logo=emby)](https://emby.media/)
 [![License](https://img.shields.io/github/license/Nackophilz/fankai_jellyfin)](LICENSE)
 
@@ -30,9 +30,11 @@ Ce plugin n'est pas qu'un simple scraper. Il intègre des algorithmes avancés p
 
 ## 🚀 Installation
 
-Notre architecture hybride en **.NET 8** permet au plugin de tourner nativement sur les deux plateformes leaders du marché.
+Notre architecture hybride permet au plugin de tourner nativement sur les deux plateformes leaders du marché : la build Jellyfin est en **.NET 10** (requis par Jellyfin 12.x), la build Emby reste en **.NET 8**.
 
-### 🔵 Pour Jellyfin (v10.9.0 ou supérieure)
+### 🔵 Pour Jellyfin (v12.0 ou supérieure)
+
+> _⚠️ Jellyfin 12.0 a abandonné .NET 8 et l'API 10.9. Les serveurs Jellyfin 10.x doivent rester sur la dernière version 3.0.x du plugin, qui reste proposée automatiquement par le dépôt._
 
 L'installation est entièrement automatisée via le système de dépôt Jellyfin.
 

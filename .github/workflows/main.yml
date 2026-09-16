@@ -23,7 +23,10 @@ jobs:
       - name: Configuration du SDK .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          # Jellyfin 12.x exige .NET 10 ; Emby 4.9 reste sur .NET 8.
+          dotnet-version: |
+            8.0.x
+            10.0.x
 
       - name: Extraction de la version du plugin
         id: get_version
@@ -152,7 +155,10 @@ jobs:
           REPO="${{ github.repository }}"
           
           # --- JELLYFIN ---
-          ABI_JF="10.9.0.0"
+          # Le plugin cible désormais l'API Jellyfin 12.x (.NET 10).
+          # Les anciennes entrées 10.9.0.0 restent dans le manifeste : les serveurs
+          # 10.x continueront donc de se voir proposer la dernière 3.0.x compatible.
+          ABI_JF="12.0.0.0"
           ZIP_JF_NAME="${{ steps.zip_jellyfin.outputs.ZIP_NAME }}"
           SUM_JF="${{ steps.meta.outputs.JF_CHECKSUM }}"
           URL_JF="https://github.com/$REPO/releases/download/v$VERSION/$ZIP_JF_NAME"
