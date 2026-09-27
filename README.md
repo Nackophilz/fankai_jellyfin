@@ -25,14 +25,14 @@ Le plugin **Fankai** est un pont direct entre votre serveur multimédia et l'API
 
 Ce plugin n'est pas qu'un simple scraper. Il intègre des algorithmes avancés pour garantir une correspondance parfaite :
 
-* 🎵 **Thèmes Musicaux Automatiques :** Télécharge automatiquement les musiques thématiques de vos séries (`theme.mp3`) et utilise **FFmpeg en arrière-plan** pour s'assurer que l'encodage audio est parfaitement lisible par vos clients.
+* 🎵 **Thèmes Musicaux Automatiques :** Télécharge automatiquement les musiques thématiques de vos séries (`theme.mp3`) et utilise **FFmpeg en arrière-plan** pour s'assurer que l'encodage audio est parfaitement lisible par vos clients (Jellyfin et Emby uniquement).
 * 🖼️ **Images Haute Qualité :** Récupération des Affiches (Posters), Fanarts (Backdrops), Bannières, Logos et Vignettes d'épisodes (Thumbs).
 * 🗂️ **Ordonnancement Intelligent :** Support du mode d'affichage "Absolute" (absolu) requis pour les longs animes comme One Piece.
 * 👥 **Casting complet :** Remontée des acteurs et de leurs rôles avec photos de profil.
 
 ## 🚀 Installation
 
-Notre architecture hybride permet au plugin de tourner nativement sur les deux plateformes leaders du marché : une build **.NET 8** pour Jellyfin 10.9+ et Emby, une build **.NET 10** pour Jellyfin 12. Kodi dispose de son propre add-on, en Python, alimenté par la même API.
+Le plugin tourne nativement sur Jellyfin et Emby (une build **.NET 8** pour Jellyfin 10.9+ et Emby, une build **.NET 10** pour Jellyfin 12). Kodi dispose de son propre add-on, en Python, alimenté par la même API.
 
 ### 🔵 Pour Jellyfin (v10.9.0 ou supérieure, y compris 12.x)
 
@@ -70,9 +70,26 @@ L'add-on s'installe depuis le dépôt Kodi Fankai, qui le maintient ensuite à j
 2. **Modules complémentaires** ➔ **Installer depuis un fichier zip** ➔ `repository.fankai-x.y.z.zip`.
 3. **Installer depuis un dépôt** ➔ **Dépôt Fankai** ➔ **Fournisseurs d'informations** ➔ **Fournisseurs de séries TV** ➔ **Fankai**.
 
-> _⚠️ Kodi ne scanne que les fichiers nommés avec `SxxExx`. Le nommage attendu, la configuration de la médiathèque et les réglages sont détaillés dans le [README de l'add-on Kodi](kodi/README.md)._
+> _⚠️ Kodi ne scanne que les fichiers nommés avec `SxxExx` : voir [Nommage de vos fichiers](#-nommage-de-vos-fichiers)._
+
+## 📁 Nommage de vos fichiers
+
+Dans l'idéal, vos séries doivent suivre le **nommage normé Fan-Kai** : un dossier par série au titre Fan-Kai, des sous-dossiers `Saison 1`, `Saison 2`… (`Specials` pour les films et spéciaux), et des fichiers au format de l'API, par exemple :
+
+```text
+Ao Ashi Henshū/
+└── Saison 1/
+    └── Ao Ashi Henshū.S01E01.VOSTFR.1080p.x264-FANKAI.mkv
+```
+
+Pour ça, rien de mieux que **[FanKarr](https://github.com/Masutayunikon/FanKarr)** de Masutayunikon : il range vos séries et renomme vos fichiers exactement au format attendu. 🙌
+
+* **Jellyfin / Emby** reconnaissent aussi la plupart des noms d'origine, mais le nommage normé reste le plus fiable.
+* **Kodi** l'exige : un fichier sans `SxxExx` dans son nom est ignoré silencieusement.
 
 ## ⚙️ Comment l'utiliser ?
+
+### Jellyfin / Emby
 
 Pour que le plugin opère sa magie, vous devez dire à votre serveur de l'utiliser :
 
@@ -80,6 +97,10 @@ Pour que le plugin opère sa magie, vous devez dire à votre serveur de l'utilis
 2. Dans **Récupérateurs de métadonnées** (Metadata Providers), cochez **Fankai**.
 3. (Optionnel mais recommandé) Remontez "Fankai" tout en haut de la liste pour qu'il soit prioritaire.
 4. Lancez une analyse complète (Scan / Refresh Metadata) de votre bibliothèque.
+
+### Kodi
+
+Sur la source vidéo qui contient vos séries : **Définir le contenu** ➔ **Séries TV** ➔ fournisseur d'informations **Fankai**, puis lancez un scan. Les réglages sont détaillés dans le [README de l'add-on Kodi](kodi/README.md).
 
 ## 🛠️ Pour les Développeurs
 
@@ -102,7 +123,7 @@ dotnet publish jellyfin-emby/Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.cspro
 dotnet publish jellyfin-emby/Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj -c Emby
 ```
 
-Côté Kodi, les tests et la publication sont décrits dans [`kodi/README.md`](kodi/README.md#développement).
+Côté Kodi, les tests et la publication sont décrits dans [`kodi/README.md`](kodi/README.md).
 
 ---
 *Fait avec ❤️ par la communauté Fankai.*
