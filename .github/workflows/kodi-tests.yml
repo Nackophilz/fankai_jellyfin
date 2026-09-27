@@ -1,9 +1,15 @@
-name: Tests
+name: "Kodi : tests"
 
 on:
   push:
     branches: [main]
+    paths:
+      - 'kodi/**'
+      - '.github/workflows/kodi-tests.yml'
   pull_request:
+    paths:
+      - 'kodi/**'
+      - '.github/workflows/kodi-tests.yml'
 
 jobs:
   pytest:
@@ -14,6 +20,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python: ['3.8', '3.12']
+    defaults:
+      run:
+        working-directory: kodi
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

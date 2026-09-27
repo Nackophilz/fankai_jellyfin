@@ -44,8 +44,8 @@ def make_fanart(background_path: Path) -> Image.Image:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--logo', type=Path, default=ROOT.parent / 'fankai_pack' / 'assets' / 'Logo_Fankai.png')
-    parser.add_argument('--background', type=Path, default=ROOT.parent / 'fankai_pack' / 'assets' / 'fankai.png')
+    parser.add_argument('--logo', type=Path, default=ROOT.parent.parent / 'fankai_pack' / 'assets' / 'Logo_Fankai.png')
+    parser.add_argument('--background', type=Path, default=ROOT.parent.parent / 'fankai_pack' / 'assets' / 'fankai.png')
     args = parser.parse_args()
     for path in (args.logo, args.background):
         if not path.exists():

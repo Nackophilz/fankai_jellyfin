@@ -1,13 +1,13 @@
-name: Release
+name: "Kodi : release"
 
 on:
   push:
     branches: [main]
     paths:
-      - 'metadata.tvshows.fankai/**'
-      - 'repository.fankai/**'
-      - 'tools/build.py'
-      - '.github/workflows/release.yml'
+      - 'kodi/metadata.tvshows.fankai/**'
+      - 'kodi/repository.fankai/**'
+      - 'kodi/tools/build.py'
+      - '.github/workflows/kodi-release.yml'
   workflow_dispatch:
 
 permissions:
@@ -16,7 +16,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: release
+  group: kodi-release
   cancel-in-progress: false
 
 jobs:
@@ -25,6 +25,9 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.pages.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: kodi
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,18 +60,20 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./repo
+          path: ./kodi/repo
 
       - name: Publication du dépôt sur GitHub Pages
         id: pages
         uses: actions/deploy-pages@v4
 
+      # Préfixe `kodi-` : les tags `v*` appartiennent au plugin Jellyfin/Emby, qui
+      # a déjà publié des 1.0.x. `--latest=false` laisse la release Jellyfin en tête.
       - name: Release GitHub
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          TAG="v$VERSION"
+          TAG="kodi-v$VERSION"
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "La release $TAG existe déjà : pas de nouvelle release (bump de version requis)."
             exit 0
@@ -77,5 +82,6 @@ jobs:
           gh release create "$TAG" \
             repo/metadata.tvshows.fankai/*.zip \
             repo/repository.fankai/*.zip \
-            --title "$TAG" \
-            --notes-file release_notes.md
+            --title "Kodi $VERSION" \
+            --notes-file release_notes.md \
+            --latest=false

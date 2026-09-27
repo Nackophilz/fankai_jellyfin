@@ -2,7 +2,7 @@
 
 Fournisseur d'informations (« scraper ») de séries TV pour **Kodi**, alimenté par l'API communautaire
 [metadata.fankai.fr](https://metadata.fankai.fr). C'est l'équivalent du
-[plugin Jellyfin/Emby](https://github.com/Nackophilz/fankai_plugin) pour les Kai.
+[plugin Jellyfin/Emby](../README.md), avec lequel il partage ce dépôt, pour les Kai.
 
 Ce que l'add-on remplit dans la médiathèque Kodi :
 
@@ -123,10 +123,12 @@ titre exact.
 
 ## Développement
 
+Commandes à lancer depuis `kodi/` :
+
 ```bash
 python -m pytest            # tests hors Kodi (stubs xbmc* dans tests/stubs)
 python tools/build.py       # zips + addons.xml dans repo/
-python tools/make_assets.py # icône et fanart depuis ../fankai_pack/assets (Pillow)
+python tools/make_assets.py # icône et fanart depuis ../../fankai_pack/assets (Pillow)
 ```
 
 Le code doit rester compatible **Python 3.8** (version embarquée par Kodi 20/21 sur Windows et Android) ;
@@ -139,8 +141,8 @@ Pour tester dans Kodi sans passer par le dépôt : installer le zip produit par 
 
 1. Incrémenter `version` dans `metadata.tvshows.fankai/addon.xml` et compléter `<news>`.
 2. Pousser sur `main` : la CI joue les tests, construit les zips, publie le site du dépôt sur GitHub Pages
-   et crée la release GitHub `v<version>` avec le message du dernier commit comme notes.
+   et crée la release GitHub `kodi-v<version>` avec le message du dernier commit comme notes.
 
 ## Licence
 
-MIT. Voir [LICENSE](LICENSE).
+MIT. Voir [LICENSE](../LICENSE).
