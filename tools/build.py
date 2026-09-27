@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / 'repo'
 ADDON_ID = 'metadata.tvshows.fankai'
 REPO_ID = 'repository.fankai'
-SITE_URL = 'https://nackophilz.github.io/fankai_kodi/'
+SITE_URL = 'https://nackophilz.github.io/fankai_plugin/'
 
 EXCLUDED_DIRS = {'__pycache__', '.pytest_cache', 'tests'}
 EXCLUDED_SUFFIXES = ('.pyc', '.pyo')
@@ -131,7 +131,7 @@ Si Kodi refuse le zip, activer <em>Paramètres → Système → Modules complém
 <h2>Fichiers</h2>
 {files}
 
-<p style="margin-top:2rem"><a href="https://github.com/Nackophilz/fankai_kodi">Code source</a></p>""".format(
+<p style="margin-top:2rem"><a href="https://github.com/Nackophilz/fankai_plugin">Code source</a></p>""".format(
         url=SITE_URL, repo_zip=repo_zip,
         files=listing(OUT_DIR, {
             repo_zip: 'le dépôt, à installer en premier',

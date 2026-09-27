@@ -2,7 +2,7 @@
 
 Fournisseur d'informations (« scraper ») de séries TV pour **Kodi**, alimenté par l'API communautaire
 [metadata.fankai.fr](https://metadata.fankai.fr). C'est l'équivalent du
-[plugin Jellyfin/Emby](https://github.com/Nackophilz/fankai_jellyfin) pour les Kai.
+[plugin Jellyfin/Emby](https://github.com/Nackophilz/fankai_plugin) pour les Kai.
 
 Ce que l'add-on remplit dans la médiathèque Kodi :
 
@@ -22,7 +22,7 @@ Ce que l'add-on remplit dans la médiathèque Kodi :
 Tout se fait depuis Kodi, à partir d'une seule adresse :
 
 ```
-https://nackophilz.github.io/fankai_kodi/
+https://nackophilz.github.io/fankai_plugin/
 ```
 
 1. *Paramètres → Gestionnaire de fichiers → Ajouter une source*, coller l'adresse ci-dessus et nommer la
@@ -36,7 +36,7 @@ Le dépôt une fois installé, **l'add-on se met à jour tout seul**. Si Kodi re
 *Paramètres → Système → Modules complémentaires → Sources inconnues*.
 
 Le zip du scraper seul est également disponible sur la même page et sur les
-[releases](https://github.com/Nackophilz/fankai_kodi/releases/latest), mais les mises à jour sont alors
+[releases](https://github.com/Nackophilz/fankai_plugin/releases?q=kodi), mais les mises à jour sont alors
 manuelles.
 
 ## Configuration de la médiathèque
