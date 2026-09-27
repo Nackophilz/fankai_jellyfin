@@ -1,0 +1,135 @@
+{
+ "actors": [
+  {
+   "id": 780,
+   "name": "Akemi Okamura",
+   "profile_url": "https://www.themoviedb.org/person/90133",
+   "role": "Nami (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/qEwVfsrA23SCzRZMSlghw2sHctQ.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 786,
+   "name": "Cho",
+   "profile_url": "https://www.themoviedb.org/person/560354",
+   "role": "Brook (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/70OZtKOHEGvbuMQAbQ01cGxrUDO.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 781,
+   "name": "Hiroaki Hirata",
+   "profile_url": "https://www.themoviedb.org/person/84505",
+   "role": "Vinsmoke Sanji (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/mMWEdlssJm3TVuXW4Wb7pQeX20Z.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 784,
+   "name": "Ikue Otani",
+   "profile_url": "https://www.themoviedb.org/person/73044",
+   "role": "Tony Tony Chopper (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/my8LBLQ4MsK4hRz1PAATIqtieaI.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 774,
+   "name": "Johker",
+   "role": "Kaïeur 3",
+   "thumb_url": "https://static.wikia.nocookie.net/fan-kai/images/e/e6/Site-logo.png/revision/latest?cb=20230203203440&path-prefix=fr",
+   "total_appearances": 2
+  },
+  {
+   "id": 782,
+   "name": "Kappei Yamaguchi",
+   "profile_url": "https://www.themoviedb.org/person/68472",
+   "role": "Usopp (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/sbeWiK7FuUvPqF4yG6XR5CkPAqF.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 787,
+   "name": "Katsuhisa Houki",
+   "profile_url": "https://www.themoviedb.org/person/554432",
+   "role": "Jinbe (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/stuUwLrSOmQhOmNpO4kCrlu3ALF.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 785,
+   "name": "Kazuki Yao",
+   "profile_url": "https://www.themoviedb.org/person/112276",
+   "role": "Franky (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/gWVK0ws65UVH1Pe8ok8oBnDf9Vf.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 779,
+   "name": "Kazuya Nakai",
+   "profile_url": "https://www.themoviedb.org/person/84507",
+   "role": "Roronoa Zoro (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/78PKViY7brjF3AJI8h3tXyUyYT7.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 775,
+   "name": "KnuckAlex",
+   "role": "Kaïeur 4",
+   "thumb_url": "https://static.wikia.nocookie.net/fan-kai/images/e/e6/Site-logo.png/revision/latest?cb=20230203203440&path-prefix=fr",
+   "total_appearances": 1
+  },
+  {
+   "id": 773,
+   "name": "Livaï",
+   "role": "Kaïeur 2",
+   "thumb_url": "https://static.wikia.nocookie.net/fan-kai/images/e/e6/Site-logo.png/revision/latest?cb=20230203203440&path-prefix=fr",
+   "total_appearances": 2
+  },
+  {
+   "id": 778,
+   "name": "Mayumi Tanaka",
+   "profile_url": "https://www.themoviedb.org/person/65510",
+   "role": "Monkey D. Luffy (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/dWh2Y3bQkSjPv3c7kyy5P6M3PLS.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 772,
+   "name": "Mixouille",
+   "role": "Kaïeur 1",
+   "thumb_url": "https://static.wikia.nocookie.net/fan-kai/images/e/e6/Site-logo.png/revision/latest?cb=20230203203440&path-prefix=fr",
+   "total_appearances": 2
+  },
+  {
+   "id": 777,
+   "name": "Sacha",
+   "role": "Kaïeur 6",
+   "thumb_url": "https://static.wikia.nocookie.net/fan-kai/images/e/e6/Site-logo.png/revision/latest?cb=20230203203440&path-prefix=fr",
+   "total_appearances": 1
+  },
+  {
+   "id": 788,
+   "name": "Tessyo Genda",
+   "profile_url": "https://www.themoviedb.org/person/1681",
+   "role": "Kaido (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/7eJeYv2OCHKAadeFVdabVkpWldo.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 783,
+   "name": "Yuriko Yamaguchi",
+   "profile_url": "https://www.themoviedb.org/person/77933",
+   "role": "Nico Robin (voice)",
+   "thumb_url": "https://image.tmdb.org/t/p/h632/7e3BXCPv0X2pqwfdfW52n7VDFmI.jpg",
+   "total_appearances": 2
+  },
+  {
+   "id": 776,
+   "name": "ZdK",
+   "role": "Kaïeur 5",
+   "thumb_url": "https://static.wikia.nocookie.net/fan-kai/images/e/e6/Site-logo.png/revision/latest?cb=20230203203440&path-prefix=fr",
+   "total_appearances": 1
+  }
+ ],
+ "actors_count": 17
+}

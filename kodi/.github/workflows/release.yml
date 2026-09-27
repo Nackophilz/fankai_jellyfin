@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'metadata.tvshows.fankai/**'
+      - 'repository.fankai/**'
+      - 'tools/build.py'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Tests
+        run: |
+          python -m pip install --upgrade pip pytest
+          python -m pytest -q
+
+      - name: Construction des zips et du site
+        run: python tools/build.py
+
+      - name: Version
+        id: version
+        run: |
+          VERSION=$(python -c "import xml.etree.ElementTree as ET; print(ET.parse('metadata.tvshows.fankai/addon.xml').getroot().attrib['version'])")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Version : $VERSION"
+
+      # `enablement: true` crée le site Pages s'il n'existe pas encore : aucune
+      # activation manuelle, et pas de branche à créer au préalable.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./repo
+
+      - name: Publication du dépôt sur GitHub Pages
+        id: pages
+        uses: actions/deploy-pages@v4
+
+      - name: Release GitHub
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          TAG="v$VERSION"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "La release $TAG existe déjà : pas de nouvelle release (bump de version requis)."
+            exit 0
+          fi
+          git log -1 --pretty=%B > release_notes.md
+          gh release create "$TAG" \
+            repo/metadata.tvshows.fankai/*.zip \
+            repo/repository.fankai/*.zip \
+            --title "$TAG" \
+            --notes-file release_notes.md

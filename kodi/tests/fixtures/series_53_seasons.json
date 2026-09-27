@@ -1,0 +1,379 @@
+{
+ "seasons": [
+  {
+   "id": 110,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": null,
+    "poster": null
+   },
+   "last_update": 1774480803.8456326,
+   "links": {
+    "episodes": "/seasons/110/episodes",
+    "serie": "/series/53"
+   },
+   "premiered": "2009-12-12",
+   "season_number": 0,
+   "serie_id": 53,
+   "sort_title": "Saison 00",
+   "statistics": {
+    "episode_count": 5,
+    "episodes_with_thumbnails": 5,
+    "first_aired": "2009-12-12",
+    "last_aired": "2022-08-06"
+   },
+   "title": "Films Officiels"
+  },
+  {
+   "id": 118,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/118/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/118/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.0381448,
+   "links": {
+    "episodes": "/seasons/118/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Gold Roger était le Roi des Pirates, il a laissé derrière lui son trésor : le One Piece. C'est alors qu'une grande vague de piraterie s'est lancée afin de le retrouver. Nous suivons l'histoire de Luffy et son équipage en quête de trouver ce trésor et d'accomplir leurs rêves.",
+   "premiered": "2018-12-26",
+   "season_number": 1,
+   "serie_id": 53,
+   "sort_title": "Saison 001",
+   "statistics": {
+    "episode_count": 7,
+    "episodes_with_thumbnails": 7,
+    "first_aired": "2018-12-26",
+    "last_aired": "2019-02-07"
+   },
+   "title": "East Blue"
+  },
+  {
+   "id": 112,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/112/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/112/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.054146,
+   "links": {
+    "episodes": "/seasons/112/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "L'équipage du Chapeau de Paille débarque enfin sur Grand Line mais sont vite pris pour cible par le Baroque Works, une organisation criminelle. Ils rencontrent Vivi, la princesse d'Alabasta, en proie au chaos à cause d'un ennemi très puissant nommé Crocodile.",
+   "premiered": "2019-02-14",
+   "season_number": 2,
+   "serie_id": 53,
+   "sort_title": "Saison 002",
+   "statistics": {
+    "episode_count": 9,
+    "episodes_with_thumbnails": 9,
+    "first_aired": "2019-02-14",
+    "last_aired": "2019-05-09"
+   },
+   "title": "Baroque Works"
+  },
+  {
+   "id": 106,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/106/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/106/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.0701475,
+   "links": {
+    "episodes": "/seasons/106/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Luffy et son équipage trouvent une vieille carte indiquant une île céleste, ils vont se demander s'ils existe une telle chose. Ils vont tout faire pour y accéder. Pendant ce temps, le Gouvernement Mondial essaie de trouver le futur remplaçant de Crocodile, alors déchu de son titre de Grand Corsaire.",
+   "premiered": "2019-05-22",
+   "season_number": 3,
+   "serie_id": 53,
+   "sort_title": "Saison 003",
+   "statistics": {
+    "episode_count": 6,
+    "episodes_with_thumbnails": 6,
+    "first_aired": "2019-05-22",
+    "last_aired": "2021-03-31"
+   },
+   "title": "Île Céleste"
+  },
+  {
+   "id": 115,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/115/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/115/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.0781484,
+   "links": {
+    "episodes": "/seasons/115/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "En quête de réparer leur navire, Luffy et son équipage se rendent à Water Seven, réputé pour avoir les meilleurs charpentiers du monde. Ils font la rencontre de la Franky Family et du CP-9, attentant tous deux à leur vie.",
+   "premiered": "2021-06-25",
+   "season_number": 4,
+   "serie_id": 53,
+   "sort_title": "Saison 004",
+   "statistics": {
+    "episode_count": 15,
+    "episodes_with_thumbnails": 15,
+    "first_aired": "2021-06-25",
+    "last_aired": "2021-10-04"
+   },
+   "title": "Water 7"
+  },
+  {
+   "id": 107,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/107/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/107/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.0901494,
+   "links": {
+    "episodes": "/seasons/107/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "L'équipage du Chapeau de Paille fait la rencontre de Brook, un mystérieux squelette voguant sur un bateau fantôme, ils arrivent peu après à Thriller Bark, une île dirigée par Gekko Moria, un des 7 Grands Corsaires.",
+   "premiered": "2022-01-30",
+   "season_number": 5,
+   "serie_id": 53,
+   "sort_title": "Saison 005",
+   "statistics": {
+    "episode_count": 5,
+    "episodes_with_thumbnails": 5,
+    "first_aired": "2022-01-30",
+    "last_aired": "2022-03-06"
+   },
+   "title": "Thriller Bark"
+  },
+  {
+   "id": 108,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/108/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/108/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.1021504,
+   "links": {
+    "episodes": "/seasons/108/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Après être arrivés à l'Archipel Sabaody, porte d'entrée vers le Nouveau Monde, Luffy et ses amis se retrouvent séparés par Bartholomew Kuma. Luffy se retrouve à Amazon Lily, où il fera la rencontre de Boa Hancock. C'est alors qu'il apprend l'exécution imminente de son frère, Ace.",
+   "premiered": "2022-03-13",
+   "season_number": 6,
+   "serie_id": 53,
+   "sort_title": "Saison 006",
+   "statistics": {
+    "episode_count": 13,
+    "episodes_with_thumbnails": 13,
+    "first_aired": "2022-03-13",
+    "last_aired": "2023-10-20"
+   },
+   "title": "Guerre au Sommet"
+  },
+  {
+   "id": 114,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/114/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/114/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.118152,
+   "links": {
+    "episodes": "/seasons/114/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Deux ans après leur séparation, l'équipage du Chapeau de Paille se rend à l'Île des Hommes Poissons, ils feront la rencontre de plusieurs alliés et futurs ennemis dont l'un des Quatre Empereurs, Big Mom.",
+   "premiered": "2024-09-12",
+   "season_number": 7,
+   "serie_id": 53,
+   "sort_title": "Saison 007",
+   "statistics": {
+    "episode_count": 7,
+    "episodes_with_thumbnails": 7,
+    "first_aired": "2024-09-12",
+    "last_aired": "2024-12-30"
+   },
+   "title": "Île des Hommes-Poissons"
+  },
+  {
+   "id": 111,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/111/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/111/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.1341534,
+   "links": {
+    "episodes": "/seasons/111/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Enfin arrivés au Nouveau Monde, Luffy et son équipage reçoit un appel de détresse aux abords de Punk Hazard, une île abritant un ancien laboratoire de Vegapunk, un scientifique très réputé. C'est alors qu'ils font la rencontre de César Clown, qui mène des expériences sur des humains.",
+   "premiered": "2026-02-16",
+   "season_number": 8,
+   "serie_id": 53,
+   "sort_title": "Saison 008",
+   "statistics": {
+    "episode_count": 6,
+    "episodes_with_thumbnails": 6,
+    "first_aired": "2026-02-16",
+    "last_aired": "2026-03-01"
+   },
+   "title": "Punk Hazard"
+  },
+  {
+   "id": 117,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/117/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/117/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.1461544,
+   "links": {
+    "episodes": "/seasons/117/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Une fois l'alliance formée, les Chapeaux de paille, Law et les samouraïs de Wano arrivent dans le magnifique royaume de Dressrosa, qui regorge de jouets vivants et de batailles au Colisée. Cependant, l'alliance doit aller au-delà de sa façade joyeuse pour détruire une usine artificielle de fruits du démon exploitée par le grand corsaire Don Quichotte Doflamingo.",
+   "season_number": 9,
+   "serie_id": 53,
+   "sort_title": "Saison 009",
+   "statistics": {
+    "episode_count": 21,
+    "episodes_with_thumbnails": 21,
+    "first_aired": "",
+    "last_aired": ""
+   },
+   "title": "Dressrosa"
+  },
+  {
+   "id": 113,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/113/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/113/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.1581554,
+   "links": {
+    "episodes": "/seasons/113/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Avec une alliance de pirates nouvellement formée, l'équipage du Chapeau de Paille se lance dans une mission délicate pour sauver Sanji, pris au piège dans le territoire de la redoutable Big Mom, l'un des quatre Empereurs. Ils naviguent vers Whole Cake Island, un monde où la fantaisie se mêle au danger, peuplé de gâteaux gigantesques et de créatures enchantées. Dans cette aventure sucrée mais périlleuse, ils doivent déjouer les plans de mariage arrangé de Sanji, tout en se confrontant aux défis et aux secrets de l'univers de One Piece. Cet arc est un mélange d'action, d'émotion et de révélations, où les alliances sont aussi fragiles et imprévisibles que les habitants de cette île mystérieuse.",
+   "season_number": 10,
+   "serie_id": 53,
+   "sort_title": "Saison 010",
+   "statistics": {
+    "episode_count": 17,
+    "episodes_with_thumbnails": 17,
+    "first_aired": "",
+    "last_aired": ""
+   },
+   "title": "Whole Cake Island"
+  },
+  {
+   "id": 109,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": "https://metadata.fankai.fr/seasons/109/image/fanart?t=1773926456",
+    "poster": "https://metadata.fankai.fr/seasons/109/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.1781573,
+   "links": {
+    "episodes": "/seasons/109/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "L'équipage du Chapeau de Paille se trouve plongé au cœur d'une épopée historique dans l'arc Wano, un pays isolé et empreint de traditions. Inspiré par le Japon féodal, Wano est gouverné d'une main de fer par le cruel Shogun et l'impitoyable Kaido, un des quatre Empereurs. Cet arc est un kaléidoscope de samouraïs, de ninjas et de légendes anciennes. Luffy et ses compagnons s'allient à des guerriers locaux pour libérer le pays de l'oppression, tout en faisant face à des révélations et des combats épiques qui vont changer le cours de leur aventure",
+   "premiered": "2019-11-01",
+   "season_number": 11,
+   "serie_id": 53,
+   "sort_title": "Saison 011",
+   "statistics": {
+    "episode_count": 23,
+    "episodes_with_thumbnails": 23,
+    "first_aired": "2019-11-01",
+    "last_aired": "2023-12-25"
+   },
+   "title": "Wano"
+  },
+  {
+   "id": 116,
+   "ids": {
+    "imdb": null,
+    "tmdb": null,
+    "tvdb": null
+   },
+   "images": {
+    "fanart": null,
+    "poster": "https://metadata.fankai.fr/seasons/116/image/poster?t=1773926456"
+   },
+   "last_update": 1773926456.186158,
+   "links": {
+    "episodes": "/seasons/116/episodes",
+    "serie": "/series/53"
+   },
+   "plot": "Les Pirates de l'équipage au Chapeau de Paille arrivent sur l’île mystérieuse et futuriste d’Egghead où réside le super génie Dr. Vegapunk. Cependant, après avoir découvert que ce dernier mène des recherches sur le Siècle Oublié, le Gouvernement Mondial décide d’envoyer une équipe CP0 pour assassiner Vegapunk. La trahison et l’intrigue de tous les côtés mènent à une confrontation tendue entre les Marines et les habitants de l’île d'Egghead qui dégénérera en un incident qui choquera le monde.",
+   "season_number": 12,
+   "serie_id": 53,
+   "sort_title": "Saison 012",
+   "statistics": {
+    "episode_count": 8,
+    "episodes_with_thumbnails": 8,
+    "first_aired": "2025-07-08",
+    "last_aired": "2026-09-03"
+   },
+   "title": "Egg Head"
+  }
+ ],
+ "seasons_count": 13,
+ "serie_title": "One Piece Kaï"
+}

@@ -1,0 +1,51 @@
+{
+ "banner_image": "https://metadata.fankai.fr/series/85/image/banner?t=1775416805",
+ "country": "Japon",
+ "date_added": "2016-07-12 17:45:00",
+ "fanart_image": "https://metadata.fankai.fr/series/85/image/fanart?t=1775416805",
+ "genres": "Henshū,Animation,Anime,Action,Comédie,Fantastique",
+ "id": 85,
+ "ids": {
+  "imdb": null,
+  "tmdb": null,
+  "tvdb": null
+ },
+ "images": {
+  "banner": "https://metadata.fankai.fr/series/85/image/banner?t=1775416805",
+  "fanart": "https://metadata.fankai.fr/series/85/image/fanart?t=1775416805",
+  "logo": "https://metadata.fankai.fr/series/85/image/logo?t=1775416805",
+  "poster": "https://metadata.fankai.fr/series/85/image/poster?t=1775416805"
+ },
+ "last_update": 1775416805.8044355,
+ "links": {
+  "actors": "/series/85/actors",
+  "seasons": "/series/85/seasons"
+ },
+ "logo_image": "https://metadata.fankai.fr/series/85/image/logo?t=1775416805",
+ "original_title": "モブサイコ100",
+ "plot": "Shigeo Kageyama est un collégien de 14 ans qui est appelé \"Mob\" à cause de son manque de présence. Pourtant, il est en réalité un puissant Médium. Au fur et à mesure qu'il grandit, Mob réalise que son pouvoir psychique est dangereux. Pour éviter de perdre le contrôle de sa puissance, il se renferme sur lui-même et s'isole. Cependant, à cause de ces émotions refoulées grandissant de plus en plus en lui, son pouvoir menace d'atteindre ses limites.",
+ "poster_image": "https://metadata.fankai.fr/series/85/image/poster?t=1775416805",
+ "premiered": "2016-07-12",
+ "rating": {
+  "name": "themoviedb",
+  "user": 0.0,
+  "value": 8.6,
+  "votes": 949
+ },
+ "rating_name": "themoviedb",
+ "rating_value": 8.6,
+ "rating_votes": 949,
+ "show_title": "Mob Psycho 100 Henshū",
+ "statistics": {
+  "episodes_count": 8,
+  "first_aired": "2026-04-05",
+  "last_aired": "2026-04-05",
+  "seasons_count": 1
+ },
+ "status": "Ended",
+ "studio": "Fan-Kai",
+ "theme_music": "https://metadata.fankai.fr/series/85/theme?t=1775416805",
+ "title": "Mob Psycho 100 Henshū",
+ "title_for_plex": "Mob Psycho 100 Henshū",
+ "year": 2016
+}

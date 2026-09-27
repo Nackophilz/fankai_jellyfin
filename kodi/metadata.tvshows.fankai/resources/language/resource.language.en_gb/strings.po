@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: Fankai
+# Addon id: metadata.tvshows.fankai
+# Addon Provider: Nackophilz
+msgid ""
+msgstr ""
+"Project-Id-Version: metadata.tvshows.fankai\n"
+"Report-Msgid-Bugs-To: https://github.com/Nackophilz/fankai_kodi/issues\n"
+"POT-Creation-Date: 2026-09-04 00:00+0000\n"
+"PO-Revision-Date: 2026-09-04 00:00+0000\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (United Kingdom)\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32000"
+msgid "General"
+msgstr ""
+
+msgctxt "#32001"
+msgid "Use the original title as the show title"
+msgstr ""
+
+msgctxt "#32002"
+msgid "Name seasons after the API (story arcs)"
+msgstr ""
+
+msgctxt "#32003"
+msgid "Add the edit type (Kaï, Henshū…) as a tag"
+msgstr ""
+
+msgctxt "#32004"
+msgid "Trailers"
+msgstr ""
+
+msgctxt "#32010"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#32011"
+msgid "Verbose logging"
+msgstr ""
+
+msgctxt "#32012"
+msgid "API URL"
+msgstr ""
+
+msgctxt "#32020"
+msgid "Metadata"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Show the Japanese/original title instead of the French one."
+msgstr ""
+
+msgctxt "#32102"
+msgid "Seasons take the arc names provided by the API (e.g. East Blue) instead of \"Season 1\"."
+msgstr ""
+
+msgctxt "#32103"
+msgid "Adds a library tag with the Fan-Kai edit type, handy for filtering."
+msgstr ""
+
+msgctxt "#32104"
+msgid "Set the YouTube trailer when the API provides one (requires the YouTube add-on)."
+msgstr ""
+
+msgctxt "#32111"
+msgid "Write debug messages to kodi.log."
+msgstr ""
+
+msgctxt "#32112"
+msgid "Base URL of the Fankai metadata API. Only change it to use a local or mirrored instance."
+msgstr ""

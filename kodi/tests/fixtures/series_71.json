@@ -1,0 +1,51 @@
+{
+ "banner_image": "https://metadata.fankai.fr/series/71/image/banner?t=1774045805",
+ "country": "Japon",
+ "date_added": "2011-10-02 00:20:00",
+ "fanart_image": "https://metadata.fankai.fr/series/71/image/fanart?t=1774045805",
+ "genres": "Kaï,Action,Aventure,Animation,Anime,Comédie,Drame,Fantastique",
+ "id": 71,
+ "ids": {
+  "imdb": null,
+  "tmdb": null,
+  "tvdb": null
+ },
+ "images": {
+  "banner": "https://metadata.fankai.fr/series/71/image/banner?t=1774045805",
+  "fanart": "https://metadata.fankai.fr/series/71/image/fanart?t=1774045805",
+  "logo": "https://metadata.fankai.fr/series/71/image/logo?t=1774045805",
+  "poster": "https://metadata.fankai.fr/series/71/image/poster?t=1774045805"
+ },
+ "last_update": 1774045805.5463514,
+ "links": {
+  "actors": "/series/71/actors",
+  "seasons": "/series/71/seasons"
+ },
+ "logo_image": "https://metadata.fankai.fr/series/71/image/logo?t=1774045805",
+ "original_title": "ハンターｘハンター",
+ "plot": "Le jeune Gon vit sur une petite île avec sa tante. Abandonné par son père qui est un Hunter, à la fois un aventurier et un chasseur de primes, Gon décide à l'âge de 12 ans de partir pour devenir un Hunter. Cela ne sera pas chose aisée, il devra passer une suite de tests et examens en compagnie de milliers d'autres prétendants au titre de Hunter. Il sera aidé par de nouvelles connaissances qui aspirent au même but que lui tel que Kurapika, Leorio et Killua.",
+ "poster_image": "https://metadata.fankai.fr/series/71/image/poster?t=1774045805",
+ "premiered": "2011-10-02",
+ "rating": {
+  "name": "themoviedb",
+  "user": 0.0,
+  "value": 8.7,
+  "votes": 1338
+ },
+ "rating_name": "themoviedb",
+ "rating_value": 8.7,
+ "rating_votes": 1338,
+ "show_title": "Hunter x Hunter Kaï (2011)",
+ "statistics": {
+  "episodes_count": 21,
+  "first_aired": "2019-01-22",
+  "last_aired": "2019-03-18",
+  "seasons_count": 5
+ },
+ "status": "Ended",
+ "studio": "Fan-Kai",
+ "theme_music": "https://metadata.fankai.fr/series/71/theme?t=1774045805",
+ "title": "Hunter x Hunter Kaï (2011)",
+ "title_for_plex": "Hunter x Hunter Kaï 2011",
+ "year": 2011
+}

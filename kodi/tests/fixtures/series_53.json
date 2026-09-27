@@ -1,0 +1,51 @@
+{
+ "banner_image": "https://metadata.fankai.fr/series/53/image/banner?t=1774045805",
+ "country": "Japon",
+ "date_added": "1999-10-20 15:51:00",
+ "fanart_image": "https://metadata.fankai.fr/series/53/image/fanart?t=1774045805",
+ "genres": "Kaï,Action,Aventure,Animation,Anime,Comédie,Drame,Fantastique",
+ "id": 53,
+ "ids": {
+  "imdb": null,
+  "tmdb": null,
+  "tvdb": null
+ },
+ "images": {
+  "banner": "https://metadata.fankai.fr/series/53/image/banner?t=1774045805",
+  "fanart": "https://metadata.fankai.fr/series/53/image/fanart?t=1774045805",
+  "logo": "https://metadata.fankai.fr/series/53/image/logo?t=1774045805",
+  "poster": "https://metadata.fankai.fr/series/53/image/poster?t=1774045805"
+ },
+ "last_update": 1774045805.622358,
+ "links": {
+  "actors": "/series/53/actors",
+  "seasons": "/series/53/seasons"
+ },
+ "logo_image": "https://metadata.fankai.fr/series/53/image/logo?t=1774045805",
+ "original_title": "ワンピース",
+ "plot": "Monkey D. Luffy rêve de retrouver ce trésor légendaire et de devenir le nouveau \"Roi des Pirates\". Après avoir mangé un fruit du démon, il possède un pouvoir lui permettant de réaliser son rêve. Il lui faut maintenant trouver un équipage pour partir à l'aventure !",
+ "poster_image": "https://metadata.fankai.fr/series/53/image/poster?t=1774045805",
+ "premiered": "1999-10-20",
+ "rating": {
+  "name": "themoviedb",
+  "user": 0.0,
+  "value": 8.7,
+  "votes": 3633
+ },
+ "rating_name": "themoviedb",
+ "rating_value": 8.7,
+ "rating_votes": 3633,
+ "show_title": "One Piece Kaï",
+ "statistics": {
+  "episodes_count": 142,
+  "first_aired": "",
+  "last_aired": "2026-09-03",
+  "seasons_count": 13
+ },
+ "status": "Continuing",
+ "studio": "Fan-Kai",
+ "theme_music": "https://metadata.fankai.fr/series/53/theme?t=1774045805",
+ "title": "One Piece Kaï",
+ "title_for_plex": "One Piece Kaï",
+ "year": 1999
+}
