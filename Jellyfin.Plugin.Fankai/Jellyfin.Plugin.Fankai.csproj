@@ -4,16 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>3.0.7</AssemblyVersion>
-    <FileVersion>3.0.7</FileVersion>
-    <Version>3.0.7</Version>
+    <AssemblyVersion>3.1.0</AssemblyVersion>
+    <FileVersion>3.1.0</FileVersion>
+    <Version>3.1.0</Version>
     <Description>Fournit des métadonnées depuis l'API Fankai.</Description>
     <AssemblyName>Jellyfin.Plugin.Fankai</AssemblyName>
     <PluginName>$(AssemblyName)</PluginName>
     <PluginClassName>Jellyfin.Plugin.Fankai.Plugin</PluginClassName>
     <PluginId>4b725b9a-9063-4cb7-9533-ceaf32c6c86d</PluginId>
     <PluginManifestUrl>https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/refs/heads/main/manifest.json</PluginManifestUrl>
-    <Configurations>Debug;Release;Jellyfin;Emby</Configurations>
+    <Configurations>Debug;Release;Jellyfin;Jellyfin12;Emby</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Emby'">
@@ -26,10 +26,26 @@
     <OutputPath>bin/Jellyfin</OutputPath>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(Configuration)' != 'Emby'">
+  <!-- Majeur suivant : un serveur 12.x doit toujours préférer cette build à la 10.x de la même release. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Jellyfin12'">
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputPath>bin/Jellyfin12</OutputPath>
+    <VersionJellyfin12>$([MSBuild]::Add($([System.Version]::Parse('$(Version)').Major), 1))$(Version.Substring($(Version.IndexOf('.'))))</VersionJellyfin12>
+    <AssemblyVersion>$(VersionJellyfin12)</AssemblyVersion>
+    <FileVersion>$(VersionJellyfin12)</FileVersion>
+    <Version>$(VersionJellyfin12)</Version>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'Emby' And '$(Configuration)' != 'Jellyfin12'">
     <PackageReference Include="Jellyfin.Controller" Version="10.9.11" />
     <PackageReference Include="Jellyfin.Model" Version="10.9.11" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Jellyfin12'">
+    <PackageReference Include="Jellyfin.Controller" Version="12.0.0" />
+    <PackageReference Include="Jellyfin.Model" Version="12.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Emby'">

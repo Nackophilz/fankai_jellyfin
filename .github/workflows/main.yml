@@ -7,6 +7,7 @@ on:
     paths:
       - 'Jellyfin.Plugin.Fankai/**'
       - '!Jellyfin.Plugin.Fankai/**/*.md'
+  workflow_dispatch:
 
 jobs:
   build-release-and-update-manifest:
@@ -23,7 +24,9 @@ jobs:
       - name: Configuration du SDK .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: |
+            8.0.x
+            10.0.x
 
       - name: Extraction de la version du plugin
         id: get_version
@@ -33,9 +36,13 @@ jobs:
             echo "Erreur : $CSPROJ_PATH non trouvé."
             exit 1
           fi
-          VERSION=$(grep '<Version>' "$CSPROJ_PATH" | sed -e 's/.*<Version>\(.*\)<\/Version>.*/\1/' | tr -d '[:space:]')
+          VERSION=$(dotnet msbuild "$CSPROJ_PATH" -p:Configuration=Release -getProperty:Version | tr -d '[:space:]')
           echo "PLUGIN_VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Version détectée : $VERSION"
+
+          VERSION_JF12=$(dotnet msbuild "$CSPROJ_PATH" -p:Configuration=Jellyfin12 -getProperty:Version | tr -d '[:space:]')
+          echo "PLUGIN_VERSION_JF12=$VERSION_JF12" >> $GITHUB_OUTPUT
+          echo "Version Jellyfin 12 : $VERSION_JF12"
 
       # --- BLOC JELLYFIN ---
 
@@ -64,6 +71,35 @@ jobs:
           
           (cd "$PUB_DIR" && zip -j9 "../$ZIP_NAME" "$DLL_NAME")
           
+          echo "ZIP_PATH=./$ZIP_NAME" >> $GITHUB_OUTPUT
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_OUTPUT
+
+      # --- BLOC JELLYFIN 12 ---
+
+      - name: "[Jellyfin 12] Compilation"
+        id: build_jellyfin12
+        run: |
+          PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
+          OUT_DIR="./publish_jellyfin12"
+          mkdir -p "$OUT_DIR"
+
+          dotnet publish "$PROJECT_PATH" --configuration Jellyfin12 --output "$OUT_DIR"
+          echo "PUBLISH_DIR=$OUT_DIR" >> $GITHUB_OUTPUT
+
+      - name: "[Jellyfin 12] Création du ZIP"
+        id: zip_jellyfin12
+        run: |
+          ZIP_NAME="Jellyfin.Plugin.Fankai.Jellyfin12.zip"
+          PUB_DIR="${{ steps.build_jellyfin12.outputs.PUBLISH_DIR }}"
+          DLL_NAME="Jellyfin.Plugin.Fankai.dll"
+
+          if [ ! -f "$PUB_DIR/$DLL_NAME" ]; then
+            echo "::error::DLL Jellyfin 12 introuvable !"
+            exit 1
+          fi
+
+          (cd "$PUB_DIR" && zip -j9 "../$ZIP_NAME" "$DLL_NAME")
+
           echo "ZIP_PATH=./$ZIP_NAME" >> $GITHUB_OUTPUT
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_OUTPUT
 
@@ -105,12 +141,15 @@ jobs:
         run: |
           # Checksums
           ZIP_JF="${{ steps.zip_jellyfin.outputs.ZIP_PATH }}"
+          ZIP_JF12="${{ steps.zip_jellyfin12.outputs.ZIP_PATH }}"
           ZIP_EMBY="${{ steps.zip_emby.outputs.ZIP_PATH }}"
-          
+
           SUM_JF=$(md5sum "$ZIP_JF" | awk '{ print $1 }')
+          SUM_JF12=$(md5sum "$ZIP_JF12" | awk '{ print $1 }')
           SUM_EMBY=$(md5sum "$ZIP_EMBY" | awk '{ print $1 }')
-          
+
           echo "JF_CHECKSUM=$SUM_JF" >> $GITHUB_OUTPUT
+          echo "JF12_CHECKSUM=$SUM_JF12" >> $GITHUB_OUTPUT
           echo "EMBY_CHECKSUM=$SUM_EMBY" >> $GITHUB_OUTPUT
           
           # Changelog
@@ -132,10 +171,12 @@ jobs:
             ${{ steps.meta.outputs.CHANGELOG }}
             ---
             ### Checksums (MD5)
-            - **Jellyfin**: `${{ steps.meta.outputs.JF_CHECKSUM }}`
+            - **Jellyfin 10.9+** (v${{ steps.get_version.outputs.PLUGIN_VERSION }}): `${{ steps.meta.outputs.JF_CHECKSUM }}`
+            - **Jellyfin 12+** (v${{ steps.get_version.outputs.PLUGIN_VERSION_JF12 }}): `${{ steps.meta.outputs.JF12_CHECKSUM }}`
             - **Emby**: `${{ steps.meta.outputs.EMBY_CHECKSUM }}`
           files: |
             ${{ steps.zip_jellyfin.outputs.ZIP_PATH }}
+            ${{ steps.zip_jellyfin12.outputs.ZIP_PATH }}
             ${{ steps.zip_emby.outputs.ZIP_PATH }}
           draft: false
           prerelease: false
@@ -156,7 +197,14 @@ jobs:
           ZIP_JF_NAME="${{ steps.zip_jellyfin.outputs.ZIP_NAME }}"
           SUM_JF="${{ steps.meta.outputs.JF_CHECKSUM }}"
           URL_JF="https://github.com/$REPO/releases/download/v$VERSION/$ZIP_JF_NAME"
-          
+
+          # Le serveur écarte les entrées dont le targetAbi dépasse sa version, puis prend la plus haute
+          VERSION_JF12="${{ steps.get_version.outputs.PLUGIN_VERSION_JF12 }}"
+          ABI_JF12="12.0.0.0"
+          ZIP_JF12_NAME="${{ steps.zip_jellyfin12.outputs.ZIP_NAME }}"
+          SUM_JF12="${{ steps.meta.outputs.JF12_CHECKSUM }}"
+          URL_JF12="https://github.com/$REPO/releases/download/v$VERSION/$ZIP_JF12_NAME"
+
           if [ -f manifest.json ]; then
             NEW_JF=$(jq -n \
               --arg v "$VERSION" \
@@ -166,8 +214,17 @@ jobs:
               --arg s "$SUM_JF" \
               --arg d "$TIME" \
               '{version: $v, changelog: $c, targetAbi: $t, sourceUrl: $u, checksum: $s, timestamp: $d}')
-            
-            TEMP_JF=$(jq --argjson new "$NEW_JF" '.[0].versions = [$new] + .[0].versions' manifest.json)
+
+            NEW_JF12=$(jq -n \
+              --arg v "$VERSION_JF12" \
+              --arg c "$LOG" \
+              --arg t "$ABI_JF12" \
+              --arg u "$URL_JF12" \
+              --arg s "$SUM_JF12" \
+              --arg d "$TIME" \
+              '{version: $v, changelog: $c, targetAbi: $t, sourceUrl: $u, checksum: $s, timestamp: $d}')
+
+            TEMP_JF=$(jq --argjson new "$NEW_JF" --argjson new12 "$NEW_JF12" '.[0].versions = [$new12, $new] + .[0].versions' manifest.json)
             echo "$TEMP_JF" > manifest.json
             echo "✅ manifest.json (Jellyfin) mis à jour."
           else

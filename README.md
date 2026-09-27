@@ -6,8 +6,8 @@
 
 _Les métadonnées ultimes pour la communauté Kaï._
 
-[![.NET Version](https://img.shields.io/badge/.NET-8.0-512BD4.svg?logo=dotnet)](https://dotnet.microsoft.com/)
-[![Jellyfin](https://img.shields.io/badge/Jellyfin-10.9%2B-00A4DC?logo=jellyfin)](https://jellyfin.org/)
+[![.NET Version](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0-512BD4.svg?logo=dotnet)](https://dotnet.microsoft.com/)
+[![Jellyfin](https://img.shields.io/badge/Jellyfin-10.9%2B%20%7C%2012-00A4DC?logo=jellyfin)](https://jellyfin.org/)
 [![Emby](https://img.shields.io/badge/Emby-4.8%2B-52B54B?logo=emby)](https://emby.media/)
 [![License](https://img.shields.io/github/license/Nackophilz/fankai_jellyfin)](LICENSE)
 
@@ -30,9 +30,9 @@ Ce plugin n'est pas qu'un simple scraper. Il intègre des algorithmes avancés p
 
 ## 🚀 Installation
 
-Notre architecture hybride en **.NET 8** permet au plugin de tourner nativement sur les deux plateformes leaders du marché.
+Notre architecture hybride permet au plugin de tourner nativement sur les deux plateformes leaders du marché : une build **.NET 8** pour Jellyfin 10.9+ et Emby, une build **.NET 10** pour Jellyfin 12.
 
-### 🔵 Pour Jellyfin (v10.9.0 ou supérieure)
+### 🔵 Pour Jellyfin (v10.9.0 ou supérieure, y compris 12.x)
 
 L'installation est entièrement automatisée via le système de dépôt Jellyfin.
 
@@ -43,7 +43,7 @@ L'installation est entièrement automatisée via le système de dépôt Jellyfin
    ```
 3. Allez dans l'onglet **Catalogue**, cherchez **Fankai** et installez-le.
 4. **Redémarrez** votre serveur Jellyfin.
-> _💡 Les mises à jour futures se feront automatiquement via l'interface Jellyfin._
+> _💡 Les mises à jour futures se feront automatiquement via l'interface Jellyfin. Le dépôt est le même pour toutes les versions : Jellyfin 10.x reçoit les versions 3.x, Jellyfin 12 les versions 4.x._
 
 ### 🟢 Pour Emby (v4.8.0 ou supérieure)
 
@@ -68,12 +68,15 @@ Pour que le plugin opère sa magie, vous devez dire à votre serveur de l'utilis
 
 ## 🛠️ Pour les Développeurs
 
-Ce projet utilise les **GitHub Actions** pour l'Intégration Continue (CI). À chaque push sur la branche `main`, le code est compilé pour les deux environnements (`Release` pour Jellyfin, `Emby` pour Emby), les archives ZIP sont créées avec leurs checksums MD5, et les manifestes JSON sont automatiquement mis à jour.
+Ce projet utilise les **GitHub Actions** pour l'Intégration Continue (CI). À chaque push sur la branche `main`, le code est compilé pour les trois environnements (`Release` pour Jellyfin 10.x, `Jellyfin12` pour Jellyfin 12, `Emby` pour Emby), les archives ZIP sont créées avec leurs checksums MD5, et les manifestes JSON sont automatiquement mis à jour.
 
 ### Compiler localement :
 ```bash
-# Pour Jellyfin
+# Pour Jellyfin 10.x
 dotnet publish Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj -c Release
+
+# Pour Jellyfin 12 (SDK .NET 10 requis)
+dotnet publish Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj -c Jellyfin12
 
 # Pour Emby
 dotnet publish Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj -c Emby
