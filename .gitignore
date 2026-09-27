@@ -1,6 +1,6 @@
 /.vscode
 Directory.Build.props
 Jellyfin.Plugin.Fankai.sln
-/Jellyfin.Plugin.Fankai/bin
-/Jellyfin.Plugin.Fankai/obj
-/TEMPLATE
+/jellyfin-emby/Jellyfin.Plugin.Fankai/bin
+/jellyfin-emby/Jellyfin.Plugin.Fankai/obj
+/jellyfin-emby/TEMPLATE

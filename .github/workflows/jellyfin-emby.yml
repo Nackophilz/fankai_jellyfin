@@ -5,12 +5,36 @@ on:
     branches:
       - main
     paths:
-      - 'Jellyfin.Plugin.Fankai/**'
-      - '!Jellyfin.Plugin.Fankai/**/*.md'
+      - 'jellyfin-emby/Jellyfin.Plugin.Fankai/**'
+      - '!jellyfin-emby/Jellyfin.Plugin.Fankai/**/*.md'
   workflow_dispatch:
 
 jobs:
+  # Un push sans bump de version (déplacement de fichiers, refactor…) ne doit ni
+  # écraser la release existante ni dupliquer les entrées des manifests.
+  verification:
+    runs-on: ubuntu-latest
+    outputs:
+      publier: ${{ steps.tag.outputs.publier }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vérification du tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(sed -n 's#.*<Version>\([0-9][^<]*\)</Version>.*#\1#p' jellyfin-emby/Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj | head -1)
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "La release v$VERSION existe déjà : rien à publier (bump de version requis)."
+            echo "publier=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publier=true" >> "$GITHUB_OUTPUT"
+          fi
+
   build-release-and-update-manifest:
+    needs: verification
+    if: needs.verification.outputs.publier == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -31,7 +55,7 @@ jobs:
       - name: Extraction de la version du plugin
         id: get_version
         run: |
-          CSPROJ_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
+          CSPROJ_PATH="jellyfin-emby/Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
           if [ ! -f "$CSPROJ_PATH" ]; then
             echo "Erreur : $CSPROJ_PATH non trouvé."
             exit 1
@@ -49,7 +73,7 @@ jobs:
       - name: "[Jellyfin] Compilation"
         id: build_jellyfin
         run: |
-          PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
+          PROJECT_PATH="jellyfin-emby/Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
           OUT_DIR="./publish_jellyfin"
           mkdir -p "$OUT_DIR"
           
@@ -79,7 +103,7 @@ jobs:
       - name: "[Jellyfin 12] Compilation"
         id: build_jellyfin12
         run: |
-          PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
+          PROJECT_PATH="jellyfin-emby/Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
           OUT_DIR="./publish_jellyfin12"
           mkdir -p "$OUT_DIR"
 
@@ -108,7 +132,7 @@ jobs:
       - name: "[Emby] Compilation"
         id: build_emby
         run: |
-          PROJECT_PATH="Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
+          PROJECT_PATH="jellyfin-emby/Jellyfin.Plugin.Fankai/Jellyfin.Plugin.Fankai.csproj"
           OUT_DIR="./publish_emby"
           mkdir -p "$OUT_DIR"
           
