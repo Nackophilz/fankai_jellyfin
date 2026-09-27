@@ -9,6 +9,7 @@ _Les métadonnées ultimes pour la communauté Kaï._
 [![.NET Version](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0-512BD4.svg?logo=dotnet)](https://dotnet.microsoft.com/)
 [![Jellyfin](https://img.shields.io/badge/Jellyfin-10.9%2B%20%7C%2012-00A4DC?logo=jellyfin)](https://jellyfin.org/)
 [![Emby](https://img.shields.io/badge/Emby-4.8%2B-52B54B?logo=emby)](https://emby.media/)
+[![Téléchargements](https://img.shields.io/github/downloads/Nackophilz/fankai_jellyfin/total?label=t%C3%A9l%C3%A9chargements)](https://github.com/Nackophilz/fankai_jellyfin/releases)
 [![License](https://img.shields.io/github/license/Nackophilz/fankai_jellyfin)](LICENSE)
 
 [**🌐 API Fankai**](https://metadata.fankai.fr) · [**🐛 Signaler un bug**](https://github.com/Nackophilz/fankai_jellyfin/issues) · [**💬 Discord**](https://discord.gg/fankai)
