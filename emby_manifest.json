@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Nackophilz/fankai_jellyfin/main/Assets/fankai.png",
     "versions": [
       {
+        "version": "3.1.0",
+        "changelog": "feat(v3.1.0): support de Jellyfin 12\n\nJellyfin 12 impose .NET 10 et n'accepte plus les plugins compilés pour\nl'ABI 10.9 : la 3.0.7 ne s'y charge plus.\n\nChaque release publie désormais une build dédiée à Jellyfin 12, en\nversion 4.x (ici 4.1.0), à côté de la build 3.x qui continue de suivre\nJellyfin 10.9 et supérieur. Le dépôt ne change pas : chaque serveur\nreçoit automatiquement la version qui lui correspond.\n\nMerci à EdouardSence pour le signalement et le portage initial (#7).\n\nCo-authored-by: EdouardSence <edouard.snc.33@gmail.com>",
+        "targetAbi": "4.8.0.0",
+        "sourceUrl": "https://github.com/Nackophilz/fankai_jellyfin/releases/download/v3.1.0/Jellyfin.Plugin.Fankai.Emby.zip",
+        "checksum": "67ef9704ab0e128288b99ddf26c3a20c",
+        "timestamp": "2026-09-27T19:24:07Z"
+      },
+      {
         "version": "3.0.7",
         "changelog": "fix(v3.0.7): numéro de saison dérivé du dossier en fallback",
         "targetAbi": "4.8.0.0",
